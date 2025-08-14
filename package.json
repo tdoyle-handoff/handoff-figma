@@ -35,7 +35,9 @@
     "deploy:supabase": "./deploy.sh",
     "verify:setup": "./verify-setup.sh",
     "clean": "rm -rf dist node_modules/.vite",
-    "test": "echo \"Tests not yet implemented\" && exit 0"
+    "test": "echo \"Tests not yet implemented\" && exit 0",
+    "release:tag": "npm version patch -m \"chore(release): v%s\"",
+    "release:push": "git push && git push --tags"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",

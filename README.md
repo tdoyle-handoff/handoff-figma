@@ -241,3 +241,41 @@ For support and questions:
 ---
 
 Made with ❤️ for real estate professionals
+
+---
+
+## Deployment setup (CI, Supabase, Vercel)
+
+### GitHub Actions CI
+Already configured at .github/workflows/ci.yml to run type-check, lint, and build on pushes and PRs to main.
+
+### Supabase Edge Functions deploy
+Workflow: .github/workflows/deploy-supabase.yml
+
+Required GitHub repo secrets (Settings > Secrets and variables > Actions):
+- SUPABASE_ACCESS_TOKEN — Supabase personal access token
+- SUPABASE_PROJECT_REF — Project reference from Supabase Project Settings
+
+Run it via:
+- Actions tab > Deploy Supabase Functions > Run workflow, or
+- Push a tag like v0.1.0
+
+### Vercel (frontend hosting)
+Recommended: connect the GitHub repo to Vercel (vercel.com) via the GitHub integration. Vercel will auto-build and deploy on pushes to main.
+
+If you use Vercel’s GitHub integration:
+- Ensure the following Environment Variables are set in Vercel Project Settings for Production:
+  - VITE_SUPABASE_URL
+  - VITE_SUPABASE_ANON_KEY
+  - (optional) ATTOM_API_KEY
+  - (optional) GOOGLE_PLACES_API_KEY
+- vercel.json is included to configure Vite build and SPA routing.
+
+Note: An Actions-based Vercel workflow exists but is disabled by default (.github/workflows/deploy-vercel.yml). Use Vercel’s native GitHub integration for the best experience.
+
+### Release tagging (to trigger Supabase deploy by tag)
+We provide helper scripts:
+- npm run release:tag — Bumps patch version and creates a git tag (chore(release): vX.Y.Z)
+- npm run release:push — Pushes commits and tags to origin
+
+If you prefer GitHub Desktop: run npm run release:tag locally, then push via GitHub Desktop (including tags).
