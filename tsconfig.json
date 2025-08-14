@@ -14,7 +14,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "./*"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["src", "components", "hooks", "utils", "types", "supabase/functions"],
