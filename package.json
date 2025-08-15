@@ -5,10 +5,24 @@
   "author": "Handoff Development Team",
   "license": "MIT",
   "homepage": "https://github.com/yourusername/handoff#readme",
-  "repository": { "type": "git", "url": "git+https://github.com/yourusername/handoff.git" },
-  "bugs": { "url": "https://github.com/yourusername/handoff/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/handoff.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/handoff/issues"
+  },
   "keywords": [
-    "real-estate","saas","property-management","react","typescript","supabase","tailwindcss","mls","property-data","transaction-management"
+    "real-estate",
+    "saas",
+    "property-management",
+    "react",
+    "typescript",
+    "supabase",
+    "tailwindcss",
+    "mls",
+    "property-data",
+    "transaction-management"
   ],
   "type": "module",
   "scripts": {
@@ -23,21 +37,22 @@
     "test": "echo 'Tests not yet implemented' && exit 0",
     "release:tag": "npm version patch -m 'chore(release): v%s'",
     "release:push": "git push && git push --tags",
-
-      "ci:install": "npm ci || npm install",
-  "build": "node scripts/check-env.mjs && vite build --debug --logLevel info"
+    "ci:install": "npm ci || npm install",
+    "build": "node scripts/check-env.mjs && vite build --debug --logLevel info",
+    "ci:build": "npm run ci:install && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
+    "lucide-react": "latest",
+    "motion": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "latest",
     "react-hook-form": "^7.55.0",
-    "sonner": "^2.0.3",
     "recharts": "latest",
-    "motion": "latest"
+    "sonner": "^2.0.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0-alpha.5",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -53,6 +68,14 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
-  "engines": { "node": ">=18.0.0", "npm": ">=8.0.0" },
-  "browserslist": ["> 1%","last 2 versions","not dead","not ie 11"]
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
 }
