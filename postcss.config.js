@@ -1,7 +1,8 @@
-module.exports = {
+// ESM for Tailwind v4 alpha
+export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
+    '@tailwindcss/postcss': {}
+  }
 };
+
 
