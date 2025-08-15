@@ -25,8 +25,8 @@
     "release:tag": "npm version patch -m 'chore(release): v%s'",
     "release:push": "git push && git push --tags",
 
-    "ci:install": "npm ci || npm install",
-    "ci:build": "npm run ci:install && npm run build"
+      "ci:install": "npm ci || npm install",
+  "build": "node scripts/check-env.mjs && vite build --debug --logLevel info"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
