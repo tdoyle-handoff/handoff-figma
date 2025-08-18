@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { useIsMobile } from './ui/use-mobile';
 // import { ServerStatusBanner } from './ServerStatusBanner';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
-import handoffLogo from 'figma:asset/be15daf7d5142f62ecd0737159425b4c629da988.png';
+const handoffLogo = '/handoff-logo.svg';
 
 interface SetupData {
   buyerEmail: string;

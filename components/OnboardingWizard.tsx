@@ -25,7 +25,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Badge } from './ui/badge';
 import { useIsMobile } from './ui/use-mobile';
 import { AddressAutocompleteInput } from './AddressAutocompleteInput';
-import handoffLogo from 'figma:asset/be15daf7d5142f62ecd0737159425b4c629da988.png';
+const handoffLogo = '/handoff-logo.svg';
 
 // Property types with icons
 const PROPERTY_TYPES = [

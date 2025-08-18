@@ -5,7 +5,7 @@ import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
 import { usePropertyContext } from './PropertyContext';
-import handoffLogo from 'figma:asset/be15daf7d5142f62ecd0737159425b4c629da988.png';
+const handoffLogo = '/handoff-logo.svg';
 import { 
   Home, 
   FileText, 
