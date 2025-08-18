@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Loader2, Shield, Database, User, CheckCircle } from 'lucide-react';
-import handoffLogo from 'figma:asset/be15daf7d5142f62ecd0737159425b4c629da988.png';
+const handoffLogo = '/handoff-logo.svg';
 
 // Enhanced loading component with progress indication
 export function AuthLoader() {
