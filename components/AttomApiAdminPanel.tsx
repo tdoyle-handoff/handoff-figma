@@ -10,7 +10,7 @@ import { Badge } from './ui/badge';
 import { Alert, AlertDescription } from './ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Checkbox } from './ui/checkbox';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { 
   Loader2, Plus, Edit, Trash2, Save, TestTube, Settings, 
   Database, CheckCircle, XCircle, AlertCircle, Eye, 

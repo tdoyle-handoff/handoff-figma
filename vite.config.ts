@@ -7,7 +7,6 @@ export default defineConfig({
   resolve: {
     alias: {
       'lucide-react@0.487.0': 'lucide-react',
-      'sonner@2.0.3': 'sonner',
       '@radix-ui/react-avatar@1.1.3': '@radix-ui/react-avatar',
       '@radix-ui/react-dialog@1.1.6': '@radix-ui/react-dialog',
       '@radix-ui/react-alert-dialog@1.1.6': '@radix-ui/react-alert-dialog',

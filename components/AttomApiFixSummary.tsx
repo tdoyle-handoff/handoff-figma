@@ -9,7 +9,7 @@ import {
   Key, Settings, Search, TestTube, FileText, Lightbulb,
   Code, Globe, Database, Wrench
 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface FixedItem {
   issue: string;
