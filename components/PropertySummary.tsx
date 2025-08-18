@@ -1,0 +1,1320 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
+import { Alert, AlertDescription } from './ui/alert';
+import { Progress } from './ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { 
+  Home, 
+  MapPin, 
+  DollarSign, 
+  Calendar,
+  User,
+  FileText,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  TrendingUp,
+  Building,
+  Database,
+  RefreshCw,
+  ExternalLink,
+  Info,
+  Settings,
+  BarChart3,
+  TestTube,
+  Zap,
+  Search,
+  Copy,
+  Receipt,
+  Shield,
+  Key,
+  CheckCircle2,
+  Loader2
+} from 'lucide-react';
+import { ComprehensiveAttomDisplay } from './ComprehensiveAttomDisplay';
+import { PropertyBasicProfile } from './PropertyBasicProfile';
+import { ComprehensivePropertyDetails } from './ComprehensivePropertyDetails';
+import { PropertyOverviewWithAttomData } from './PropertyOverviewWithAttomData';
+import { AttomResponseDisplay } from './AttomResponseDisplay';
+import { ComprehensivePropertyDataFields } from './ComprehensivePropertyDataFields';
+import { useAttomData } from '../hooks/useAttomData';
+import { calculateMonthlyPayment, getDefaultLoanParameters, formatCurrency as formatCurrencyUtil } from '../utils/constants';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
+
+interface PropertyData {
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  price?: string;
+  downPayment?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  squareFootage?: string;
+  propertyType?: string;
+  yearBuilt?: string;
+  lotSize?: string;
+  closingDate?: string;
+  inspectionDate?: string;
+  inspectionTime?: string;
+  buyerName?: string;
+  buyerEmail?: string;
+  agentName?: string;
+  agentPhone?: string;
+  agentEmail?: string;
+  lenderName?: string;
+  lenderPhone?: string;
+  titleCompany?: string;
+  escrowCompany?: string;
+}
+
+interface ScreeningData {
+  propertyAddress?: string;
+  buyingStage?: string;
+  experienceLevel?: string;
+  timeframe?: string;
+  primaryConcern?: string;
+  nextAction?: string;
+  contractSigned?: boolean;
+  hasRealtor?: boolean;
+  hasLender?: boolean;
+  hasInspector?: boolean;
+}
+
+interface PropertySummaryProps {
+  userProfile?: any;
+  setupData?: any;
+  onNavigate?: (page: string) => void;
+  onStartOver?: () => void;
+  onEditSetup?: () => void;
+}
+
+interface AttomEndpoint {
+  id: string;
+  name: string;
+  path: string;
+  description: string;
+  icon: React.ReactNode;
+  sampleAddress?: string;
+}
+
+interface EndpointResult {
+  id: string;
+  name: string;
+  response: any;
+  isLoading: boolean;
+  error?: string;
+}
+
+export default function PropertySummary({ 
+  userProfile, 
+  setupData, 
+  onNavigate, 
+  onStartOver, 
+  onEditSetup 
+}: PropertySummaryProps) {
+  const [propertyData, setPropertyData] = useState<PropertyData>({});
+  const [screeningData, setScreeningData] = useState<ScreeningData>({});
+  const [isSetupComplete, setIsSetupComplete] = useState(false);
+  const [activeTab, setActiveTab] = useState('summary');
+
+  // ATTOM API Testing States
+  const [apiKey, setApiKey] = useState('');
+  const [endpointResults, setEndpointResults] = useState<Record<string, EndpointResult>>({});
+  const [showRawJson, setShowRawJson] = useState<Record<string, boolean>>({});
+  const [hasAuthError, setHasAuthError] = useState(false);
+  const [isTestingInProgress, setIsTestingInProgress] = useState(false);
+  const [testingProgress, setTestingProgress] = useState(0);
+
+  // Rate limiting
+  const lastApiCallRef = useRef<number>(0);
+  const apiCallCountRef = useRef<number>(0);
+  const rateLimitResetRef = useRef<number>(0);
+  const hasTestedAddressRef = useRef<string>('');
+
+  // ATTOM API endpoints configuration
+  const endpoints: AttomEndpoint[] = [
+    {
+      id: 'basicprofile',
+      name: 'Basic Profile',
+      path: '/propertyapi/v1.0.0/property/basicprofile',
+      description: 'Get basic property information including address, lot size, and building details',
+      icon: <Home className="w-4 h-4" />,
+      sampleAddress: '586 Franklin Ave, Brooklyn, NY'
+    },
+    {
+      id: 'detail',
+      name: 'Property Detail',
+      path: '/propertyapi/v1.0.0/property/detail',
+      description: 'Get detailed property information including rooms, features, and history',
+      icon: <Database className="w-4 h-4" />
+    },
+    {
+      id: 'saledetail',
+      name: 'Sale Detail',
+      path: '/propertyapi/v1.0.0/sale/detail',
+      description: 'Get detailed sale information and transaction history',
+      icon: <Receipt className="w-4 h-4" />
+    },
+    {
+      id: 'expandedprofile',
+      name: 'Expanded Profile',
+      path: '/propertyapi/v1.0.0/property/expandedprofile',
+      description: 'Get comprehensive property data including all available information',
+      icon: <FileText className="w-4 h-4" />
+    }
+  ];
+  
+  // Use the Attom data hook to fetch property information
+  const propertyAddress = screeningData.propertyAddress || 
+    (propertyData.address && propertyData.city ? 
+      `${propertyData.address}, ${propertyData.city}, ${propertyData.state} ${propertyData.zipCode}` : '');
+  
+  const { 
+    property: attomProperty, 
+    isLoading: isAttomLoading, 
+    error: attomError, 
+    searchByAddress: refetchAttom 
+  } = useAttomData();
+
+  // Rate limiting check
+  const checkRateLimit = useCallback(() => {
+    const now = Date.now();
+    
+    // Reset counter every minute
+    if (now - rateLimitResetRef.current > 60000) {
+      apiCallCountRef.current = 0;
+      rateLimitResetRef.current = now;
+    }
+    
+    // Check if we've exceeded rate limits (allow more for batch testing)
+    if (apiCallCountRef.current >= 8) {
+      throw new Error('Rate limit exceeded. Please wait before making more API calls.');
+    }
+    
+    // Check minimum time between calls (reduced for batch testing)
+    if (now - lastApiCallRef.current < 1000) {
+      throw new Error('Please wait 1 second between API calls.');
+    }
+    
+    return true;
+  }, []);
+
+  useEffect(() => {
+    const loadPropertyData = () => {
+      try {
+        // Load property data
+        const savedPropertyData = localStorage.getItem('handoff-property-data');
+        if (savedPropertyData) {
+          try {
+            setPropertyData(JSON.parse(savedPropertyData));
+          } catch (error) {
+            console.warn('Error parsing property data:', error);
+          }
+        }
+
+        // Load screening data
+        const savedScreeningData = localStorage.getItem('handoff-screening-data');
+        if (savedScreeningData) {
+          try {
+            setScreeningData(JSON.parse(savedScreeningData));
+          } catch (error) {
+            console.warn('Error parsing screening data:', error);
+          }
+        }
+
+        // Check if setup is complete
+        const initialSetupComplete = localStorage.getItem('handoff-initial-setup-complete') === 'true';
+        const questionnaireComplete = localStorage.getItem('handoff-questionnaire-complete') === 'true';
+        setIsSetupComplete(initialSetupComplete && questionnaireComplete);
+      } catch (error) {
+        console.warn('Error loading data:', error);
+      }
+    };
+
+    loadPropertyData();
+    
+    // Refresh data every 15 seconds (increased to reduce load)
+    const interval = setInterval(loadPropertyData, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load API key on component mount
+  useEffect(() => {
+    setApiKey('cca24467d5861c7e58a2bc7c9cc926af'); // Use provided key as default
+  }, []);
+
+  // Auto-search for Attom data when address is available (with rate limiting)
+  useEffect(() => {
+    if (propertyAddress && propertyAddress.trim() && !hasAuthError) {
+      try {
+        // Only refetch if we haven't done so recently
+        const now = Date.now();
+        if (now - lastApiCallRef.current > 60000) { // 1 minute cooldown for auto-fetch
+          refetchAttom(propertyAddress);
+          lastApiCallRef.current = now;
+        }
+      } catch (error) {
+        console.warn('Skipping auto-fetch due to rate limiting');
+      }
+    }
+  }, [propertyAddress, refetchAttom, hasAuthError]);
+
+  // Auto-test all endpoints when property address is available
+  useEffect(() => {
+    if (propertyAddress && 
+        propertyAddress.trim() && 
+        apiKey && 
+        !hasAuthError && 
+        !isTestingInProgress &&
+        hasTestedAddressRef.current !== propertyAddress) {
+      
+      // Mark this address as tested to prevent duplicate calls
+      hasTestedAddressRef.current = propertyAddress;
+      
+      // Start testing all endpoints
+      testAllEndpoints();
+    }
+  }, [propertyAddress, apiKey, hasAuthError]);
+
+  // Test all endpoints automatically
+  const testAllEndpoints = async () => {
+    if (!apiKey.trim() || !propertyAddress) {
+      return;
+    }
+
+    setIsTestingInProgress(true);
+    setTestingProgress(0);
+    setHasAuthError(false);
+
+    // Initialize endpoint results
+    const initialResults: Record<string, EndpointResult> = {};
+    endpoints.forEach(endpoint => {
+      initialResults[endpoint.id] = {
+        id: endpoint.id,
+        name: endpoint.name,
+        response: null,
+        isLoading: true,
+        error: undefined
+      };
+    });
+    setEndpointResults(initialResults);
+
+    // Parse property address for parameters
+    let address1 = '';
+    let address2 = '';
+
+    if (propertyData.address) {
+      address1 = propertyData.address;
+      address2 = `${propertyData.city || ''}, ${propertyData.state || ''}`.trim().replace(/^,\s*/, '');
+    } else if (screeningData.propertyAddress) {
+      const parts = screeningData.propertyAddress.split(', ');
+      if (parts.length >= 2) {
+        address1 = parts[0];
+        address2 = parts.slice(1).join(', ');
+      }
+    }
+
+    if (!address1 || !address2) {
+      console.warn('Unable to parse property address for API testing');
+      setIsTestingInProgress(false);
+      return;
+    }
+
+    // Test each endpoint with a delay to respect rate limits
+    for (let i = 0; i < endpoints.length; i++) {
+      const endpoint = endpoints[i];
+      
+      try {
+        // Update progress
+        setTestingProgress(((i + 1) / endpoints.length) * 100);
+
+        // Wait between calls to respect rate limits
+        if (i > 0) {
+          await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay between calls
+        }
+
+        const result = await testSingleEndpoint(endpoint, address1, address2);
+        
+        // Update the specific endpoint result
+        setEndpointResults(prev => ({
+          ...prev,
+          [endpoint.id]: {
+            ...prev[endpoint.id],
+            response: result,
+            isLoading: false,
+            error: result.success ? undefined : result.error
+          }
+        }));
+
+        // Check for auth errors
+        if (result.status === 401) {
+          setHasAuthError(true);
+          console.warn('Authentication error detected, stopping further tests');
+          break;
+        }
+
+      } catch (error) {
+        console.error(`Error testing ${endpoint.name}:`, error);
+        
+        setEndpointResults(prev => ({
+          ...prev,
+          [endpoint.id]: {
+            ...prev[endpoint.id],
+            response: null,
+            isLoading: false,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        }));
+      }
+    }
+
+    setIsTestingInProgress(false);
+    setTestingProgress(100);
+  };
+
+  // Test a single endpoint
+  const testSingleEndpoint = async (endpoint: AttomEndpoint, address1: string, address2: string) => {
+    try {
+      // Update rate limiting tracking
+      apiCallCountRef.current += 1;
+      lastApiCallRef.current = Date.now();
+
+      // Build URL with parameters
+      const baseUrl = `https://api.gateway.attomdata.com${endpoint.path}`;
+      const url = new URL(baseUrl);
+      
+      // Add required parameters
+      url.searchParams.append('address1', address1);
+      url.searchParams.append('address2', address2);
+
+      console.log(`Testing ${endpoint.name}:`, url.toString());
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'apikey': apiKey,
+          'User-Agent': 'Handoff-RealEstate/1.0'
+        }
+      });
+
+      const responseText = await response.text();
+      let responseData;
+      
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (parseError) {
+        responseData = { 
+          rawResponse: responseText,
+          parseError: 'Failed to parse as JSON'
+        };
+      }
+
+      return {
+        success: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        data: responseData,
+        url: url.toString(),
+        timestamp: new Date().toISOString(),
+        propertyAddress: propertyAddress,
+        parsedAddress: { address1, address2 },
+        error: response.ok ? undefined : `${response.status} ${response.statusText}`
+      };
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return {
+        success: false,
+        error: errorMessage,
+        timestamp: new Date().toISOString(),
+        propertyAddress: propertyAddress
+      };
+    }
+  };
+
+  // Manual refresh all endpoints
+  const refreshAllEndpoints = () => {
+    hasTestedAddressRef.current = ''; // Reset to allow retesting
+    testAllEndpoints();
+  };
+
+  // Copy to clipboard
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('Copied to clipboard');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+    });
+  };
+
+  // Toggle raw JSON view for specific endpoint
+  const toggleRawJson = (endpointId: string) => {
+    setShowRawJson(prev => ({
+      ...prev,
+      [endpointId]: !prev[endpointId]
+    }));
+  };
+
+  const getSetupProgress = () => {
+    const steps = [
+      { label: 'Screening Complete', completed: !!screeningData.propertyAddress },
+      { label: 'Property Details', completed: !!propertyData.address },
+      { label: 'Contact Information', completed: !!propertyData.buyerName },
+      { label: 'Professional Team', completed: !!propertyData.agentName },
+      { label: 'Transaction Details', completed: !!propertyData.closingDate }
+    ];
+    
+    const completedSteps = steps.filter(step => step.completed).length;
+    const progress = (completedSteps / steps.length) * 100;
+    
+    return { steps, progress, completedSteps };
+  };
+
+  const formatCurrency = (value: string | undefined) => {
+    if (!value) return 'Not specified';
+    const numValue = parseFloat(value.replace(/[^0-9.]/g, ''));
+    return isNaN(numValue) ? value : `$${numValue.toLocaleString()}`;
+  };
+
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'Not scheduled';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  const { steps, progress, completedSteps } = getSetupProgress();
+
+  const displayAddress = screeningData.propertyAddress || 
+    (propertyData.address ? `${propertyData.address}, ${propertyData.city}, ${propertyData.state} ${propertyData.zipCode}` : 'Not provided');
+
+  // Helper function to parse down payment
+  const parseDownPayment = (downPaymentStr: string, propertyPrice: number) => {
+    if (!downPaymentStr) return null;
+    
+    const value = parseFloat(downPaymentStr.replace(/[^0-9.]/g, ''));
+    if (isNaN(value) || value <= 0) return null;
+    
+    // Check if it's a percentage or dollar amount
+    const isPercentage = downPaymentStr.includes('%') || 
+      (value <= 100 && !downPaymentStr.includes('$') && !downPaymentStr.includes(','));
+    
+    if (isPercentage) {
+      return {
+        percentage: value,
+        amount: (propertyPrice * value) / 100
+      };
+    } else {
+      return {
+        percentage: (value / propertyPrice) * 100,
+        amount: value
+      };
+    }
+  };
+
+  // Calculate monthly payment if property price is available
+  const getCalculatedMonthlyPayment = () => {
+    if (!propertyData.price) return null;
+    
+    const priceValue = parseFloat(propertyData.price.replace(/[^0-9.]/g, ''));
+    if (isNaN(priceValue) || priceValue <= 0) return null;
+    
+    // Use custom down payment if available, otherwise use default
+    let downPaymentPercent = 20; // default
+    if (propertyData.downPayment) {
+      const parsedDownPayment = parseDownPayment(propertyData.downPayment, priceValue);
+      if (parsedDownPayment) {
+        downPaymentPercent = parsedDownPayment.percentage;
+      }
+    }
+    
+    const loanParams = getDefaultLoanParameters();
+    return calculateMonthlyPayment(priceValue, downPaymentPercent, loanParams.interestRate, loanParams.loanTermYears);
+  };
+
+  const calculatedMonthlyPayment = getCalculatedMonthlyPayment();
+  const loanParams = getDefaultLoanParameters();
+
+  // Get completed results count
+  const completedResults = Object.values(endpointResults).filter(result => !result.isLoading).length;
+  const totalEndpoints = endpoints.length;
+
+  // Helper function to combine all property data sources
+  const getComprehensivePropertyData = () => {
+    // Start with user input data
+    const baseData = {
+      // Address information from user input
+      address: {
+        oneLine: displayAddress,
+        line1: propertyData.address,
+        locality: propertyData.city,
+        countrySubd: propertyData.state,
+        postal1: propertyData.zipCode,
+        country: 'USA'
+      },
+      
+      // Building information from user input
+      building: {
+        summary: {
+          propType: propertyData.propertyType,
+          yearBuilt: propertyData.yearBuilt ? parseInt(propertyData.yearBuilt) : undefined
+        },
+        size: {
+          livingAreaSqFt: propertyData.squareFootage ? parseInt(propertyData.squareFootage) : undefined
+        },
+        rooms: {
+          bedsCount: propertyData.bedrooms ? parseInt(propertyData.bedrooms) : undefined,
+          bathsTotal: propertyData.bathrooms ? parseFloat(propertyData.bathrooms) : undefined
+        }
+      },
+
+      // Financial information from user input
+      financial: {
+        listPrice: propertyData.price ? parseFloat(propertyData.price.replace(/[^0-9.]/g, '')) : undefined
+      },
+
+      // Owner information from user input
+      owner: {
+        names: propertyData.buyerName ? [{
+          fullName: propertyData.buyerName
+        }] : undefined,
+        mailAddress: propertyData.buyerEmail ? {
+          oneLine: propertyData.buyerEmail
+        } : undefined
+      }
+    };
+
+    // Merge ATTOM data if available
+    if (attomProperty) {
+      // Basic profile data from useAttomData hook
+      if (attomProperty.identifier) {
+        baseData.identifier = {
+          attomId: attomProperty.identifier.attomId,
+          fips: attomProperty.identifier.fips,
+          apn: attomProperty.identifier.apn,
+          obPropId: attomProperty.identifier.obPropId
+        };
+      }
+
+      if (attomProperty.address) {
+        baseData.address = {
+          ...baseData.address,
+          ...attomProperty.address
+        };
+      }
+
+      if (attomProperty.lot) {
+        baseData.lot = attomProperty.lot;
+      }
+
+      if (attomProperty.building) {
+        baseData.building = {
+          ...baseData.building,
+          ...attomProperty.building
+        };
+      }
+
+      if (attomProperty.assessment) {
+        baseData.assessment = attomProperty.assessment;
+      }
+
+      if (attomProperty.utilities) {
+        baseData.utilities = attomProperty.utilities;
+      }
+
+      if (attomProperty.location) {
+        baseData.location = attomProperty.location;
+      }
+
+      if (attomProperty.owner) {
+        baseData.owner = {
+          ...baseData.owner,
+          ...attomProperty.owner
+        };
+      }
+
+      if (attomProperty.sale) {
+        baseData.sale = attomProperty.sale;
+      }
+
+      if (attomProperty.area) {
+        baseData.area = attomProperty.area;
+      }
+    }
+
+    // Merge additional data from endpoint results
+    Object.values(endpointResults).forEach(result => {
+      if (result.response?.success && result.response?.data) {
+        const responseData = result.response.data;
+        
+        // Handle different endpoint response structures
+        if (responseData.property && responseData.property.length > 0) {
+          const propertyData = responseData.property[0];
+          
+          // Merge identifier data
+          if (propertyData.identifier && !baseData.identifier) {
+            baseData.identifier = propertyData.identifier;
+          }
+          
+          // Merge address data
+          if (propertyData.address) {
+            baseData.address = {
+              ...baseData.address,
+              ...propertyData.address
+            };
+          }
+          
+          // Merge building data
+          if (propertyData.building) {
+            baseData.building = {
+              ...baseData.building,
+              size: { ...baseData.building?.size, ...propertyData.building.size },
+              construction: propertyData.building.construction,
+              rooms: { ...baseData.building?.rooms, ...propertyData.building.rooms },
+              interior: propertyData.building.interior,
+              summary: { ...baseData.building?.summary, ...propertyData.building.summary }
+            };
+          }
+          
+          // Merge lot data
+          if (propertyData.lot) {
+            baseData.lot = { ...baseData.lot, ...propertyData.lot };
+          }
+          
+          // Merge assessment data
+          if (propertyData.assessment) {
+            baseData.assessment = { ...baseData.assessment, ...propertyData.assessment };
+          }
+          
+          // Merge utilities data
+          if (propertyData.utilities) {
+            baseData.utilities = { ...baseData.utilities, ...propertyData.utilities };
+          }
+          
+          // Merge location data
+          if (propertyData.location) {
+            baseData.location = { ...baseData.location, ...propertyData.location };
+          }
+          
+          // Merge owner data
+          if (propertyData.owner) {
+            baseData.owner = {
+              ...baseData.owner,
+              ...propertyData.owner,
+              names: propertyData.owner.names || baseData.owner?.names
+            };
+          }
+          
+          // Merge sale data
+          if (propertyData.sale) {
+            baseData.sale = { ...baseData.sale, ...propertyData.sale };
+          }
+          
+          // Merge area data
+          if (propertyData.area) {
+            baseData.area = { ...baseData.area, ...propertyData.area };
+          }
+        }
+      }
+    });
+
+    // Add calculated monthly payment if available
+    if (calculatedMonthlyPayment) {
+      baseData.financial = {
+        ...baseData.financial,
+        estimatedValue: calculatedMonthlyPayment.loanAmount,
+        // Add other calculated financial data
+        marketTrends: {
+          ...(baseData.financial?.marketTrends || {}),
+          // You could add calculated market data here
+        }
+      };
+    }
+
+    // Add professional team information
+    if (propertyData.agentName || propertyData.lenderName) {
+      baseData.area = {
+        ...baseData.area,
+        // Could add professional team data to a custom section
+      };
+    }
+
+    return baseData;
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Property Summary Tabs */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Home className="w-5 h-5 text-primary" />
+            Property Summary & Data Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="summary" className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                Summary
+              </TabsTrigger>
+              <TabsTrigger value="property-data" className="flex items-center gap-2">
+                <Database className="w-4 h-4" />
+                Property Data & API Results
+                {totalEndpoints > 0 && (
+                  <Badge variant="outline" className="ml-1">
+                    {completedResults}/{totalEndpoints}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="analysis" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Analysis
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Summary Tab */}
+            <TabsContent value="summary" className="space-y-6 mt-6">
+              {/* Setup Progress */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-primary" />
+                    Property Setup Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Overall Progress</span>
+                      <span className="text-sm text-muted-foreground">
+                        {completedSteps} of {steps.length} steps completed
+                      </span>
+                    </div>
+                    <Progress value={progress} className="w-full" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 mt-4">
+                      {steps.map((step, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                          {step.completed ? (
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Clock className="w-4 h-4 text-muted-foreground" />
+                          )}
+                          <span className="text-xs">{step.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* API Testing Progress Overview */}
+              {(isTestingInProgress || Object.keys(endpointResults).length > 0) && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TestTube className="w-5 h-5 text-primary" />
+                      ATTOM API Data Collection
+                      {isTestingInProgress && <Loader2 className="w-4 h-4 animate-spin ml-2" />}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {isTestingInProgress && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span>Testing endpoints...</span>
+                            <span>{Math.round(testingProgress)}%</span>
+                          </div>
+                          <Progress value={testingProgress} className="w-full" />
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {endpoints.map(endpoint => {
+                          const result = endpointResults[endpoint.id];
+                          return (
+                            <div key={endpoint.id} className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                              {result?.isLoading ? (
+                                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                              ) : result?.response?.success ? (
+                                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                              ) : result?.error || result?.response ? (
+                                <AlertCircle className="w-4 h-4 text-red-500" />
+                              ) : (
+                                <Clock className="w-4 h-4 text-muted-foreground" />
+                              )}
+                              <span className="text-xs">{endpoint.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Comprehensive Property Information with ATTOM Data */}
+              <ComprehensivePropertyDataFields 
+                data={getComprehensivePropertyData()}
+                isEditable={false}
+                className="mb-6"
+              />
+
+              {/* Transaction Timeline */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-primary" />
+                    Transaction Timeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {propertyData.inspectionDate && (
+                      <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-blue-900">Property Inspection</h4>
+                          <p className="text-sm text-blue-700">
+                            {formatDate(propertyData.inspectionDate)}
+                            {propertyData.inspectionTime && ` at ${propertyData.inspectionTime}`}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {propertyData.closingDate && (
+                      <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-green-900">Closing Date</h4>
+                          <p className="text-sm text-green-700">
+                            {formatDate(propertyData.closingDate)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {!propertyData.inspectionDate && !propertyData.closingDate && (
+                      <Alert>
+                        <Clock className="h-4 w-4" />
+                        <AlertDescription>
+                          No timeline dates have been set. Complete the property details form to add inspection and closing dates.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Contact Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-primary" />
+                    Contact Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Buyer Information */}
+                    <div>
+                      <h4 className="font-medium mb-3">Buyer Information</h4>
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Name:</span>
+                          <p className="font-medium">{propertyData.buyerName || 'Not provided'}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Email:</span>
+                          <p className="font-medium">{propertyData.buyerEmail || 'Not provided'}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Professional Team */}
+                    <div>
+                      <h4 className="font-medium mb-3">Professional Team</h4>
+                      <div className="space-y-3 text-sm">
+                        {propertyData.agentName && (
+                          <div>
+                            <span className="text-muted-foreground">Real Estate Agent:</span>
+                            <p className="font-medium">{propertyData.agentName}</p>
+                            {propertyData.agentPhone && <p className="text-muted-foreground">{propertyData.agentPhone}</p>}
+                          </div>
+                        )}
+                        
+                        {propertyData.lenderName && (
+                          <div>
+                            <span className="text-muted-foreground">Lender:</span>
+                            <p className="font-medium">{propertyData.lenderName}</p>
+                            {propertyData.lenderPhone && <p className="text-muted-foreground">{propertyData.lenderPhone}</p>}
+                          </div>
+                        )}
+
+                        {!propertyData.agentName && !propertyData.lenderName && (
+                          <p className="text-muted-foreground italic">No professional team members added yet</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Property Data & API Results Tab */}
+            <TabsContent value="property-data" className="space-y-6 mt-6">
+              {/* Status Alert */}
+              {propertyAddress ? (
+                <Alert>
+                  <Zap className="h-4 w-4 text-green-600" />
+                  <AlertDescription>
+                    <div className="flex items-center justify-between">
+                      <span><strong>Auto-Testing Property:</strong> {displayAddress} - All ATTOM API endpoints are automatically tested.</span>
+                      <Button onClick={refreshAllEndpoints} variant="outline" size="sm" disabled={isTestingInProgress}>
+                        {isTestingInProgress ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                        )}
+                        Refresh All
+                      </Button>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <Alert className="border-amber-200 bg-amber-50">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription>
+                    <strong>No Property Address Found:</strong> Please complete your property setup to enable automatic API testing.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* API Key Error Alert */}
+              {hasAuthError && (
+                <Alert className="border-red-200 bg-red-50">
+                  <Key className="h-4 w-4 text-red-600" />
+                  <AlertDescription>
+                    <strong>API Authentication Issue:</strong> The ATTOM API key appears to be invalid or expired. Please check your API configuration.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* All API Results */}
+              {Object.keys(endpointResults).length > 0 && (
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TestTube className="w-5 h-5 text-primary" />
+                        All ATTOM API Results
+                        <Badge variant="outline" className="ml-auto">
+                          {completedResults}/{totalEndpoints} Complete
+                        </Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {isTestingInProgress && (
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between text-sm mb-2">
+                            <span>Loading all property data...</span>
+                            <span>{Math.round(testingProgress)}%</span>
+                          </div>
+                          <Progress value={testingProgress} className="w-full" />
+                        </div>
+                      )}
+                      
+                      <div className="space-y-6">
+                        {endpoints.map(endpoint => {
+                          const result = endpointResults[endpoint.id];
+                          if (!result) return null;
+
+                          return (
+                            <div key={endpoint.id} className="border rounded-lg p-4">
+                              <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                  {endpoint.icon}
+                                  <h4 className="font-medium">{endpoint.name}</h4>
+                                  {result.isLoading ? (
+                                    <Badge variant="outline">
+                                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                                      Loading...
+                                    </Badge>
+                                  ) : result.response?.success ? (
+                                    <Badge variant="default">Success</Badge>
+                                  ) : (
+                                    <Badge variant="destructive">Error</Badge>
+                                  )}
+                                </div>
+                                {result.response && (
+                                  <div className="flex gap-2">
+                                    <Button
+                                      onClick={() => toggleRawJson(endpoint.id)}
+                                      variant="outline"
+                                      size="sm"
+                                    >
+                                      {showRawJson[endpoint.id] ? 'Show Formatted' : 'Show Raw JSON'}
+                                    </Button>
+                                    <Button
+                                      onClick={() => copyToClipboard(JSON.stringify(result.response, null, 2))}
+                                      variant="outline"
+                                      size="sm"
+                                    >
+                                      <Copy className="w-4 h-4 mr-1" />
+                                      Copy
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+
+                              <p className="text-sm text-muted-foreground mb-4">{endpoint.description}</p>
+
+                              {result.isLoading && (
+                                <div className="flex items-center justify-center py-8">
+                                  <Loader2 className="w-6 h-6 animate-spin mr-2" />
+                                  <span>Testing {endpoint.name}...</span>
+                                </div>
+                              )}
+
+                              {result.error && !result.response && (
+                                <Alert className="border-red-200 bg-red-50">
+                                  <AlertCircle className="h-4 w-4 text-red-600" />
+                                  <AlertDescription>
+                                    <strong>Error:</strong> {result.error}
+                                  </AlertDescription>
+                                </Alert>
+                              )}
+
+                              {result.response && (
+                                <div>
+                                  {showRawJson[endpoint.id] ? (
+                                    <div className="space-y-4">
+                                      <div>
+                                        <Label className="text-sm font-medium">Request URL</Label>
+                                        <Textarea
+                                          value={result.response.url || 'N/A'}
+                                          readOnly
+                                          className="text-xs font-mono mt-1"
+                                          rows={2}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label className="text-sm font-medium">Response Data</Label>
+                                        <Textarea
+                                          value={JSON.stringify(result.response.data || result.response.error || {}, null, 2)}
+                                          readOnly
+                                          className="text-xs font-mono mt-1"
+                                          rows={10}
+                                        />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <AttomResponseDisplay 
+                                      response={result.response} 
+                                      endpointName={endpoint.name}
+                                    />
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Existing Property Data Components */}
+              {/* ATTOM API Property Overview - Automatically loads data */}
+              <PropertyOverviewWithAttomData 
+                propertyAddress={propertyAddress}
+                onPropertyFound={(data) => {
+                  console.log('ATTOM property data received in overview:', data);
+                }}
+              />
+
+              {/* Comprehensive Property Details - Multiple Attom APIs */}
+              <ComprehensivePropertyDetails 
+                defaultAttomId="184713191"
+                defaultAddress={propertyAddress}
+                className="mb-6"
+                onPropertyFound={(data) => {
+                  console.log('Comprehensive property data received:', data);
+                }}
+              />
+
+              {/* Property Basic Profile - Single API Search */}
+              <PropertyBasicProfile 
+                defaultAttomId="184713191"
+                className="mb-6"
+              />
+
+              {/* Legacy Comprehensive Attom Data Display */}
+              {propertyAddress && attomProperty && (
+                <ComprehensiveAttomDisplay 
+                  property={attomProperty}
+                  isLoading={isAttomLoading}
+                  onRefresh={() => refetchAttom(propertyAddress)}
+                  onNavigate={onNavigate}
+                />
+              )}
+
+              {/* Attom Data Loading/Error States */}
+              {propertyAddress && !attomProperty && !isAttomLoading && (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    No ATTOM property data available for this address. The property may not be in the ATTOM database.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </TabsContent>
+
+            {/* Analysis Tab */}
+            <TabsContent value="analysis" className="space-y-6 mt-6">
+              <Alert>
+                <BarChart3 className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="flex items-center justify-between">
+                    <span>Generate comprehensive property analysis reports using ATTOM data.</span>
+                    <div className="flex gap-2">
+                      {onNavigate && attomProperty && (
+                        <Button onClick={() => onNavigate('property-report')} size="sm">
+                          <BarChart3 className="w-4 h-4 mr-2" />
+                          Generate Report
+                        </Button>
+                      )}
+                      {onNavigate && (
+                        <Button onClick={() => onNavigate('comprehensive-analysis')} variant="outline" size="sm">
+                          <FileText className="w-4 h-4 mr-2" />
+                          Comprehensive Analysis
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </AlertDescription>
+              </Alert>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-primary" />
+                    Quick Analysis Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <Button variant="outline" className="flex items-center gap-2 h-auto p-4 justify-start">
+                      <Search className="w-5 h-5 text-primary" />
+                      <div className="text-left">
+                        <div className="font-medium">Market Analysis</div>
+                        <div className="text-xs text-muted-foreground">Compare local market trends</div>
+                      </div>
+                    </Button>
+                    
+                    <Button variant="outline" className="flex items-center gap-2 h-auto p-4 justify-start">
+                      <TrendingUp className="w-5 h-5 text-primary" />
+                      <div className="text-left">
+                        <div className="font-medium">Value Assessment</div>
+                        <div className="text-xs text-muted-foreground">Get property valuation insights</div>
+                      </div>
+                    </Button>
+                    
+                    <Button variant="outline" className="flex items-center gap-2 h-auto p-4 justify-start">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <div className="text-left">
+                        <div className="font-medium">Property Report</div>
+                        <div className="text-xs text-muted-foreground">Detailed property information</div>
+                      </div>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Setup Status */}
+      {!isSetupComplete && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="flex items-center justify-between">
+              <span>Complete your property setup to access all features and get the most accurate property data.</span>
+              <Button size="sm" variant="outline" onClick={onEditSetup}>
+                <FileText className="w-4 h-4 mr-2" />
+                Continue Setup
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Action Buttons */}
+      {(onEditSetup || onStartOver) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="w-5 h-5 text-primary" />
+              Property Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              {onEditSetup && (
+                <Button onClick={onEditSetup} variant="outline">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Edit Property Details
+                </Button>
+              )}
+              {onStartOver && (
+                <Button onClick={onStartOver} variant="destructive">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Start Over
+                </Button>
+              )}
+              {onNavigate && (
+                <Button onClick={() => onNavigate('overview')} variant="default">
+                  <Home className="w-4 h-4 mr-2" />
+                  Go to Dashboard
+                </Button>
+              )}
+              <Button 
+                onClick={() => setActiveTab('property-data')} 
+                variant="secondary"
+              >
+                <Database className="w-4 h-4 mr-2" />
+                View Property Data & API Results
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
