@@ -43,13 +43,15 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
+    "clsx": "^2.1.1",
     "lucide-react": "latest",
     "motion": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.55.0",
     "recharts": "latest",
-    "sonner": "^2.0.3"
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
