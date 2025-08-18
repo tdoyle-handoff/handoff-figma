@@ -1,1 +1,0 @@
-import{j as a,a0 as t,a1 as o,a2 as s}from"./index-06367dd5.js";function i({...l}){return a.jsx(t,{"data-slot":"collapsible",...l})}function n({...l}){return a.jsx(o,{"data-slot":"collapsible-trigger",...l})}function r({...l}){return a.jsx(s,{"data-slot":"collapsible-content",...l})}export{i as C,n as a,r as b};
