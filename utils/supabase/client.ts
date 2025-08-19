@@ -86,22 +86,27 @@ export interface Database {
   };
 }
 
-// Prefer environment variables when available (for exact endpoint control)
-// Fall back to projectId-based URL from utils/supabase/info.tsx
+// Require environment variables only (prevent accidental wrong host)
 const SUPABASE_URL = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_URL)
   ? (import.meta as any).env.VITE_SUPABASE_URL as string
-  : `https://${projectId}.supabase.co`;
+  : '';
 
 const SUPABASE_ANON_KEY = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY)
   ? (import.meta as any).env.VITE_SUPABASE_ANON_KEY as string
-  : publicAnonKey;
+  : '';
 
 // Validate required configuration
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('Missing required Supabase configuration:');
   console.error('- SUPABASE_URL:', SUPABASE_URL ? '✓' : '❌');
   console.error('- SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? '✓' : '❌');
-  throw new Error('Supabase configuration incomplete. Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set or info.tsx is valid.');
+  throw new Error('Supabase configuration incomplete. Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.');
+}
+
+// Debug: print the base URL once at startup
+if (typeof window !== 'undefined') {
+  // Avoid leaking keys; only log the URL
+  console.info('[SUPABASE] Using base URL:', SUPABASE_URL);
 }
 
 // Create and configure the Supabase client with optimized settings
