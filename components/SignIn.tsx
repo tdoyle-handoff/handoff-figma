@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Fragment } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -211,15 +212,15 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
 
           <div className="space-y-2">
             {isRegisterMode ? (
-              <>
+              <Fragment>
                 <h1 className="text-3xl font-bold tracking-tight">Create your HandOff account</h1>
                 <p className="text-sm text-muted-foreground">Set your details to get started</p>
-              </>
+              </Fragment>
             ) : (
-              <>
+              <Fragment>
                 <h1 className="text-3xl font-bold tracking-tight">Welcome Back to HandOff!</h1>
                 <p className="text-sm text-muted-foreground">Sign in to your account</p>
-              </>
+              </Fragment>
             )}
           </div>
 
@@ -325,7 +326,6 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
             </Button>
           </form>
 
-          </>
           )}
 
           {!isRegisterMode && (
