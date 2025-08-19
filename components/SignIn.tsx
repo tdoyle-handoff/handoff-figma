@@ -56,6 +56,37 @@ export function SignIn({ className }: { className?: string }) {
     }
   }
 
+  const handleRegister = async () => {
+    if (!email || !password) {
+      window.alert('Please enter your email and a password to register.')
+      return
+    }
+    try {
+      setIsSubmitting(true)
+      await auth.handleAuthComplete({ buyerEmail: email, buyerName: email.split('@')[0], password }, true)
+    } catch (err) {
+      // handled in hook state
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      window.alert('Enter your email first, then click Forgot Password to receive a reset link.')
+      return
+    }
+    try {
+      setIsSubmitting(true)
+      await auth.authHelpers.resetPassword(email)
+      window.alert('If this email exists, a reset link has been sent. Please check your inbox.')
+    } catch (err) {
+      window.alert('Could not send reset email. Please try again in a moment.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   React.useEffect(() => {
     try {
       const v = localStorage.getItem('lastEmail')
@@ -94,8 +125,7 @@ export function SignIn({ className }: { className?: string }) {
             <span className="text-lg font-semibold">HandOff</span>
           </div>
           <div className="mt-auto text-white max-w-md">
-            <h2 className="text-4xl font-semibold leading-tight">Find your sweet home</h2>
-            <p className="mt-4 text-white/90">Schedule visit in just a few clicks — visits in just a few clicks.</p>
+            <h2 className="text-4xl font-semibold leading-tight">Find your new home</h2>
             <div className="mt-6 flex gap-2">
               <span className="h-1.5 w-12 rounded-full bg-white" />
               <span className="h-1.5 w-3 rounded-full bg-white/60" />
@@ -151,7 +181,9 @@ export function SignIn({ className }: { className?: string }) {
                   <Checkbox id="remember" checked={remember} onCheckedChange={(v) => setRemember(Boolean(v))} />
                   <span>Remember Me</span>
                 </label>
-                <a href="#forgot" className="hover:underline">Forgot Password?</a>
+                <button type="button" onClick={handleForgotPassword} className="hover:underline disabled:opacity-60" disabled={isSubmitting}>
+                  Forgot Password?
+                </button>
               </div>
             </div>
 
@@ -179,8 +211,8 @@ export function SignIn({ className }: { className?: string }) {
             </div>
           </div>
 
-          <p className="mt-8 text-xs text-muted-foreground text-center">
-            Don’t have any account? <a className="text-primary hover:underline" href="?onboarding">Register</a>
+        <p className="mt-8 text-xs text-muted-foreground text-center">
+            Don’t have any account? <button type="button" onClick={handleRegister} className="text-primary hover:underline disabled:opacity-60" disabled={isSubmitting}>Register</button>
           </p>
 
           {auth.authError && (
