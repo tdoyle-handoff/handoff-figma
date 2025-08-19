@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { FAVICON_SVG, VIEWPORT_META_CONTENT, APP_TITLES } from '../utils/constants';
 import { isPropertySetupComplete, canAccessPage, getSavedPageFromStorage } from '../utils/setupHelpers';
-import { persistUserDisplayInfo } from '../utils/userHelpers';
+import { persistUserDisplayInfo, clearPersistedUserDisplayInfo } from '../utils/userHelpers';
 import { logUrlModes } from '../utils/urlModes';
 import type { UrlModes } from '../utils/urlModes';
 
@@ -183,7 +183,6 @@ export function useAppEffects({
       navigation.clearPersistedNavigation();
       // Clear persisted user display info on sign out
       try {
-        const { clearPersistedUserDisplayInfo } = require('../utils/userHelpers');
         clearPersistedUserDisplayInfo();
       } catch (error) {
         console.warn('Error clearing persisted user display info:', error);
