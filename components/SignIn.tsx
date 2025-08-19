@@ -91,7 +91,7 @@ export function SignIn({ className }: { className?: string }) {
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary-foreground">
               <BrandMark className="h-5 w-5 text-primary" />
             </span>
-            <span className="text-lg font-semibold">Realnest</span>
+            <span className="text-lg font-semibold">HandOff</span>
           </div>
           <div className="mt-auto text-white max-w-md">
             <h2 className="text-4xl font-semibold leading-tight">Find your sweet home</h2>
@@ -113,7 +113,7 @@ export function SignIn({ className }: { className?: string }) {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome Back to Realnest!</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Welcome Back to HandOff!</h1>
             <p className="text-sm text-muted-foreground">Sign in to your account</p>
           </div>
 
@@ -164,9 +164,6 @@ export function SignIn({ className }: { className?: string }) {
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
                 <div className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs text-muted-foreground">
-                <span className="bg-background px-2">Instant Login</span>
               </div>
             </div>
 
