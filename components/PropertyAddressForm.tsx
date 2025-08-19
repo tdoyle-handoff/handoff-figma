@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -273,19 +274,19 @@ export function PropertyAddressForm({
           {selectedAddress && (
             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
               {validation.isValid ? (
-                <>
+                <Fragment>
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-green-800 dark:text-green-200">
                     Address is valid and complete
                   </span>
-                </>
+                </Fragment>
               ) : (
-                <>
+                <Fragment>
                   <AlertCircle className="h-4 w-4 text-yellow-600" />
                   <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                     Address needs additional information
                   </span>
-                </>
+                </Fragment>
               )}
               
               <div className="ml-auto">
@@ -316,15 +317,15 @@ export function PropertyAddressForm({
               className="flex-1 sm:flex-none sm:min-w-[120px]"
             >
               {isLoading ? (
-                <>
+                <Fragment>
                   <span className="animate-spin mr-2">⏳</span>
                   Saving...
-                </>
+                </Fragment>
               ) : (
-                <>
+                <Fragment>
                   <MapPin className="h-4 w-4 mr-2" />
                   Continue
-                </>
+                </Fragment>
               )}
             </Button>
           </div>

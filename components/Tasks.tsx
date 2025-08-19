@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { CheckCircle, Circle, Clock, AlertTriangle, Calendar, User, ArrowRight, Filter, ChevronDown, ChevronRight, ExternalLink, Scale, Calculator, FileCheck, Shield, CheckSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -480,7 +481,7 @@ export default function Tasks({ onNavigate }: TasksProps) {
       {/* Task Display */}
       <div className="space-y-4">
         {viewMode === 'phases' && (
-          <>
+          <Fragment>
             {filteredPhases.length > 0 ? (
               filteredPhases.map((phase) => (
                 <PhaseCard key={phase.id} phase={phase} onNavigate={onNavigate} />
@@ -499,11 +500,11 @@ export default function Tasks({ onNavigate }: TasksProps) {
                 </CardContent>
               </Card>
             )}
-          </>
+          </Fragment>
         )}
 
         {viewMode === 'categories' && (
-          <>
+          <Fragment>
             {['financing', 'legal', 'inspections', 'insurance', 'general'].map(category => {
               const categoryTasks = taskPhases.flatMap(phase => phase.tasks).filter(task => {
                 const matchesCategory = task.category.toLowerCase() === category;
@@ -530,7 +531,7 @@ export default function Tasks({ onNavigate }: TasksProps) {
                 </Card>
               );
             })}
-          </>
+          </Fragment>
         )}
 
         {viewMode === 'list' && (

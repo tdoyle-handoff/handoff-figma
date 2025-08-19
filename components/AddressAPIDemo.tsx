@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -53,15 +54,15 @@ export function AddressAPIDemo() {
         <div className="flex items-center justify-center gap-4">
           <Badge variant={apiKeyValid ? 'default' : 'secondary'} className="flex items-center gap-2">
             {apiKeyValid ? (
-              <>
+              <Fragment>
                 <CheckCircle className="h-3 w-3" />
                 Google Places API Connected
-              </>
+              </Fragment>
             ) : (
-              <>
+              <Fragment>
                 <AlertCircle className="h-3 w-3" />
                 {fallbackMode ? 'Fallback Mode Active' : 'Checking API...'}
-              </>
+              </Fragment>
             )}
           </Badge>
           

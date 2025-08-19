@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -173,7 +174,7 @@ export function MLSPropertyCard({
 
           {/* Photo navigation */}
           {photos.length > 1 && (
-            <>
+            <Fragment>
               <Button
                 variant="ghost"
                 size="sm"
@@ -196,7 +197,7 @@ export function MLSPropertyCard({
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
-            </>
+            </Fragment>
           )}
 
           {/* Photo indicator */}

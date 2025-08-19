@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -116,7 +117,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
           {/* Header controls */}
           <div className="flex items-center gap-2">
             {!isMobile && (
-              <>
+              <Fragment>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -135,7 +136,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
                 >
                   <X className="w-4 h-4" />
                 </Button>
-              </>
+              </Fragment>
             )}
           </div>
         </div>
@@ -143,7 +144,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
 
       {/* Messages - only show if not minimized */}
       {!isMinimized && (
-        <>
+        <Fragment>
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
               {ai.messages.map((message) => (
@@ -209,7 +210,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
               </div>
             )}
           </div>
-        </>
+        </Fragment>
       )}
 
       {/* Minimized state */}
@@ -321,7 +322,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
   // Don't render anything if chat is closed
   if (!ai.isChatOpen) {
     return (
-      <>
+      <Fragment>
         {/* Show floating action button when closed */}
         <Button
           onClick={() => ai.setChatOpen(true)}
@@ -369,13 +370,13 @@ export function AIGuide({ page, context }: AIGuideProps) {
             ))}
           </div>
         )}
-      </>
+      </Fragment>
     );
   }
 
   if (isMobile) {
     return (
-      <>
+      <Fragment>
         {/* Mobile Floating Action Button */}
         <div className="fixed bottom-20 right-4 z-50">
           <Sheet open={ai.isChatOpen} onOpenChange={ai.setChatOpen}>
@@ -424,12 +425,12 @@ export function AIGuide({ page, context }: AIGuideProps) {
             ))}
           </div>
         )}
-      </>
+      </Fragment>
     );
   }
 
   return (
-    <>
+    <Fragment>
       {/* Desktop Sidebar */}
       <div className={`fixed right-6 top-20 bottom-6 z-40 transition-all duration-300 ${
         isMinimized ? 'w-80' : 'w-80'
@@ -501,7 +502,7 @@ export function AIGuide({ page, context }: AIGuideProps) {
           </CardContent>
         </Card>
       </div>
-    </>
+    </Fragment>
   );
 }
 

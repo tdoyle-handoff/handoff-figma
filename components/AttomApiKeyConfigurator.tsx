@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -211,7 +212,7 @@ export function AttomApiKeyConfigurator() {
                   </div>
                   
                   {currentKeyInfo.hasKey && (
-                    <>
+                    <Fragment>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">Length:</span>
                         <span className="text-sm">{currentKeyInfo.keyLength} characters</span>
@@ -230,7 +231,7 @@ export function AttomApiKeyConfigurator() {
                           {currentKeyInfo.estimatedTier || 'Unknown'}
                         </Badge>
                       </div>
-                    </>
+                    </Fragment>
                   )}
                 </div>
               </div>
@@ -318,15 +319,15 @@ export function AttomApiKeyConfigurator() {
                 disabled={testingNewKey || !newApiKey.trim()}
               >
                 {testingNewKey ? (
-                  <>
+                  <Fragment>
                     <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                     Testing...
-                  </>
+                  </Fragment>
                 ) : (
-                  <>
+                  <Fragment>
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Test Key
-                  </>
+                  </Fragment>
                 )}
               </Button>
             </div>

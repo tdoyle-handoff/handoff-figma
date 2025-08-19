@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -44,7 +45,7 @@ export function TestResultsList({ testResults }: TestResultsListProps) {
   if (testResults.length === 0) return null;
 
   return (
-    <>
+    <Fragment>
       <div className="space-y-2">
         <div className="flex gap-2">
           <Badge variant="outline" className="text-green-700 border-green-300">
@@ -87,6 +88,6 @@ export function TestResultsList({ testResults }: TestResultsListProps) {
           ))}
         </CardContent>
       </Card>
-    </>
+    </Fragment>
   );
 }

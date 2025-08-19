@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { MapPin, Calendar, DollarSign, Edit3, Home, TrendingUp, Building, Zap, Star, School, Car, AlertCircle, History, FileText, GraduationCap, Shield, Users, Wrench, Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -764,7 +765,7 @@ export function MobilePropertyDetails({ userProfile, setupData, onNavigate, onSt
       {activeTab === 'financials' && (
         <div className="space-y-4">
           {attomProperty ? (
-            <>
+            <Fragment>
               {/* Valuation */}
               {attomProperty.valuation.estimated_value && (
                 <Card>
@@ -834,7 +835,7 @@ export function MobilePropertyDetails({ userProfile, setupData, onNavigate, onSt
                   )}
                 </CardContent>
               </Card>
-            </>
+            </Fragment>
           ) : (
             <Card>
               <CardContent className="p-4 text-center">

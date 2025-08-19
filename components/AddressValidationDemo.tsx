@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -210,15 +211,15 @@ export function AddressValidationDemo() {
                     size="sm"
                   >
                     {isValidating ? (
-                      <>
+                      <Fragment>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Testing...
-                      </>
+                      </Fragment>
                     ) : (
-                      <>
+                      <Fragment>
                         <TestTube className="w-4 h-4 mr-2" />
                         Test with ATTOM
-                      </>
+                      </Fragment>
                     )}
                   </Button>
                 </div>

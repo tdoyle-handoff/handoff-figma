@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, MapPin, Check, AlertCircle, Loader2, Navigation } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
@@ -240,7 +241,7 @@ export function AddressAutocompleteInput({
             )}
             
             {!isLoading && validationStatus && (
-              <>
+              <Fragment>
                 {validationStatus.type === 'success' && (
                   <Check className="h-4 w-4 text-green-500" />
                 )}
@@ -250,7 +251,7 @@ export function AddressAutocompleteInput({
                 {validationStatus.type === 'warning' && (
                   <AlertCircle className="h-4 w-4 text-yellow-500" />
                 )}
-              </>
+              </Fragment>
             )}
           </div>
         </div>

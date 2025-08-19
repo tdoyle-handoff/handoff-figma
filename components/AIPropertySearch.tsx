@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -313,15 +314,15 @@ export function AIPropertySearch() {
                   className="min-w-32"
                 >
                   {isSearching ? (
-                    <>
+                    <Fragment>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                       Searching...
-                    </>
+                    </Fragment>
                   ) : (
-                    <>
+                    <Fragment>
                       <Search className="w-4 h-4 mr-2" />
                       Search
-                    </>
+                    </Fragment>
                   )}
                 </Button>
               </div>

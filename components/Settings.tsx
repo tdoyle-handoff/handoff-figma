@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { User, Bell, Shield, CreditCard, Home, Users, Globe, HelpCircle, LogOut, Eye, EyeOff, Camera, Mail, Phone, MapPin, Calendar, Save, X, Plus, Trash2, Edit3, Clock, Settings as SettingsIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -235,7 +236,7 @@ export default function Settings({ onSignOut, setupData, onNavigate }: SettingsP
             <span className={isMobile ? 'hidden' : 'inline'}>Notifications</span>
           </TabsTrigger>
           {!isMobile && (
-            <>
+            <Fragment>
               <TabsTrigger value="privacy" className="text-xs">
                 <Shield className="w-4 h-4 mr-1" />
                 <span>Privacy</span>
@@ -248,7 +249,7 @@ export default function Settings({ onSignOut, setupData, onNavigate }: SettingsP
                 <HelpCircle className="w-4 h-4 mr-1" />
                 <span>Support</span>
               </TabsTrigger>
-            </>
+            </Fragment>
           )}
         </TabsList>
 
@@ -266,15 +267,15 @@ export default function Settings({ onSignOut, setupData, onNavigate }: SettingsP
                 onClick={() => setIsEditing(!isEditing)}
               >
                 {isEditing ? (
-                  <>
+                  <Fragment>
                     <Save className="w-4 h-4 mr-2" />
                     Save
-                  </>
+                  </Fragment>
                 ) : (
-                  <>
+                  <Fragment>
                     <Edit3 className="w-4 h-4 mr-2" />
                     Edit
-                  </>
+                  </Fragment>
                 )}
               </Button>
             </CardHeader>
