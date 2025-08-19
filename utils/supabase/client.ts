@@ -568,6 +568,27 @@ export const authHelpers = {
     }
   },
 
+  // Resend confirmation email
+  async resendConfirmation(email: string) {
+    console.log('🔐 Attempting to resend confirmation for:', email);
+    try {
+      // @ts-ignore - supabase-js v2 supports resend with { type, email }
+      const { data, error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim().toLowerCase(),
+      });
+      if (error) {
+        console.error('Resend confirmation error:', error);
+        throw error;
+      }
+      console.log('✅ Confirmation email resent');
+      return data;
+    } catch (error) {
+      console.error('Resend confirmation error:', error);
+      throw error;
+    }
+  },
+
   // Update password
   async updatePassword(newPassword: string) {
     console.log('🔐 Attempting password update');

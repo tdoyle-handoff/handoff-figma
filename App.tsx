@@ -35,6 +35,38 @@ export default function App() {
   const navigation = useNavigation();
   const passwordReset = usePasswordReset();
   
+  // Session guard: verify a valid Supabase session exists when authenticated (non-guest)
+  const [sessionChecked, setSessionChecked] = React.useState(false);
+  const [sessionValid, setSessionValid] = React.useState(false);
+  React.useEffect(() => {
+    let cancelled = false;
+    const check = async () => {
+      try {
+        if (!auth.isAuthenticated || auth.isGuestMode) {
+          if (!cancelled) {
+            setSessionValid(!!auth.isGuestMode);
+            setSessionChecked(true);
+          }
+          return;
+        }
+        const session = await auth.authHelpers.getCurrentSession();
+        if (!cancelled) {
+          setSessionValid(!!(session && session.user));
+          setSessionChecked(true);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setSessionValid(false);
+          setSessionChecked(true);
+        }
+      }
+    };
+    check();
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.isAuthenticated, auth.isGuestMode]);
+  
   // Get URL modes and other derived state AFTER all hooks
   const modes = getUrlModes();
   
@@ -130,6 +162,34 @@ export default function App() {
   const handleNavigateToDevTools = () => {
     navigation.navigateTo('dev-tools');
   };
+
+  // If app thinks it's authenticated but session is invalid (non-guest), gate with SetupWizard
+  if (auth.isAuthenticated && !auth.isGuestMode && !sessionValid) {
+    // If session check still in progress, show loader
+    if (!sessionChecked) {
+      return (
+        <ErrorBoundary>
+          <div className="min-h-screen flex items-center justify-center bg-background">
+            <AuthLoader />
+          </div>
+        </ErrorBoundary>
+      );
+    }
+    return (
+      <ErrorBoundary>
+        <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
+          <SetupWizard 
+            onComplete={auth.handleAuthComplete}
+            onGoogleSignIn={auth.handleGoogleSignIn}
+            authError={auth.authError || 'Your session expired. Please sign in again.'}
+            isLoading={auth.isLoading}
+            continueAsGuest={auth.continueAsGuest}
+            clearAuthError={auth.clearAuthError}
+          />
+        </div>
+      </ErrorBoundary>
+    );
+  }
 
   // Render main app
   return (
