@@ -39,7 +39,7 @@
     "release:push": "git push && git push --tags",
     "ci:install": "npm ci || npm install",
     "build": "node scripts/check-env.mjs && vite build --debug --logLevel info",
-    "ci:build": "npm run ci:install [39m&&[39m npm run build",
+    "ci:build": "npm run ci:install && npm run build",
     "prepare": "husky install",
     "db:check": "node scripts/db-check.mjs"
   },
