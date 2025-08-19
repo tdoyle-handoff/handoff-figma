@@ -53,6 +53,7 @@ const AuthErrorAlert = ({
   onCreateAccount, 
   onContinueAsGuest, 
   onClearError,
+  onResendConfirmation,
   formData,
   serverAvailable 
 }: { 
@@ -60,6 +61,7 @@ const AuthErrorAlert = ({
   onCreateAccount: () => void;
   onContinueAsGuest: () => void;
   onClearError: () => void;
+  onResendConfirmation: (email: string) => Promise<void>;
   formData: any;
   serverAvailable?: boolean;
 }) => {
@@ -67,7 +69,8 @@ const AuthErrorAlert = ({
   const isAccountExists = error.includes('already exists') || error.includes('already registered');
   const isServerUnavailable = error.includes('Server Authentication Unavailable') || error.includes('server is not currently accessible');
   
-  const showRecoveryOptions = isInvalidCredentials || isAccountExists || isServerUnavailable || 
+  const isEmailConfirmationRequired = error.includes('Email Confirmation Required');
+  const showRecoveryOptions = isInvalidCredentials || isAccountExists || isServerUnavailable || isEmailConfirmationRequired || 
                               error.includes('You can:') || error.includes('Choose how to continue');
   
   return (
@@ -185,6 +188,18 @@ const AuthErrorAlert = ({
 
               {/* Alternative Options */}
               <div className="grid grid-cols-1 gap-2 pt-2">
+                {isEmailConfirmationRequired && formData?.buyerEmail && (
+                  <Button
+                    size="sm"
+                    onClick={() => onResendConfirmation(formData.buyerEmail)}
+                    className="flex items-center gap-2 text-sm h-10 bg-amber-600 hover:bg-amber-700 text-white shadow-md font-medium rounded-lg"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Resend Confirmation Email
+                    <span className="text-xs opacity-90 ml-auto">{formData.buyerEmail}</span>
+                  </Button>
+                )}
+
                 {!isServerUnavailable && (
                   <Button
                     variant="outline"
@@ -238,6 +253,7 @@ export function SetupWizard({
   const [serverAvailable, setServerAvailable] = useState<boolean | null>(null);
   const isMobile = useIsMobile();
   const formRef = useRef<HTMLFormElement>(null);
+  const errorContainerRef = useRef<HTMLDivElement>(null);
 
   // Ensure body has proper classes for mobile
   useEffect(() => {
@@ -251,6 +267,14 @@ export function SetupWizard({
       document.documentElement.classList.remove('setup-wizard');
     };
   }, [isMobile]);
+
+  // Focus and scroll to error alert when authError appears
+  useEffect(() => {
+    if (authError && errorContainerRef.current) {
+      errorContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => errorContainerRef.current?.focus?.(), 50);
+    }
+  }, [authError]);
 
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -300,6 +324,28 @@ export function SetupWizard({
       console.error('Google sign-in error:', error);
     }
   }, [onGoogleSignIn]);
+
+  // Resend confirmation handler
+  const handleResendConfirmation = useCallback(async (email: string) => {
+    try {
+      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/user/auth/resend-confirmation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) {
+        // Fallback to client helper if server function unavailable
+        const { authHelpers } = await import('../utils/supabase/client');
+        await authHelpers.resendConfirmation(email);
+      }
+      alert('Confirmation email sent. Please check your inbox.');
+    } catch (e) {
+      console.error('Resend confirmation error:', e);
+      alert('Failed to resend confirmation. Please try again later.');
+    }
+  }, []);
 
   const handleForgotPassword = async () => {
     if (!resetEmail.trim()) {
@@ -727,14 +773,17 @@ export function SetupWizard({
             </div>
 
             {authError && (
-              <AuthErrorAlert
-                error={authError}
-                onCreateAccount={handleCreateAccount}
-                onContinueAsGuest={handleContinueAsGuest}
-                onClearError={handleClearError}
-                formData={formData}
-                serverAvailable={serverAvailable}
-              />
+              <div ref={errorContainerRef} tabIndex={-1}>
+                <AuthErrorAlert 
+                  error={authError}
+                  onCreateAccount={handleCreateAccount}
+                  onContinueAsGuest={handleContinueAsGuest}
+                  onClearError={handleClearError}
+                  onResendConfirmation={handleResendConfirmation}
+                  formData={formData}
+                  serverAvailable={serverAvailable}
+                />
+              </div>
             )}
 
             <Button 
@@ -919,14 +968,17 @@ export function SetupWizard({
             </div>
 
             {authError && (
-              <AuthErrorAlert
-                error={authError}
-                onCreateAccount={handleCreateAccount}
-                onContinueAsGuest={handleContinueAsGuest}
-                onClearError={handleClearError}
-                formData={formData}
-                serverAvailable={serverAvailable}
-              />
+              <div ref={errorContainerRef} tabIndex={-1}>
+                <AuthErrorAlert
+                  error={authError}
+                  onCreateAccount={handleCreateAccount}
+                  onContinueAsGuest={handleContinueAsGuest}
+                  onClearError={handleClearError}
+                  onResendConfirmation={handleResendConfirmation}
+                  formData={formData}
+                  serverAvailable={serverAvailable}
+                />
+              </div>
             )}
 
             <Button 

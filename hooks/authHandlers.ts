@@ -139,6 +139,16 @@ Options:
           data.buyerEmail,
           data.password!
         );
+
+        // In some cases Supabase may return a user without a session (e.g., email not confirmed)
+        if (authResult.user && !authResult.session) {
+          setState(prev => ({
+            ...prev,
+            authError: `🔐 Email Confirmation Required\n\nYour account exists but your email hasn't been confirmed yet.\n\n📧 Please check your email (${data.buyerEmail}) for a confirmation link.\n\n✅ Your Supabase authentication is working`,
+            isLoading: false,
+          }));
+          return;
+        }
       }
 
       // Check if authentication was successful
