@@ -325,7 +325,8 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
             </Button>
           </form>
 
-          </>) }
+          </>
+          )}
 
           {!isRegisterMode && (
           <div className="mt-8">
