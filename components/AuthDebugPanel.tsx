@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { CheckCircle, XCircle, AlertTriangle, Info, RefreshCw } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectUrl, publicAnonKey } from '../utils/supabase/info';
 
 interface DebugInfo {
   timestamp: string;
@@ -92,7 +92,7 @@ export function AuthDebugPanel() {
   };
 
   const testServerEndpoint = async (name: string, endpoint: string, options: RequestInit = {}) => {
-    const fullUrl = `https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/${endpoint}`;
+    const fullUrl = `${projectUrl}/functions/v1/make-server-a24396d5/${endpoint}`;
     
     try {
       console.log(`Testing endpoint: ${name} - ${options.method || 'GET'} ${fullUrl}`);

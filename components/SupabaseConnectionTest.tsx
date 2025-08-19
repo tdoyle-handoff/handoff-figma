@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { CheckCircle, XCircle, RefreshCw } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectUrl, publicAnonKey, projectRef } from '../utils/supabase/info';
 
 interface ConnectionTestResult {
   service: string;
@@ -21,7 +21,7 @@ export function SupabaseConnectionTest() {
     setIsRunning(true);
     setTestResults([]);
 
-    const baseUrl = `https://${projectId}.supabase.co/functions/v1/make-server-a24396d5`;
+    const baseUrl = `${projectUrl}/functions/v1/make-server-a24396d5`;
     
     const tests = [
       { name: 'Main Server', endpoint: '/health' },
@@ -165,7 +165,7 @@ export function SupabaseConnectionTest() {
           <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
             <h4 className="font-medium text-green-800 mb-2">Connection Summary</h4>
             <div className="text-sm text-green-700 space-y-1">
-              <div>✅ Supabase Project ID: {projectId}</div>
+              div>✅ Supabase Project ID: {projectRef}</div>
               <div>✅ Authentication: Configured</div>
               <div>✅ Database: Connected via KV Store</div>
               <div>✅ Edge Functions: {successCount} services operational</div>

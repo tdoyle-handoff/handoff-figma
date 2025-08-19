@@ -1,4 +1,4 @@
-import { projectId, publicAnonKey } from './supabase/info';
+import { projectUrl, publicAnonKey } from './supabase/info';
 import { AUTH_TIMEOUTS } from './authConstants';
 
 // Helper function to safely parse JSON responses
@@ -94,7 +94,7 @@ export async function makeAuthRequest(endpoint: string, options: RequestInit = {
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), AUTH_TIMEOUTS.REQUEST_TIMEOUT);
-  const fullUrl = `https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/${endpoint}`;
+  const fullUrl = `${projectUrl}/functions/v1/make-server-a24396d5/${endpoint}`;
 
   try {
     console.log(`Making request to: ${options.method || 'GET'} ${fullUrl}`);
