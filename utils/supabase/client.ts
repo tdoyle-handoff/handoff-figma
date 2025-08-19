@@ -329,7 +329,7 @@ export class AuthStateManager {
   }
 
   // Clean up all listeners and subscriptions
-  disposeAll(): void {
+  dispose(): void {
     this.disposers.forEach(fn => {
       try {
         fn();
@@ -412,7 +412,7 @@ export const authStateManager = AuthStateManager.getInstance();
 // FIXED: Add cleanup on page unload to prevent memory leaks
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
-    authStateManager.disposeAll();
+    authStateManager.dispose();
   });
 }
 
