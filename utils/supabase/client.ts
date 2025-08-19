@@ -225,7 +225,7 @@ export class AuthStateManager {
   private currentSession: AuthSession | null = null;
   private initialized = false;
   private initPromise: Promise<void> | null = null;
-  private cleanup: (() => void)[] = [];
+  private disposers: (() => void)[] = [];
 
   private constructor() {
     // Don't initialize immediately - wait for first listener
@@ -292,7 +292,7 @@ export class AuthStateManager {
       });
 
       // Store cleanup function
-      this.cleanup.push(() => subscription.unsubscribe());
+      this.disposers.push(() => subscription.unsubscribe());
 
       this.initialized = true;
       console.log('✅ Auth listener initialized');
@@ -329,15 +329,15 @@ export class AuthStateManager {
   }
 
   // Clean up all listeners and subscriptions
-  cleanup(): void {
-    this.cleanup.forEach(fn => {
+  disposeAll(): void {
+    this.disposers.forEach(fn => {
       try {
         fn();
       } catch (error) {
         console.warn('Error during auth cleanup:', error);
       }
     });
-    this.cleanup = [];
+    this.disposers = [];
     this.authListeners = [];
     this.initialized = false;
     this.initPromise = null;
@@ -412,7 +412,7 @@ export const authStateManager = AuthStateManager.getInstance();
 // FIXED: Add cleanup on page unload to prevent memory leaks
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
-    authStateManager.cleanup();
+    authStateManager.disposeAll();
   });
 }
 
