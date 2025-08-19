@@ -14,6 +14,7 @@ import { clearPersistedUserDisplayInfo } from './utils/userHelpers';
 import { OnboardingWizard } from './components/OnboardingWizard';
 import { SetupWizard } from './components/SetupWizard';
 import { PasswordReset } from './components/PasswordReset';
+import { SignIn } from './components/SignIn';
 
 // Layout components
 import DashboardLayout from './components/DashboardLayout';
@@ -303,11 +304,25 @@ function AppCore() {
 
   // Show onboarding or sign-up/sign-in page
   if (!auth.isAuthenticated) {
+    const params = new URLSearchParams(window.location.search)
+    const path = window.location.pathname || ''
+    const hash = window.location.hash || ''
+
+    const showSignIn = params.has('signin') || path.endsWith('/signin') || hash.includes('signin')
+
     // Check if user wants traditional auth flow (login-fix mode or has auth error)
-    const showTraditionalAuth = modes.isDeveloperMode || 
+    const showTraditionalAuth = !showSignIn && (modes.isDeveloperMode || 
                                auth.authError || 
                                window.location.search.includes('login-fix') ||
-                               window.location.search.includes('auth=true');
+                               window.location.search.includes('auth=true'));
+
+    if (showSignIn) {
+      return (
+        <ErrorBoundary fallback={AppErrorFallback}>
+          <SignIn />
+        </ErrorBoundary>
+      )
+    }
 
     if (showTraditionalAuth) {
       return (
