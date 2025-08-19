@@ -39,8 +39,9 @@
     "release:push": "git push && git push --tags",
     "ci:install": "npm ci || npm install",
     "build": "node scripts/check-env.mjs && vite build --debug --logLevel info",
-    "ci:build": "npm run ci:install && npm run build",
-    "prepare": "husky install"
+    "ci:build": "npm run ci:install [39m&&[39m npm run build",
+    "prepare": "husky install",
+    "db:check": "node scripts/db-check.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "1.2.3",
@@ -73,6 +74,7 @@
     "date-fns": "3.6.0",
     "lucide-react": "0.487.0",
     "motion": "latest",
+    "postgres": "^3.4.7",
     "react": "^18.2.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^18.2.0",
