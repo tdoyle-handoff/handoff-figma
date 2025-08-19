@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { projectId, publicAnonKey } from './info';
 import { SafeProfileCache } from '../mapPolyfill';
+import { baseUrl, publicAnonKey } from './info';
 
 // Define the user profile types based on Supabase auth.users only
 export interface UserProfile {
@@ -86,76 +86,29 @@ export interface Database {
   };
 }
 
-// Require environment variables only (prevent accidental wrong host)
-const SUPABASE_URL = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_URL)
-  ? (import.meta as any).env.VITE_SUPABASE_URL as string
-  : '';
+// Use the publicAnonKey from info.tsx per request, and prefer Vite URL when provided
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) || baseUrl;
+const SUPABASE_ANON_KEY = publicAnonKey as string;
 
-const SUPABASE_ANON_KEY = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_SUPABASE_ANON_KEY)
-  ? (import.meta as any).env.VITE_SUPABASE_ANON_KEY as string
-  : '';
-
-// Validate required configuration
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('Missing required Supabase configuration:');
-  console.error('- SUPABASE_URL:', SUPABASE_URL ? '✓' : '❌');
-  console.error('- SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? '✓' : '❌');
-  throw new Error('Supabase configuration incomplete. Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.');
+  console.error('Missing Supabase configuration:');
+  console.error('- URL:', SUPABASE_URL ? '✓' : '❌');
+  console.error('- publicAnonKey:', SUPABASE_ANON_KEY ? '✓' : '❌');
+  throw new Error('Supabase configuration incomplete. Ensure base URL and publicAnonKey are available.');
 }
 
-// Debug: print the base URL once at startup
-if (typeof window !== 'undefined') {
-  // Avoid leaking keys; only log the URL
-  console.info('[SUPABASE] Using base URL:', SUPABASE_URL);
-}
-
-// Create and configure the Supabase client with optimized settings
-export const supabase = createClient<Database>(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      // Configure auth settings for better performance
-      flowType: 'pkce',
-      // Optimized storage with faster operations
-      storage: {
-        getItem: (key: string) => {
-          try {
-            return localStorage.getItem(key);
-          } catch (error) {
-            return null;
-          }
-        },
-        setItem: (key: string, value: string) => {
-          try {
-            localStorage.setItem(key, value);
-          } catch (error) {
-            // Fail silently to avoid blocking
-          }
-        },
-        removeItem: (key: string) => {
-          try {
-            localStorage.removeItem(key);
-          } catch (error) {
-            // Fail silently to avoid blocking
-          }
-        },
-      },
-    },
-    // Minimal global settings for faster initialization
-    global: {
-      headers: {
-        'x-application-name': 'handoff-real-estate',
-      },
-    },
-    db: {
-      schema: 'public',
-    },
-  }
-);
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  },
+  global: {
+    headers: { 'x-application-name': 'handoff-real-estate' },
+  },
+  db: { schema: 'public' },
+});
 
 // FIXED: Use SafeProfileCache instead of Map to prevent constructor errors
 const profileCache = new SafeProfileCache(10);

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Alert, AlertDescription } from './ui/alert';
 import { useIsMobile } from './ui/use-mobile';
 // import { ServerStatusBanner } from './ServerStatusBanner';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { baseUrl, publicAnonKey } from '../utils/supabase/info';
 const handoffLogo = '/handoff-logo.svg';
 
 interface SetupData {
@@ -328,7 +328,7 @@ export function SetupWizard({
   // Resend confirmation handler
   const handleResendConfirmation = useCallback(async (email: string) => {
     try {
-      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/user/auth/resend-confirmation`, {
+      const res = await fetch(`${baseUrl}/functions/v1/make-server-a24396d5/user/auth/resend-confirmation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -361,7 +361,7 @@ export function SetupWizard({
     try {
       setResetError(null);
       
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/user/auth/reset-password`, {
+      const response = await fetch(`${baseUrl}/functions/v1/make-server-a24396d5/user/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
