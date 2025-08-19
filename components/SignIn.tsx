@@ -33,12 +33,19 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
-export function SignIn({ className }: { className?: string }) {
+export function SignIn({ className, forceRegisterMode }: { className?: string; forceRegisterMode?: boolean }) {
   const auth = useAuth()
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [remember, setRemember] = React.useState(true)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [isRegisterMode, setIsRegisterMode] = React.useState(false)
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
+  const [address, setAddress] = React.useState('')
+  const [showResetModal, setShowResetModal] = React.useState(false)
+  const [resetEmail, setResetEmail] = React.useState('')
+  const [confirmPassword, setConfirmPassword] = React.useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,13 +64,41 @@ export function SignIn({ className }: { className?: string }) {
   }
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      window.alert('Please enter your email and a password to register.')
+    // Switch to registration mode and reflect it in the URL
+    try {
+      const params = new URLSearchParams(window.location.search)
+      params.set('register', '1')
+      const url = `${window.location.pathname}?${params.toString()}`
+      window.history.replaceState(null, '', url)
+    } catch {}
+    setIsRegisterMode(true)
+  }
+
+  const handlePerformRegistration = async () => {
+    if (!email || !password || !firstName || !lastName) {
+      window.alert('Please complete first name, last name, email, and password to register.')
       return
     }
     try {
       setIsSubmitting(true)
-      await auth.handleAuthComplete({ buyerEmail: email, buyerName: email.split('@')[0], password }, true)
+      const fullName = `${firstName} ${lastName}`.trim()
+      await auth.handleAuthComplete({ buyerEmail: email, buyerName: fullName, password }, true)
+      // Store additional personal details in Supabase user metadata (best-effort)
+      try {
+        await auth.updateUserProfile({
+          full_name: fullName,
+          buyer_name: fullName as any,
+          property_address: address as any,
+        })
+      } catch {}
+      // Return to sign-in mode in URL and UI
+      try {
+        const params = new URLSearchParams(window.location.search)
+        params.delete('register')
+        const suffix = params.toString() ? `?${params.toString()}` : ''
+        window.history.replaceState(null, '', `${window.location.pathname}${suffix}`)
+      } catch {}
+      setIsRegisterMode(false)
     } catch (err) {
       // handled in hook state
     } finally {
@@ -71,14 +106,20 @@ export function SignIn({ className }: { className?: string }) {
     }
   }
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      window.alert('Enter your email first, then click Forgot Password to receive a reset link.')
+  const handleOpenResetModal = () => {
+    setResetEmail(email)
+    setShowResetModal(true)
+  }
+
+  const handleSendReset = async () => {
+    if (!resetEmail) {
+      window.alert('Please enter your email to receive a reset link.')
       return
     }
     try {
       setIsSubmitting(true)
-      await auth.authHelpers.resetPassword(email)
+      await auth.authHelpers.resetPassword(resetEmail)
+      setShowResetModal(false)
       window.alert('If this email exists, a reset link has been sent. Please check your inbox.')
     } catch (err) {
       window.alert('Could not send reset email. Please try again in a moment.')
@@ -89,10 +130,36 @@ export function SignIn({ className }: { className?: string }) {
 
   React.useEffect(() => {
     try {
+      if (forceRegisterMode) {
+        setIsRegisterMode(true)
+      } else {
+        const params = new URLSearchParams(window.location.search)
+        const reg = params.get('register')
+        if (reg !== null) {
+          setIsRegisterMode(reg === '1' || reg === 'true' || reg === '')
+        }
+      }
+    } catch {}
+    try {
       const v = localStorage.getItem('lastEmail')
       if (v) setEmail(v)
     } catch {}
   }, [])
+
+  // Simple password strength evaluation
+  const passwordStrength = React.useMemo(() => {
+    const pwd = password || ''
+    let score = 0
+    if (pwd.length >= 8) score++
+    if (/[A-Z]/.test(pwd)) score++
+    if (/[a-z]/.test(pwd)) score++
+    if (/[0-9]/.test(pwd)) score++
+    if (/[^A-Za-z0-9]/.test(pwd)) score++
+    return score // 0-5
+  }, [password])
+
+  const isPasswordStrongEnough = passwordStrength >= 4
+  const doPasswordsMatch = password && confirmPassword && password === confirmPassword
 
   const handleGoogle = async () => {
     try {
@@ -143,10 +210,76 @@ export function SignIn({ className }: { className?: string }) {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome Back to HandOff!</h1>
-            <p className="text-sm text-muted-foreground">Sign in to your account</p>
+            {isRegisterMode ? (
+              <>
+                <h1 className="text-3xl font-bold tracking-tight">Create your HandOff account</h1>
+                <p className="text-sm text-muted-foreground">Set your details to get started</p>
+              </>
+            ) : (
+              <>
+                <h1 className="text-3xl font-bold tracking-tight">Welcome Back to HandOff!</h1>
+                <p className="text-sm text-muted-foreground">Sign in to your account</p>
+              </>
+            )}
           </div>
 
+          {isRegisterMode ? (
+            <div className="mt-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-sm">First name</Label>
+                  <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Jane" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-sm">Last name</Label>
+                  <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-sm">Address</Label>
+                <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St, City, ST" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm">Email</Label>
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm">Password</Label>
+                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <div className="text-xs text-muted-foreground">
+                  Strength: {'\u2588'.repeat(passwordStrength)}{'\u2591'.repeat(Math.max(0, 5 - passwordStrength))} {isPasswordStrongEnough ? '(good)' : '(use 8+ chars, upper, lower, number, symbol)'}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
+                <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                {!doPasswordsMatch && confirmPassword && (
+                  <div className="text-xs text-destructive">Passwords do not match.</div>
+                )}
+              </div>
+
+              <Button type="button" className="w-full" onClick={handlePerformRegistration} disabled={isSubmitting || !isPasswordStrongEnough || !doPasswordsMatch}>
+                {isSubmitting ? 'Creating account…' : 'Create account'}
+              </Button>
+
+              <div className="text-xs text-center text-muted-foreground">
+                Already have an account?{' '}
+                <button type="button" className="text-primary hover:underline" onClick={() => {
+                  try {
+                    const params = new URLSearchParams(window.location.search)
+                    params.delete('register')
+                    const suffix = params.toString() ? `?${params.toString()}` : ''
+                    window.history.replaceState(null, '', `${window.location.pathname}${suffix}`)
+                  } catch {}
+                  setIsRegisterMode(false)
+                }}>Sign in</button>
+              </div>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm">Your Email</Label>
@@ -181,7 +314,7 @@ export function SignIn({ className }: { className?: string }) {
                   <Checkbox id="remember" checked={remember} onCheckedChange={(v) => setRemember(Boolean(v))} />
                   <span>Remember Me</span>
                 </label>
-                <button type="button" onClick={handleForgotPassword} className="hover:underline disabled:opacity-60" disabled={isSubmitting}>
+                <button type="button" onClick={handleOpenResetModal} className="hover:underline disabled:opacity-60" disabled={isSubmitting}>
                   Forgot Password?
                 </button>
               </div>
@@ -192,6 +325,9 @@ export function SignIn({ className }: { className?: string }) {
             </Button>
           </form>
 
+          </>) }
+
+          {!isRegisterMode && (
           <div className="mt-8">
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -210,10 +346,13 @@ export function SignIn({ className }: { className?: string }) {
               </Button>
             </div>
           </div>
+          )}
 
-        <p className="mt-8 text-xs text-muted-foreground text-center">
+        {isRegisterMode ? null : (
+          <p className="mt-8 text-xs text-muted-foreground text-center">
             Don’t have any account? <button type="button" onClick={handleRegister} className="text-primary hover:underline disabled:opacity-60" disabled={isSubmitting}>Register</button>
           </p>
+        )}
 
           {auth.authError && (
             <div className="mt-4 text-sm text-destructive" role="alert">
@@ -224,6 +363,23 @@ export function SignIn({ className }: { className?: string }) {
           <div className="mt-4 flex justify-center">
             <Button type="button" variant="ghost" onClick={handleGuest} className="text-xs">Continue as Guest</Button>
           </div>
+
+          {showResetModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+              <div className="w-full max-w-sm rounded-lg bg-card border border-border p-4 shadow-lg">
+                <h3 className="text-lg font-semibold mb-2">Reset your password</h3>
+                <p className="text-sm text-muted-foreground mb-4">Enter your account email. We’ll send you a reset link.</p>
+                <div className="space-y-2 mb-4">
+                  <Label htmlFor="resetEmail" className="text-sm">Email</Label>
+                  <Input id="resetEmail" type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="you@example.com" />
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <Button type="button" variant="outline" onClick={() => setShowResetModal(false)} disabled={isSubmitting}>Cancel</Button>
+                  <Button type="button" onClick={handleSendReset} disabled={isSubmitting || !resetEmail}>Send reset link</Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
