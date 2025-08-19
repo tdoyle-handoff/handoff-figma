@@ -39,7 +39,8 @@
     "release:push": "git push && git push --tags",
     "ci:install": "npm ci || npm install",
     "build": "node scripts/check-env.mjs && vite build --debug --logLevel info",
-    "ci:build": "npm run ci:install && npm run build"
+    "ci:build": "npm run ci:install && npm run build",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "1.2.3",
@@ -91,6 +92,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "husky": "^9.1.6",
     "postcss": "8.4.47",
     "tailwindcss": "3.4.13",
     "typescript": "^5.0.2",
