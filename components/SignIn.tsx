@@ -17,9 +17,8 @@ export function SignIn({ className }: { className?: string }) {
     if (!email) return
     try {
       setIsSubmitting(true)
-      // Minimal email-only auth: use your existing Google sign-in or guest as fallback.
-      // If you later add email/password with Supabase, wire it here.
-      await auth.handleGoogleSignIn()
+      // Use Supabase email/password via existing auth handler
+      await auth.handleAuthComplete({ buyerEmail: email, buyerName: email.split('@')[0], password }, false)
     } catch (err) {
       /* handled in hook state */
     } finally {
@@ -71,9 +70,9 @@ export function SignIn({ className }: { className?: string }) {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled
+                required
               />
-              <p className="text-xs text-muted-foreground">Password auth will be enabled after Supabase email auth is configured.</p>
+              <p className="text-xs text-muted-foreground">Use your account password. If you don’t have an account, sign up below.</p>
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? 'Signing in…' : 'Sign in'}
@@ -87,6 +86,10 @@ export function SignIn({ className }: { className?: string }) {
             <Button type="button" variant="ghost" onClick={handleGuest}>
               Continue as Guest
             </Button>
+          </div>
+
+          <div className="mt-2 text-xs text-muted-foreground text-center">
+            Don’t have an account? <a className="underline" href="?onboarding">Create one</a>
           </div>
 
           {auth.authError && (

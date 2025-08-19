@@ -302,26 +302,32 @@ function AppCore() {
     );
   }
 
-  // Show onboarding or sign-up/sign-in page
+  // Show authentication entry point for unauthenticated users
   if (!auth.isAuthenticated) {
     const params = new URLSearchParams(window.location.search)
     const path = window.location.pathname || ''
     const hash = window.location.hash || ''
 
-    const showSignIn = params.has('signin') || path.endsWith('/signin') || hash.includes('signin')
+    // Make SignIn the default. Only show onboarding explicitly if requested.
+    const showOnboarding = params.has('onboarding') || path.endsWith('/onboarding') || hash.includes('onboarding')
 
     // Check if user wants traditional auth flow (login-fix mode or has auth error)
-    const showTraditionalAuth = !showSignIn && (modes.isDeveloperMode || 
+    const showTraditionalAuth = modes.isDeveloperMode || 
                                auth.authError || 
                                window.location.search.includes('login-fix') ||
-                               window.location.search.includes('auth=true'));
+                               window.location.search.includes('auth=true');
 
-    if (showSignIn) {
+    if (showOnboarding) {
       return (
         <ErrorBoundary fallback={AppErrorFallback}>
-          <SignIn />
+          <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
+            <OnboardingWizard 
+              onComplete={handleOnboardingComplete}
+              onSkip={handleOnboardingSkip}
+            />
+          </div>
         </ErrorBoundary>
-      )
+      );
     }
 
     if (showTraditionalAuth) {
@@ -341,17 +347,12 @@ function AppCore() {
       );
     }
 
-    // Show new onboarding wizard by default
+    // Default: Sign In page (Google, email/password when configured, or Guest)
     return (
       <ErrorBoundary fallback={AppErrorFallback}>
-        <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
-          <OnboardingWizard 
-            onComplete={handleOnboardingComplete}
-            onSkip={handleOnboardingSkip}
-          />
-        </div>
+        <SignIn />
       </ErrorBoundary>
-    );
+    )
   }
 
   // Render main app with comprehensive error boundaries
