@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { SafeProfileCache } from '../mapPolyfill';
-import { baseUrl, publicAnonKey } from './info';
+import { projectUrl, publicAnonKey } from './info';
 
 // Define the user profile types based on Supabase auth.users only
 export interface UserProfile {
@@ -86,8 +86,8 @@ export interface Database {
   };
 }
 
-// Use the publicAnonKey from info.tsx per request, and prefer Vite URL when provided
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) || baseUrl;
+// Use env-only configuration (Option C)
+const SUPABASE_URL = projectUrl;
 const SUPABASE_ANON_KEY = publicAnonKey as string;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {

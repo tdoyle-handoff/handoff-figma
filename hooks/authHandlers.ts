@@ -1,5 +1,5 @@
 import { supabase, authHelpers, authStateManager } from '../utils/supabase/client';
-import { makeAuthRequest } from '../utils/networkHelpers';
+// import { makeAuthRequest } from '../utils/networkHelpers';
 import { 
   validateAuthData, 
   createOfflineProfile, 
@@ -250,80 +250,7 @@ Options:
       }
     }
 
-    // Server-side authentication fallback (only if direct auth failed)
-    console.log('🔄 Trying server-side authentication fallback...');
-    
-    try {
-      // Quick server health check with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-      
-      const healthData = await makeAuthRequest('user/health', {
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      
-      if (healthData && healthData.status === 'healthy') {
-        console.log('✅ Server available, attempting server-side auth');
-        
-        const endpoint = isSignUp ? 'user/auth/signup' : 'user/auth/signin';
-        const authData = await makeAuthRequest(endpoint, {
-          method: 'POST',
-          body: JSON.stringify({
-            email: data.buyerEmail,
-            password: data.password,
-            fullName: data.buyerName,
-          }),
-        });
-
-        if (authData.success && authData.profile) {
-          console.log('✅ Server-side authentication successful');
-          
-          // Store authentication data (async)
-          setTimeout(() => storeAuthSession(authData.profile, authData.session), 0);
-
-          // Set Supabase session if available (async)
-          if (authData.session) {
-            setTimeout(async () => {
-              try {
-                await supabase.auth.setSession(authData.session);
-                console.log('✅ Supabase session established via server');
-              } catch (error) {
-                console.warn('Session setup warning:', error);
-              }
-            }, 0);
-          }
-
-          // Check questionnaire completion
-          const questionnaireComplete = checkQuestionnaireCompletion(authData.profile);
-
-          setState(prev => ({
-            ...prev,
-            isAuthenticated: true,
-            userProfile: authData.profile,
-            setupData: { 
-              buyerEmail: authData.profile.email,
-              buyerName: authData.profile.full_name,
-              ...data,
-              password: undefined 
-            },
-            isQuestionnaireComplete: questionnaireComplete,
-            showQuestionnairePrompt: !questionnaireComplete,
-            isOfflineMode: false,
-            isGuestMode: false,
-            isLoading: false,
-            authError: null,
-          }));
-
-          console.log('🎉 Server-side authentication completed');
-          return;
-        }
-      }
-    } catch (serverError) {
-      console.log('🌐 Server authentication unavailable:', serverError);
-    }
-
-    // If all authentication methods failed
+    // If direct Supabase authentication failed, return a clear error
     const errorMessage = `🔐 Authentication Failed
 
 We couldn't sign you ${isSignUp ? 'up' : 'in'} with the provided credentials.

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Alert, AlertDescription } from './ui/alert';
 import { useIsMobile } from './ui/use-mobile';
 // import { ServerStatusBanner } from './ServerStatusBanner';
-import { baseUrl, publicAnonKey } from '../utils/supabase/info';
+import { authHelpers } from '../utils/supabase/client';
 const handoffLogo = '/handoff-logo.svg';
 
 interface SetupData {
@@ -328,18 +328,7 @@ export function SetupWizard({
   // Resend confirmation handler
   const handleResendConfirmation = useCallback(async (email: string) => {
     try {
-      const res = await fetch(`${baseUrl}/functions/v1/make-server-a24396d5/user/auth/resend-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      });
-      if (!res.ok) {
-        // Fallback to client helper if server function unavailable
-        const { authHelpers } = await import('../utils/supabase/client');
-        await authHelpers.resendConfirmation(email);
-      }
+      await authHelpers.resendConfirmation(email);
       alert('Confirmation email sent. Please check your inbox.');
     } catch (e) {
       console.error('Resend confirmation error:', e);
@@ -360,23 +349,7 @@ export function SetupWizard({
 
     try {
       setResetError(null);
-      
-      const response = await fetch(`${baseUrl}/functions/v1/make-server-a24396d5/user/auth/reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
-        },
-        body: JSON.stringify({
-          email: resetEmail.trim(),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send reset email');
-      }
-
+      await authHelpers.resetPassword(resetEmail.trim());
       setResetEmailSent(true);
     } catch (error) {
       console.error('Password reset error:', error);

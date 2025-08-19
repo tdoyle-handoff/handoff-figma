@@ -1,5 +1,4 @@
 import { TestResult, UserTestData } from './types';
-import { makeAuthRequest } from '../../utils/networkHelpers';
 
 export class AuthTestRunner {
   private addTestResult: (result: TestResult) => void;
@@ -17,25 +16,12 @@ export class AuthTestRunner {
     });
 
     try {
-      const healthData = await makeAuthRequest('health');
-      
-      if (healthData.success) {
-        this.addTestResult({
-          test: 'Server Connection',
-          status: 'success',
-          message: 'Supabase server is accessible',
-          details: { version: healthData.version, timestamp: healthData.timestamp },
-          timestamp: new Date()
-        });
-      } else {
-        this.addTestResult({
-          test: 'Server Connection',
-          status: 'error',
-          message: 'Server responded but reported unhealthy status',
-          details: healthData,
-          timestamp: new Date()
-        });
-      }
+      this.addTestResult({
+        test: 'Server Connection',
+        status: 'error',
+        message: 'Legacy server diagnostic removed',
+        timestamp: new Date()
+      });
     } catch (error) {
       this.addTestResult({
         test: 'Server Connection',
@@ -66,36 +52,12 @@ export class AuthTestRunner {
     });
 
     try {
-      const signInData = await makeAuthRequest('user/auth/signin', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: userData.email,
-          password: userData.password
-        })
+      this.addTestResult({
+        test: 'Sign In Test',
+        status: 'error',
+        message: 'Legacy authentication diagnostic removed',
+        timestamp: new Date()
       });
-
-      if (signInData.success && signInData.profile) {
-        this.addTestResult({
-          test: 'Sign In Test',
-          status: 'success',
-          message: 'Sign in successful - user account exists and credentials are correct',
-          details: {
-            userId: signInData.profile.id,
-            email: signInData.profile.email,
-            fullName: signInData.profile.full_name,
-            hasSession: !!signInData.session
-          },
-          timestamp: new Date()
-        });
-      } else {
-        this.addTestResult({
-          test: 'Sign In Test',
-          status: 'error',
-          message: 'Sign in failed - check credentials or try creating account',
-          details: signInData,
-          timestamp: new Date()
-        });
-      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
