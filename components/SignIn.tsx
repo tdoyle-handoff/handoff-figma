@@ -81,8 +81,8 @@ export function SignIn({ className }: { className?: string }) {
       {/* Left: hero */}
       <div className="relative hidden lg:block">
         <img
-          src="https://images.unsplash.com/photo-1542326237-94b1c5a538d5?q=80&w=2000&auto=format&fit=crop"
-          alt="Modern architecture"
+          src="/brand/hand-off-hero.png"
+          alt="HandOff brand pattern"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/30" />
