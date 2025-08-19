@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -412,7 +413,7 @@ export function PropertySetupWithMLS({
                   </div>
                   
                   {selectedMLSProperty && (
-                    <>
+                    <Fragment>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">MLS Number</span>
                         <span>{selectedMLSProperty.mls_number}</span>
@@ -425,7 +426,7 @@ export function PropertySetupWithMLS({
                         <span className="text-muted-foreground">MLS List Price</span>
                         <span>{formatCurrency(selectedMLSProperty.listing_details.list_price)}</span>
                       </div>
-                    </>
+                    </Fragment>
                   )}
                   
                   {customDetails.purchase_price && (

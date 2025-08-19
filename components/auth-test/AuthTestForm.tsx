@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -64,10 +65,10 @@ export function AuthTestForm({ authData, setAuthData, onRunTests, onClearTests, 
         <div className="flex gap-2">
           <Button onClick={onRunTests} disabled={isRunning}>
             {isRunning ? (
-              <>
+              <Fragment>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Running Tests...
-              </>
+              </Fragment>
             ) : (
               'Run Full Test Suite'
             )}

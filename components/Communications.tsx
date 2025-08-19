@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Mail, MessageCircle, Phone, Paperclip, Filter, Search, MoreVertical, Star, Archive, Reply, Forward, ChevronDown, ChevronUp, X, Calendar, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -370,7 +371,7 @@ const MessageModal = ({
                       <Star className={`${isMobile ? 'w-4 h-4' : 'w-6 h-6'} text-yellow-500 fill-current`} />
                     )}
                     {!isMobile && (
-                      <>
+                      <Fragment>
                         <Button
                           variant="ghost"
                           size="lg"
@@ -387,7 +388,7 @@ const MessageModal = ({
                         >
                           <ChevronDown className="w-5 h-5" />
                         </Button>
-                      </>
+                      </Fragment>
                     )}
                     <Button
                       variant="ghost"

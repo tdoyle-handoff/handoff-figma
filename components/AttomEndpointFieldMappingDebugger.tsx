@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -607,15 +608,15 @@ export function AttomEndpointFieldMappingDebugger() {
                   className="px-6"
                 >
                   {isLoading ? (
-                    <>
+                    <Fragment>
                       <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                       Testing...
-                    </>
+                    </Fragment>
                   ) : (
-                    <>
+                    <Fragment>
                       <Search className="w-4 h-4 mr-2" />
                       Test All Endpoints
-                    </>
+                    </Fragment>
                   )}
                 </Button>
                 <Button 

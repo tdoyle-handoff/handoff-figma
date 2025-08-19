@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -223,7 +224,7 @@ export function MLSPropertyDetails({
             {/* Price */}
             <div className="space-y-2">
               {property.listing_details.list_price && (
-                <>
+                <Fragment>
                   <div className="text-3xl font-bold text-primary">
                     {formatCurrency(property.listing_details.list_price)}
                   </div>
@@ -238,7 +239,7 @@ export function MLSPropertyDetails({
                       Originally {formatCurrency(property.listing_details.original_list_price)}
                     </div>
                   )}
-                </>
+                </Fragment>
               )}
             </div>
 

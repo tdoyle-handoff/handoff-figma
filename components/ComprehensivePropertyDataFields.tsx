@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -997,11 +998,11 @@ export function ComprehensivePropertyDataFields({
             {renderField('Earthquake Risk', data.environmental?.earthquake, 'environmental.earthquake')}
             {renderField('Wildfire Risk', data.environmental?.wildfire, 'environmental.wildfire')}
             {data.environmental?.climate && (
-              <>
+              <Fragment>
                 {renderField('Avg Temperature', data.environmental.climate.avgTemperature, 'environmental.climate.avgTemperature', 'number')}
                 {renderField('Avg Rainfall', data.environmental.climate.avgRainfall, 'environmental.climate.avgRainfall', 'number')}
                 {renderField('Humidity', data.environmental.climate.humidity, 'environmental.climate.humidity', 'number')}
-              </>
+              </Fragment>
             )}
           </div>
         </CardContent>

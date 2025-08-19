@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -844,7 +845,7 @@ export function PropertyFieldMappingManager() {
 
                               <div className="flex items-center gap-2 ml-4">
                                 {mapping ? (
-                                  <>
+                                  <Fragment>
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -861,7 +862,7 @@ export function PropertyFieldMappingManager() {
                                     >
                                       <Trash2 className="w-4 h-4" />
                                     </Button>
-                                  </>
+                                  </Fragment>
                                 ) : (
                                   <Button
                                     size="sm"

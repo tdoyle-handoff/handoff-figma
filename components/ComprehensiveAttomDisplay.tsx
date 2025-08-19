@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -419,7 +420,7 @@ export function ComprehensiveAttomDisplay({
                 </div>
 
                 {(property?.valuation?.value_change_1yr !== undefined || property?.valuation?.value_change_5yr !== undefined) && (
-                  <>
+                  <Fragment>
                     <Separator />
                     <div className="space-y-3">
                       <h4 className="font-medium">Value Changes</h4>
@@ -440,11 +441,11 @@ export function ComprehensiveAttomDisplay({
                         </div>
                       )}
                     </div>
-                  </>
+                  </Fragment>
                 )}
 
                 {property?.market_data?.price_history && Array.isArray(property.market_data.price_history) && property.market_data.price_history.length > 0 && (
-                  <>
+                  <Fragment>
                     <Separator />
                     <div className="space-y-3">
                       <h4 className="font-medium">Recent Price History</h4>
@@ -461,7 +462,7 @@ export function ComprehensiveAttomDisplay({
                         ))}
                       </div>
                     </div>
-                  </>
+                  </Fragment>
                 )}
               </CardContent>
             </Card>
@@ -630,7 +631,7 @@ export function ComprehensiveAttomDisplay({
                 </div>
 
                 {(property?.property_details?.pool || property?.property_details?.fireplace || property?.property_details?.basement || property?.property_details?.attic || property?.property_details?.garage || property?.property_details?.central_air) && (
-                  <>
+                  <Fragment>
                     <Separator />
                     <div className="space-y-2">
                       <h4 className="font-medium text-sm">Amenities & Features</h4>
@@ -643,7 +644,7 @@ export function ComprehensiveAttomDisplay({
                         {property.property_details.central_air && <Badge variant="secondary">Central Air</Badge>}
                       </div>
                     </div>
-                  </>
+                  </Fragment>
                 )}
               </CardContent>
             </Card>
@@ -700,7 +701,7 @@ export function ComprehensiveAttomDisplay({
                   property?.valuation?.assessed_value ||
                   property?.tax_assessment?.assessment_year ||
                   property?.tax_assessment?.tax_year) ? (
-                  <>
+                  <Fragment>
                     {property?.tax_assessment?.annual_tax_amount && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Annual Property Tax</span>
@@ -762,7 +763,7 @@ export function ComprehensiveAttomDisplay({
                     
                     {/* Tax Exemptions */}
                     {property?.tax_assessment?.exemptions && property.tax_assessment.exemptions.length > 0 && (
-                      <>
+                      <Fragment>
                         <Separator />
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">Tax Exemptions</h4>
@@ -773,9 +774,9 @@ export function ComprehensiveAttomDisplay({
                             </div>
                           ))}
                         </div>
-                      </>
+                      </Fragment>
                     )}
-                  </>
+                  </Fragment>
                 ) : (
                   <Alert>
                     <Info className="h-4 w-4" />
@@ -815,7 +816,7 @@ export function ComprehensiveAttomDisplay({
               </CardHeader>
               <CardContent className="space-y-4">
                 {property?.risk_factors ? (
-                  <>
+                  <Fragment>
                     {property.risk_factors.flood_risk_score !== undefined && (
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Flood Risk</span>
@@ -860,7 +861,7 @@ export function ComprehensiveAttomDisplay({
                         </span>
                       </div>
                     )}
-                  </>
+                  </Fragment>
                 ) : (
                   <Alert>
                     <Info className="h-4 w-4" />
@@ -904,7 +905,7 @@ export function ComprehensiveAttomDisplay({
               </CardHeader>
               <CardContent className="space-y-4">
                 {property?.rental_data ? (
-                  <>
+                  <Fragment>
                     {property.rental_data.estimated_rent && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Est. Monthly Rent</span>
@@ -915,7 +916,7 @@ export function ComprehensiveAttomDisplay({
                     )}
                     
                     {(property.rental_data.rent_range_low || property.rental_data.rent_range_high) && (
-                      <>
+                      <Fragment>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Rent Range (Low)</span>
                           <span>{formatCurrency(property.rental_data.rent_range_low)}</span>
@@ -924,7 +925,7 @@ export function ComprehensiveAttomDisplay({
                           <span className="text-muted-foreground">Rent Range (High)</span>
                           <span>{formatCurrency(property.rental_data.rent_range_high)}</span>
                         </div>
-                      </>
+                      </Fragment>
                     )}
                     
                     {property.rental_data.cap_rate && (
@@ -953,7 +954,7 @@ export function ComprehensiveAttomDisplay({
                         </span>
                       </div>
                     )}
-                  </>
+                  </Fragment>
                 ) : (
                   <Alert>
                     <Info className="h-4 w-4" />
@@ -974,7 +975,7 @@ export function ComprehensiveAttomDisplay({
               </CardHeader>
               <CardContent className="space-y-4">
                 {(property?.valuation?.estimated_value && property?.rental_data?.estimated_rent) ? (
-                  <>
+                  <Fragment>
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="text-center">
                         <p className="text-sm text-blue-600 font-medium">Purchase Price to Rent Ratio</p>
@@ -1010,7 +1011,7 @@ export function ComprehensiveAttomDisplay({
                         </div>
                       )}
                     </div>
-                  </>
+                  </Fragment>
                 ) : (
                   <Alert>
                     <Info className="h-4 w-4" />

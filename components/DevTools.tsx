@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -146,7 +147,7 @@ export function DevTools({ onNavigate }: DevToolsProps) {
       ) : activeTab === 'attom-config' ? (
         <AttomApiKeyConfigurator />
       ) : (
-        <>
+        <Fragment>
           {/* Demo Pages */}
           <Card>
         <CardHeader>
@@ -326,7 +327,7 @@ export function DevTools({ onNavigate }: DevToolsProps) {
           </div>
         </CardContent>
       </Card>
-        </>
+        </Fragment>
       )}
     </div>
   );

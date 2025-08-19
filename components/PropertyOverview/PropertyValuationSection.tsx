@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
@@ -148,14 +149,14 @@ export function PropertyValuationSection({ propertyData, mappedData }: PropertyV
 
                   {/* Value range */}
                   {(getExpandedValue('avm.amount.high') || getExpandedValue('avm.amount.low')) && (
-                    <>
+                    <Fragment>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Est. Value Range:</span>
                         <span className="font-semibold">
                           {formatCurrency(getExpandedValue('avm.amount.low'))} - {formatCurrency(getExpandedValue('avm.amount.high'))}
                         </span>
                       </div>
-                    </>
+                    </Fragment>
                   )}
                 </div>
               </div>
@@ -172,7 +173,7 @@ export function PropertyValuationSection({ propertyData, mappedData }: PropertyV
               <div className="space-y-3">
                 {/* Most recent sale */}
                 {(getExpandedValue('market.saleHistory') && Array.isArray(getExpandedValue('market.saleHistory'))) && (
-                  <>
+                  <Fragment>
                     {getExpandedValue('market.saleHistory').slice(0, 3).map((sale: any, index: number) => (
                       <div key={index} className="p-3 border rounded-lg">
                         <div className="flex justify-between items-start mb-2">
@@ -192,12 +193,12 @@ export function PropertyValuationSection({ propertyData, mappedData }: PropertyV
                         </div>
                       </div>
                     ))}
-                  </>
+                  </Fragment>
                 )}
 
                 {/* FIXED: Single sale data fallback */}
                 {(!getExpandedValue('market.saleHistory') || !Array.isArray(getExpandedValue('market.saleHistory'))) && (
-                  <>
+                  <Fragment>
                     {(getBestValue('property.sale.lastPrice', 'market.saleAmt') || getBestValue('property.sale.lastDate', 'market.saleTransDate')) && (
                       <div className="p-3 border rounded-lg">
                         <div className="flex justify-between items-start">
@@ -217,7 +218,7 @@ export function PropertyValuationSection({ propertyData, mappedData }: PropertyV
                         </div>
                       </div>
                     )}
-                  </>
+                  </Fragment>
                 )}
               </div>
             </div>

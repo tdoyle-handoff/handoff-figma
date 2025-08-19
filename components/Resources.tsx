@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { BookOpen, Calculator, Video, FileText, CheckSquare, ExternalLink, Search, Star, Clock, Play, Download, Bookmark } from 'lucide-react';
 import { useIsMobile } from './ui/use-mobile';
@@ -199,11 +200,11 @@ export default function Resources({ onNavigate }: ResourcesProps) {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="calculators">Calculators</TabsTrigger>
           {!isMobile && (
-            <>
+            <Fragment>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="videos">Videos</TabsTrigger>
               <TabsTrigger value="checklists">Checklists</TabsTrigger>
-            </>
+            </Fragment>
           )}
         </TabsList>
 
@@ -370,7 +371,7 @@ export default function Resources({ onNavigate }: ResourcesProps) {
         </TabsContent>
 
         {!isMobile && (
-          <>
+          <Fragment>
             <TabsContent value="guides" className="space-y-6">
               <div className="flex gap-4 mb-6">
                 <Input
@@ -410,13 +411,13 @@ export default function Resources({ onNavigate }: ResourcesProps) {
                             <span>•</span>
                             <span>{resource.views.toLocaleString()} views</span>
                             {resource.duration && (
-                              <>
+                              <Fragment>
                                 <span>•</span>
                                 <div className="flex items-center gap-1">
                                   <Clock className="w-4 h-4" />
                                   <span>{resource.duration}</span>
                                 </div>
-                              </>
+                              </Fragment>
                             )}
                           </div>
                           <Button>
@@ -497,7 +498,7 @@ export default function Resources({ onNavigate }: ResourcesProps) {
                 ))}
               </div>
             </TabsContent>
-          </>
+          </Fragment>
         )}
       </Tabs>
     </div>

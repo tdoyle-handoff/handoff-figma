@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { UrlModes } from '../utils/urlModes';
 
@@ -19,7 +20,7 @@ export function AppNotifications({
   onNavigateToDevTools 
 }: AppNotificationsProps) {
   return (
-    <>
+    <Fragment>
       {/* Authentication status notification for guest mode */}
       {isGuestMode && (
         <div className="bg-blue-600 text-white text-center py-2 px-4 text-sm">
@@ -233,6 +234,6 @@ export function AppNotifications({
           </div>
         </div>
       )}
-    </>
+    </Fragment>
   );
 }

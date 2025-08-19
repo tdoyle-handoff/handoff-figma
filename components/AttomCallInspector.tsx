@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -521,15 +522,15 @@ export function AttomCallInspector() {
                   size="lg"
                 >
                   {isLoading ? (
-                    <>
+                    <Fragment>
                       <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                       Making Request...
-                    </>
+                    </Fragment>
                   ) : (
-                    <>
+                    <Fragment>
                       <Play className="w-4 h-4 mr-2" />
                       Execute API Call
-                    </>
+                    </Fragment>
                   )}
                 </Button>
 

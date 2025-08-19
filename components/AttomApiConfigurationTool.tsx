@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -543,15 +544,15 @@ export function AttomApiConfigurationTool() {
                     disabled={isLoading || !apiKey.trim()}
                   >
                     {isLoading ? (
-                      <>
+                      <Fragment>
                         <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                         Testing...
-                      </>
+                      </Fragment>
                     ) : (
-                      <>
+                      <Fragment>
                         <CheckCircle className="w-4 h-4 mr-2" />
                         Test Key
-                      </>
+                      </Fragment>
                     )}
                   </Button>
                 </div>
@@ -737,15 +738,15 @@ export function AttomApiConfigurationTool() {
                   className="flex-1 max-w-xs"
                 >
                   {isTestingEndpoint ? (
-                    <>
+                    <Fragment>
                       <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                       Testing...
-                    </>
+                    </Fragment>
                   ) : (
-                    <>
+                    <Fragment>
                       <Zap className="w-4 h-4 mr-2" />
                       Test API Call
-                    </>
+                    </Fragment>
                   )}
                 </Button>
 

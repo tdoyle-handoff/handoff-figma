@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from 'react';
 import * as React from "react";
 import * as RechartsPrimitive from "recharts@2.15.2";
 
@@ -195,7 +196,7 @@ function ChartTooltipContent({
               {formatter && item?.value !== undefined && item.name ? (
                 formatter(item.value, item.name, item, index, item.payload)
               ) : (
-                <>
+                <Fragment>
                   {itemConfig?.icon ? (
                     <itemConfig.icon />
                   ) : (
@@ -238,7 +239,7 @@ function ChartTooltipContent({
                       </span>
                     )}
                   </div>
-                </>
+                </Fragment>
               )}
             </div>
           );

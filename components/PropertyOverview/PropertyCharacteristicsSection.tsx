@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
@@ -161,7 +162,7 @@ export function PropertyCharacteristicsSection({ propertyData, mappedData }: Pro
 
         {/* FIXED: Enhanced Additional Property Features with expanded profile data */}
         {getExpandedValue('building') && (
-          <>
+          <Fragment>
             <Separator className="my-6" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* FIXED: Enhanced Construction Details with more expanded fields */}
@@ -367,7 +368,7 @@ export function PropertyCharacteristicsSection({ propertyData, mappedData }: Pro
                 </div>
               )}
             </div>
-          </>
+          </Fragment>
         )}
       </CardContent>
     </Card>

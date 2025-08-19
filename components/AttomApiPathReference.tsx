@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -468,15 +469,15 @@ export function AttomApiPathReference() {
                           className="flex items-center gap-1 shrink-0"
                         >
                           {copiedPath === path ? (
-                            <>
+                            <Fragment>
                               <Check className="w-3 h-3" />
                               Copied
-                            </>
+                            </Fragment>
                           ) : (
-                            <>
+                            <Fragment>
                               <Copy className="w-3 h-3" />
                               Copy
-                            </>
+                            </Fragment>
                           )}
                         </Button>
                       </div>

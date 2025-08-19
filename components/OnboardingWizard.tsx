@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useCallback, useEffect } from 'react';
 import { 
   MapPin, 
@@ -606,15 +607,15 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               size="lg"
             >
               {currentStep === 4 ? (
-                <>
+                <Fragment>
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Complete Setup
-                </>
+                </Fragment>
               ) : (
-                <>
+                <Fragment>
                   Continue
                   <ArrowRight className="w-4 h-4 ml-2" />
-                </>
+                </Fragment>
               )}
             </Button>
 
@@ -717,15 +718,15 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               
               <Button onClick={handleNext} size="lg">
                 {currentStep === 4 ? (
-                  <>
+                  <Fragment>
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Complete Setup
-                  </>
+                  </Fragment>
                 ) : (
-                  <>
+                  <Fragment>
                     Continue
                     <ArrowRight className="w-4 h-4 ml-2" />
-                  </>
+                  </Fragment>
                 )}
               </Button>
             </div>

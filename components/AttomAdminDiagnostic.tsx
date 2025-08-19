@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -791,15 +792,15 @@ export function AttomAdminDiagnostic() {
                   className="flex items-center gap-2"
                 >
                   {isRunning ? (
-                    <>
+                    <Fragment>
                       <RefreshCw className="w-4 h-4 animate-spin" />
                       Running Diagnostics...
-                    </>
+                    </Fragment>
                   ) : (
-                    <>
+                    <Fragment>
                       <Zap className="w-4 h-4" />
                       Run Full Diagnostic
-                    </>
+                    </Fragment>
                   )}
                 </Button>
                 
@@ -845,7 +846,7 @@ export function AttomAdminDiagnostic() {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {serverHealth && (
-                  <>
+                  <Fragment>
                     <div className="text-center p-3 bg-muted/50 rounded-lg">
                       <div className="text-lg font-semibold text-green-600">
                         {serverHealth.status === 'healthy' ? 'Healthy' : 'Issues'}
@@ -858,11 +859,11 @@ export function AttomAdminDiagnostic() {
                       </div>
                       <div className="text-xs text-muted-foreground">Services</div>
                     </div>
-                  </>
+                  </Fragment>
                 )}
                 
                 {adminConfig && (
-                  <>
+                  <Fragment>
                     <div className="text-center p-3 bg-muted/50 rounded-lg">
                       <div className="text-lg font-semibold text-purple-600">
                         {adminConfig.endpoints?.length || 0}
@@ -875,7 +876,7 @@ export function AttomAdminDiagnostic() {
                       </div>
                       <div className="text-xs text-muted-foreground">Active</div>
                     </div>
-                  </>
+                  </Fragment>
                 )}
               </div>
             </CardContent>

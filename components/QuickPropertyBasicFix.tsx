@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -106,15 +107,15 @@ export function QuickPropertyBasicFix() {
             className="flex items-center gap-2"
           >
             {isFixing ? (
-              <>
+              <Fragment>
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Applying Fix...
-              </>
+              </Fragment>
             ) : (
-              <>
+              <Fragment>
                 <Wrench className="w-4 h-4" />
                 Fix Property-Basic Endpoint
-              </>
+              </Fragment>
             )}
           </Button>
 

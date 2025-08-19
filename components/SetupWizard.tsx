@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Eye, EyeOff, Mail, User, ArrowLeft, AlertCircle, UserPlus, Wifi, WifiOff, Users, Play, Server, CheckCircle, Shield } from 'lucide-react';
 import { Button } from './ui/button';
@@ -125,7 +126,7 @@ const AuthErrorAlert = ({
             <div className="grid gap-2">
               {/* Primary Solutions Based on Error Type */}
               {isInvalidCredentials && (
-                <>
+                <Fragment>
                   <Button
                     size="sm"
                     onClick={() => window.location.href = '?login-fix=true'}
@@ -144,7 +145,7 @@ const AuthErrorAlert = ({
                     Create New Account
                     <span className="text-xs opacity-90 ml-auto">If you're new</span>
                   </Button>
-                </>
+                </Fragment>
               )}
 
               {isAccountExists && (
@@ -160,7 +161,7 @@ const AuthErrorAlert = ({
               )}
 
               {isServerUnavailable && (
-                <>
+                <Fragment>
                   <Button
                     size="sm"
                     onClick={onContinueAsGuest}
@@ -179,7 +180,7 @@ const AuthErrorAlert = ({
                     Deploy Supabase Server
                     <span className="text-xs opacity-90 ml-auto">Enable full auth</span>
                   </Button>
-                </>
+                </Fragment>
               )}
 
               {/* Alternative Options */}
@@ -459,7 +460,7 @@ export function SetupWizard({
           </CardHeader>
           <CardContent className="space-y-4">
             {!resetEmailSent ? (
-              <>
+              <Fragment>
                 <div className="space-y-2">
                   <Label htmlFor="reset-email">Email Address</Label>
                   <Input
@@ -500,7 +501,7 @@ export function SetupWizard({
                     Back to Sign In
                   </Button>
                 </div>
-              </>
+              </Fragment>
             ) : (
               <div className="space-y-4 text-center">
                 <p className="text-sm text-muted-foreground">
@@ -747,12 +748,12 @@ export function SetupWizard({
                   {isSignUp ? 'Creating Account...' : 'Signing In...'}
                 </span>
               ) : (
-                <>
+                <Fragment>
                   <span className="flex items-center gap-2">
                     {serverAvailable && <Shield className="w-4 h-4" />}
                     {isSignUp ? 'Create Secure Account' : 'Sign In Securely'}
                   </span>
-                </>
+                </Fragment>
               )}
             </Button>
 
