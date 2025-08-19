@@ -4,6 +4,9 @@ import path from 'node:path'
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'sonner', 'clsx', 'tailwind-merge'],
+  },
   resolve: {
     alias: [
       // Support imports like "@/..." from src

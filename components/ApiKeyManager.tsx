@@ -18,7 +18,7 @@ import {
   TestTube,
   Wrench
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 interface ApiKeyStatus {
