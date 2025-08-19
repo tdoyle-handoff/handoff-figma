@@ -367,7 +367,7 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
 
           {showResetModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-              <div className="w-full max-w-sm rounded-lg bg-card border border-border p-4 shadow-lg">
+              <div className="w-full max-w-sm rounded-lg bg-white border border-border p-4 shadow-lg">
                 <h3 className="text-lg font-semibold mb-2">Reset your password</h3>
                 <p className="text-sm text-muted-foreground mb-4">Enter your account email. We’ll send you a reset link.</p>
                 <div className="space-y-2 mb-4">
