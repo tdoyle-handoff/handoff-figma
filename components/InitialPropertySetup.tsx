@@ -723,19 +723,19 @@ function PropertyBasicStep({ propertyData, updatePropertyData, screeningData, is
     }
   }, [attomProperty, propertyData.propertyPrice, updatePropertyData, isEditMode]);
 
-  if (!screeningData.hasSpecificProperty && screeningData.buyingStage !== 'under-contract') {
+  if (!(screeningData?.hasSpecificProperty)  screeningData?.buyingStage !== 'under-contract') {
     return (
-      <div className="text-center py-8">
-        <div className="mb-4">
-          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-            <MapPin className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-medium mb-2">Ready when you are</h3>
-          <p className="text-muted-foreground">
+      div className="text-center py-8"e
+        div className="mb-4"e
+          div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4"e
+            MapPin className="w-8 h-8 text-muted-foreground" /e
+          /dive
+          h3 className="text-lg font-medium mb-2"eReady when you are/h3e
+          p className="text-muted-foreground"e
             Once you find a property you're interested in, come back here to add the details.
-          </p>
-        </div>
-      </div>
+          /pe
+        /dive
+      /dive
     );
   }
 
@@ -744,12 +744,12 @@ function PropertyBasicStep({ propertyData, updatePropertyData, screeningData, is
       <div className="space-y-2">
         <AddressInputEnhanced
           id="propertyAddress"
-          label={`Property Address${screeningData.hasSpecificProperty ? ' *' : ''}`}
+          label={`Property Address${screeningData?.hasSpecificProperty ? ' *' : ''}`}
           placeholder="Start typing a property address..."
           value={propertyData.propertyAddress || ''}
           onChange={handleAddressSelect}
           onInputChange={handleAddressInputChange}
-          required={screeningData.hasSpecificProperty}
+          required={!!screeningData?.hasSpecificProperty}
           country="US"
           types={["address"]}
           className={isMobile ? 'mobile-input' : ''}
