@@ -94,6 +94,7 @@ interface InitialPropertySetupProps {
 
 export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, screeningData: propScreeningData }: InitialPropertySetupProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const SINGLE_PAGE = true;
   const [propertyData, setPropertyData] = useState<PropertyData>({});
   const [screeningData, setScreeningData] = useState<ScreeningData | null>(propScreeningData);
   const isMobile = useIsMobile();
@@ -210,22 +211,32 @@ export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, s
 
   const steps = generateSteps();
 
+  const handleSubmitAll = useCallback(() => {
+    // Mark setup complete and persist data
+    localStorage.setItem('handoff-initial-setup-complete', 'true');
+    localStorage.setItem('handoff-property-data', JSON.stringify(propertyData));
+    if (propertyData.attomProperty) {
+      localStorage.setItem('handoff-attom-property', JSON.stringify(propertyData.attomProperty));
+    }
+    onComplete(propertyData);
+  }, [propertyData, onComplete]);
+
   const handleNext = useCallback(() => {
+    if (SINGLE_PAGE) {
+      handleSubmitAll();
+      return;
+    }
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1);
     } else {
-      // Complete the setup
       localStorage.setItem('handoff-initial-setup-complete', 'true');
       localStorage.setItem('handoff-property-data', JSON.stringify(propertyData));
-      
-      // Store Attom data separately for easy access
       if (propertyData.attomProperty) {
         localStorage.setItem('handoff-attom-property', JSON.stringify(propertyData.attomProperty));
       }
-      
       onComplete(propertyData);
     }
-  }, [currentStep, steps.length, propertyData, onComplete]);
+  }, [SINGLE_PAGE, currentStep, steps.length, propertyData, onComplete, handleSubmitAll]);
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
@@ -250,18 +261,125 @@ export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, s
   }, [currentStep, steps, propertyData, screeningData]);
 
   if (!screeningData) {
+    // Proceed with defaults if screening data is not yet available
+  }
+
+  const progress = ((currentStep + 1) / steps.length) * 100;
+
+  if (SINGLE_PAGE) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Loading your setup...</h2>
-          <p className="text-muted-foreground">Preparing your personalized experience</p>
+      <div className={`min-h-screen bg-background ${isMobile ? 'page-content-mobile' : 'page-content'}`}>
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-foreground mb-2">
+              {isEditMode ? 'Update Property Setup' : 'Property Setup'}
+            </h1>
+            <p className="text-muted-foreground">
+              {isEditMode 
+                ? 'Update your property details and information'
+                : screeningData?.hasSpecificProperty 
+                  ? 'Let\'s set up your property details and view comprehensive analysis'
+                  : 'We\'ll customize this based on your needs'
+              }
+            </p>
+          </div>
+
+          {/* All Sections */}
+          <Card className="mb-6">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl">Basic Property Information</CardTitle>
+              <CardDescription>Address and purchase price</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PropertyBasicStep 
+                propertyData={propertyData}
+                updatePropertyData={updatePropertyData}
+                screeningData={screeningData}
+                isMobile={isMobile}
+                isEditMode={isEditMode}
+              />
+            </CardContent>
+          </Card>
+
+          {steps.find(s => s.id === 'contract-details') && (
+            <Card className="mb-6">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Contract Information</CardTitle>
+                <CardDescription>Important dates and terms</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ContractDetailsStep 
+                  propertyData={propertyData}
+                  updatePropertyData={updatePropertyData}
+                  isMobile={isMobile}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {steps.find(s => s.id === 'financial-info') && (
+            <Card className="mb-6">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Financial Details</CardTitle>
+                <CardDescription>Your financing and budget information</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FinancialInfoStep 
+                  propertyData={propertyData}
+                  updatePropertyData={updatePropertyData}
+                  isMobile={isMobile}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {steps.find(s => s.id === 'team-services') && (
+            <Card className="mb-6">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Your Team</CardTitle>
+                <CardDescription>Professionals helping with your purchase</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TeamServicesStep 
+                  propertyData={propertyData}
+                  updatePropertyData={updatePropertyData}
+                  isMobile={isMobile}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {steps.find(s => s.id === 'investment-details') && (
+            <Card className="mb-6">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Investment Analysis</CardTitle>
+                <CardDescription>Rental income and return calculations</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InvestmentDetailsStep 
+                  propertyData={propertyData}
+                  updatePropertyData={updatePropertyData}
+                  isMobile={isMobile}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Submit */}
+          <div className="flex justify-end">
+            <Button onClick={handleSubmitAll} className={isMobile ? 'mobile-button' : ''}>
+              {isEditMode ? 'Save Changes' : 'Complete Setup'}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Legacy step-based fallback
   const currentStepData = steps[currentStep];
-  const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
     <div className={`min-h-screen bg-background ${isMobile ? 'page-content-mobile' : 'page-content'}`}>

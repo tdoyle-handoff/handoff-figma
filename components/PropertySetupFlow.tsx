@@ -48,7 +48,7 @@ interface PropertySetupFlowProps {
 }
 
 export function PropertySetupFlow({ onComplete, isEditMode = false, onExitEditMode }: PropertySetupFlowProps) {
-  const [currentPhase, setCurrentPhase] = useState<'screening' | 'setup'>('screening');
+  const [currentPhase, setCurrentPhase] = useState<'screening' | 'setup'>('setup');
   const [screeningData, setScreeningData] = useState<ScreeningData | null>(null);
 
   // Check if screening is already complete
@@ -178,22 +178,12 @@ export function PropertySetupFlow({ onComplete, isEditMode = false, onExitEditMo
         </div>
       )}
 
-      {/* Main Content */}
-      {currentPhase === 'screening' ? (
-        <PropertySetupScreening
-          onComplete={handleScreeningComplete}
-          onSkip={handleScreeningSkip}
-          isEditMode={isEditMode}
-          existingData={screeningData}
-        />
-      ) : (
-        <InitialPropertySetup
-          onComplete={handleSetupComplete}
-          onBack={handleBackToScreening}
-          isEditMode={isEditMode}
-          screeningData={screeningData}
-        />
-      )}
+      {/* Main Content: Always use single-page setup */}
+      <InitialPropertySetup
+        onComplete={handleSetupComplete}
+        isEditMode={isEditMode}
+        screeningData={screeningData}
+      />
     </div>
   );
 }
