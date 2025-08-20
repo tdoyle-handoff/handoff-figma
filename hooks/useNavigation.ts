@@ -14,7 +14,8 @@ export type PageType =
   | 'communications' 
   | 'mortgage-calculator' 
   | 'closing-calculator' 
-  | 'settings';
+  | 'settings'
+  | 'dev-tools';
 
 interface NavigationState {
   currentPage: PageType;
@@ -63,7 +64,7 @@ const isValidPageType = (page: string): page is PageType => {
     'overview', 'tasks', 'property', 'legal', 'financing', 
     'inspections', 'insurance', 'documents', 'resources', 
     'team', 'communications', 'mortgage-calculator', 
-    'closing-calculator', 'settings'
+    'closing-calculator', 'settings', 'dev-tools'
   ];
   return validPages.includes(page as PageType);
 };
@@ -99,7 +100,6 @@ export function useNavigation(): NavigationState & NavigationActions {
   const [previousPage, setPreviousPage] = useState<PageType | null>(() => {
     return getSavedPreviousPage();
   });
-
   const pageTitles = useMemo(() => ({
     'overview': 'Dashboard - Handoff',
     'tasks': 'Tasks - Handoff',
@@ -115,6 +115,7 @@ export function useNavigation(): NavigationState & NavigationActions {
     'mortgage-calculator': 'Mortgage Calculator - Handoff',
     'closing-calculator': 'Closing Calculator - Handoff',
     'settings': 'Settings - Handoff',
+    'dev-tools': 'Developer Tools - Handoff',
   } as const), []);
 
   // Save current page to localStorage whenever it changes

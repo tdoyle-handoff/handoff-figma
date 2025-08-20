@@ -24,9 +24,10 @@ import {
   Building,
   BarChart3
 } from 'lucide-react';
+import type { PageType } from '../hooks/useNavigation';
 
 interface NavigationItem {
-  id: string;
+  id: PageType;
   label: string;
   icon: React.ElementType;
   description?: string;
@@ -35,8 +36,8 @@ interface NavigationItem {
 }
 
 interface DashboardLayoutProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
+  currentPage: PageType;
+  onPageChange: (page: PageType) => void;
   setupData?: any;
   onSignOut: () => void;
   isPropertySetupComplete: boolean;

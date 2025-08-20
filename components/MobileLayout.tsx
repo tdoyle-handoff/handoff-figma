@@ -25,9 +25,10 @@ import {
   TrendingUp,
   BarChart3
 } from 'lucide-react';
+import type { PageType } from '../hooks/useNavigation';
 
 interface NavigationItem {
-  id: string;
+  id: PageType;
   label: string;
   icon: React.ElementType;
   description?: string;
@@ -36,8 +37,8 @@ interface NavigationItem {
 }
 
 interface MobileLayoutProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
+  currentPage: PageType;
+  onPageChange: (page: PageType) => void;
   setupData?: any;
   onSignOut: () => void;
   isPropertySetupComplete: boolean;
@@ -62,7 +63,7 @@ export default function MobileLayout({
       id: 'overview',
       label: 'Dashboard',
       icon: BarChart3,
-      description: 'Overview & progress',
+      description: 'Overview \u0026 progress',
       category: 'Core'
     },
     {
@@ -136,7 +137,7 @@ export default function MobileLayout({
   ];
 
   // Bottom navigation items (most important)
-  const bottomNavItems = [
+  const bottomNavItems: { id: PageType; label: string; icon: React.ElementType }[] = [
     {
       id: 'overview',
       label: 'Dashboard',

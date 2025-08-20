@@ -47,9 +47,11 @@ const LoadingSpinner = () => (
   </div>
 );
 
+import type { PageType } from '../hooks/useNavigation';
+
 interface PageRendererProps {
   currentPage: string;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: PageType) => void;
   userProfile?: any;
   setupData?: any;
   onSignOut: () => void;
@@ -64,6 +66,9 @@ export function PageRenderer({
   onSignOut,
   isPropertySetupComplete 
 }: PageRendererProps) {
+  // Adapter to support components still expecting string navigation params
+  const navigateString = React.useCallback((page: string) => onNavigate(page as PageType), [onNavigate]);
+
   const renderPage = () => {
     switch (currentPage) {
       case 'overview':
@@ -75,7 +80,7 @@ export function PageRenderer({
       case 'tasks':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Tasks />
+            <Tasks onNavigate={navigateString} />
           </Suspense>
         );
       
@@ -159,7 +164,7 @@ export function PageRenderer({
       case 'dev-tools':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <DevTools onNavigate={onNavigate} />
+            <DevTools onNavigate={navigateString} />
           </Suspense>
         );
       
@@ -173,7 +178,7 @@ export function PageRenderer({
       case 'comprehensive-analysis':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <ComprehensivePropertyAnalysis onNavigate={onNavigate} />
+            <ComprehensivePropertyAnalysis onNavigate={navigateString} />
           </Suspense>
         );
       
