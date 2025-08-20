@@ -35,7 +35,8 @@ import {
   Upload,
   Trash2
 } from 'lucide-react';
-import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { ATTOM_API_DEFAULT_KEY } from '../utils/attom/config';
 
 interface ApiKeyTestResult {
   success: boolean;
@@ -91,7 +92,7 @@ interface SavedConfiguration {
 export function AttomApiConfigurationTool() {
   // State management
   const [activeTab, setActiveTab] = useState('api-key');
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(ATTOM_API_DEFAULT_KEY);
   const [showApiKey, setShowApiKey] = useState(false);
   const [testResult, setTestResult] = useState<ApiKeyTestResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -249,7 +250,8 @@ export function AttomApiConfigurationTool() {
       if (response.ok) {
         const result = await response.json();
         if (result.hasKey) {
-          setApiKey('cca24467d5861c7e58a2bc7c9cc926af'); // Use provided key as default
+          // Key exists on server; for security, do not expose it in the client.
+          // You can test endpoints via server proxies that attach the key.
         }
       }
     } catch (error) {
@@ -561,7 +563,7 @@ export function AttomApiConfigurationTool() {
               {/* Quick Actions */}
               <div className="flex gap-2 items-center">
                 <Button
-                  onClick={() => setApiKey('cca24467d5861c7e58a2bc7c9cc926af')}
+                  onClick={() => setApiKey(ATTOM_API_DEFAULT_KEY)}
                   variant="outline"
                   size="sm"
                 >

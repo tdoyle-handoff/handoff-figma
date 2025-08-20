@@ -1,6 +1,7 @@
 import { Hono } from 'npm:hono';
 import { cors } from 'npm:hono/cors';
 import * as kv from './kv_store.tsx';
+import { ATTOM_API_KEY, ATTOM_BASE_URL } from './shared/attom_config.ts';
 
 const attomComprehensive = new Hono();
 
@@ -13,13 +14,8 @@ attomComprehensive.use('*', cors({
 
 // Get Attom API configuration
 function getAttomConfig() {
-  const apiKey = Deno.env.get('ATTOM_API_KEY');
-  const baseUrl = 'https://api.gateway.attomdata.com/propertyapi/v1.0.0';
-  
-  if (!apiKey) {
-    throw new Error('ATTOM_API_KEY environment variable is required');
-  }
-  
+  const apiKey = ATTOM_API_KEY;
+  const baseUrl = ATTOM_BASE_URL;
   return { apiKey, baseUrl };
 }
 

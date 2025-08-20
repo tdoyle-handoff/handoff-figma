@@ -16,7 +16,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 interface ApiKeyTestResult {
   success: boolean;
@@ -58,7 +58,7 @@ export function AttomApiKeyConfigurator() {
         {
           method: 'GET',
           headers: {
-'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+'Authorization': `Bearer ${publicAnonKey}`,
             'Content-Type': 'application/json'
           }
         }
@@ -86,7 +86,7 @@ export function AttomApiKeyConfigurator() {
         {
           method: 'GET',
           headers: {
-'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+'Authorization': `Bearer ${publicAnonKey}`,
             'Content-Type': 'application/json'
           }
         }
@@ -118,7 +118,7 @@ export function AttomApiKeyConfigurator() {
         {
           method: 'POST',
           headers: {
-'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+'Authorization': `Bearer ${publicAnonKey}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ apiKey: newApiKey })

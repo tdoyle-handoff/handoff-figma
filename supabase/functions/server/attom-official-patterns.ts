@@ -1,5 +1,6 @@
 import { Hono } from 'npm:hono';
 import { cors } from 'npm:hono/cors';
+import { ATTOM_API_KEY, ATTOM_BASE_URL } from './shared/attom_config.ts';
 
 const attomOfficial = new Hono();
 
@@ -18,15 +19,8 @@ interface AttomAPIConfig {
 
 // Get ATTOM API configuration following official patterns
 function getOfficialAttomConfig(): AttomAPIConfig {
-  const apiKey = Deno.env.get('ATTOM_API_KEY');
-  
-  if (!apiKey) {
-    throw new Error('ATTOM_API_KEY environment variable is required');
-  }
-  
-  // Official ATTOM API base URL from documentation
-  const baseUrl = 'https://api.gateway.attomdata.com/propertyapi/v1.0.0';
-  
+  const apiKey = ATTOM_API_KEY;
+  const baseUrl = ATTOM_BASE_URL;
   return { apiKey, baseUrl };
 }
 

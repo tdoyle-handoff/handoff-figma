@@ -1,5 +1,6 @@
 import { Hono } from 'npm:hono';
 import { cors } from 'npm:hono/cors';
+import { ATTOM_API_KEY } from './shared/attom_config.ts';
 
 const attomKeyUpdater = new Hono();
 
@@ -13,7 +14,7 @@ attomKeyUpdater.use('*', cors({
 // Test if current API key works
 attomKeyUpdater.get('/test-current-key', async (c) => {
   try {
-    const apiKey = Deno.env.get('ATTOM_API_KEY');
+    const apiKey = ATTOM_API_KEY;
     
     if (!apiKey) {
       return c.json({

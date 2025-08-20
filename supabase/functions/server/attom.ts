@@ -1,5 +1,6 @@
 import { Hono } from 'npm:hono';
 import { cors } from 'npm:hono/cors';
+import { ATTOM_API_KEY } from './shared/attom_config.ts';
 
 const attom = new Hono();
 
@@ -67,15 +68,7 @@ attom.get('/property-basic-profile', async (c) => {
       }, 400);
     }
 
-    const attomApiKey = Deno.env.get('ATTOM_API_KEY');
-    if (!attomApiKey) {
-      console.error('❌ ATTOM_API_KEY environment variable not set');
-      return c.json({
-        success: false,
-        error: 'ATTOM API key not configured',
-        timestamp: new Date().toISOString()
-      }, 500);
-    }
+    const attomApiKey = ATTOM_API_KEY;
 
     // Build API URL
     let apiUrl = 'https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/basicprofile';
@@ -188,15 +181,7 @@ attom.get('/search-by-address', async (c) => {
       }, 400);
     }
 
-    const attomApiKey = Deno.env.get('ATTOM_API_KEY');
-    if (!attomApiKey) {
-      console.error('❌ ATTOM_API_KEY environment variable not set');
-      return c.json({
-        success: false,
-        error: 'ATTOM API key not configured. Please set up your ATTOM API key.',
-        timestamp: new Date().toISOString()
-      }, 500);
-    }
+    const attomApiKey = ATTOM_API_KEY;
 
     // Parse address into components
     const addressParts = address.split(',').map(part => part.trim());
