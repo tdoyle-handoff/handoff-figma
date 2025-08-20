@@ -134,7 +134,7 @@ const STATE_LEGAL_INFO = {
 
 interface OnboardingData {
   // Step 1: Location & Property Type
-  propertyAddress: string;
+  propertyAddress: string | import('../hooks/useAddressAutocomplete').AddressDetails;
   propertyType: string;
   propertyState: string;
 
@@ -359,11 +359,11 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="propertyAddress">Property Location</Label>
-          <AddressAutocompleteInput
-            value={formData.propertyAddress || ''}
-            onChange={(value) => updateFormData({ propertyAddress: value })}
-            onAddressSelect={handleAddressSelect}
-            placeholder="Enter city, state, or specific address..."
+            <AddressAutocompleteInput
+              value={(typeof formData.propertyAddress === 'string' ? formData.propertyAddress : formData.propertyAddress?.formatted_address) || ''}
+              onChange={(value) => updateFormData({ propertyAddress: value || '' })}
+              onAddressSelect={handleAddressSelect}
+              placeholder="Enter city, state, or specific address..."
             className={errors.propertyAddress ? 'border-red-500' : ''}
           />
           {errors.propertyAddress && (
@@ -778,8 +778,8 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
             <div className="space-y-2">
               <Label htmlFor="propertyAddress">Property Location</Label>
               <AddressAutocompleteInput
-                value={formData.propertyAddress || ''}
-                onChange={(value) => updateFormData({ propertyAddress: value })}
+                value={(typeof formData.propertyAddress === 'string' ? formData.propertyAddress : formData.propertyAddress?.formatted_address) || ''}
+                onChange={(value) => updateFormData({ propertyAddress: value || '' })}
                 onAddressSelect={handleAddressSelect}
                 placeholder="Enter city, state, or specific address..."
                 className={errors.propertyAddress ? 'border-red-500' : ''}

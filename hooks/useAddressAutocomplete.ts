@@ -66,7 +66,7 @@ export function useAddressAutocomplete({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<AddressDetails | null>(null);
   const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(null);
-  const [fallbackMode] = useState(false);
+  const [fallbackMode, setFallbackMode] = useState(false);
   
   const debounceRef = useRef<NodeJS.Timeout>();
   const abortControllerRef = useRef<AbortController>();
@@ -458,7 +458,7 @@ export function useAddressAutocomplete({
     selectSuggestion,
     clearSuggestions,
     selectedAddress,
-    fallbackMode: false,
+    fallbackMode,
     apiKeyValid
   };
 }

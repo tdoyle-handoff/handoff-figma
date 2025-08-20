@@ -1,4 +1,5 @@
 import { AUTH_CONFIG, AUTH_VALIDATION, AUTH_ERROR_MESSAGES } from './authConstants';
+export { AUTH_ERROR_MESSAGES } from './authConstants';
 import type { UserProfile } from './supabase/client';
 
 export interface SetupData {

@@ -56,8 +56,8 @@ export function AIDashboard() {
     const tasks = taskContext.tasks || [];
 
     const completedTasks = tasks.filter(task => task.completed).length;
-    const overdueTasks = tasks.filter(task => !task.completed && new Date(task.dueDate) < new Date()).length;
-    const urgentTasks = tasks.filter(task => !task.completed && new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)).length;
+    const overdueTasks = tasks.filter(task => !task.completed && typeof task.dueDate === 'string' && new Date(task.dueDate) < new Date()).length;
+    const urgentTasks = tasks.filter(task => !task.completed && typeof task.dueDate === 'string' && new Date(task.dueDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)).length;
 
     setAIAnalysis({
       overallHealth: progress.timelineRisk === 'low' ? 'excellent' : progress.timelineRisk === 'medium' ? 'good' : 'needs-attention',

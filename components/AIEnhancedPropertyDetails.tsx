@@ -37,7 +37,7 @@ export function AIEnhancedPropertyDetails() {
   const isMobile = useIsMobile();
   
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState(propertyContext.propertyData || {});
+  const [formData, setFormData] = useState<Partial<import('./PropertyContext').PropertyData>>(propertyContext.propertyData || {});
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showAiInsights, setShowAiInsights] = useState(true);
@@ -157,10 +157,12 @@ export function AIEnhancedPropertyDetails() {
 
   const handleComplete = async () => {
     if (validateStep(currentStep)) {
-      await propertyContext.savePropertyData(formData);
+      // Merge partial form data with any existing property data before saving
+      const merged = { ...(propertyContext.propertyData || {}), ...(formData || {}) } as import('./PropertyContext').PropertyData;
+      await propertyContext.savePropertyData(merged);
       ai.sendMessage("I've completed my property details setup! What should I focus on next?", {
         action: 'completed_setup',
-        data: formData
+        data: merged
       });
     }
   };

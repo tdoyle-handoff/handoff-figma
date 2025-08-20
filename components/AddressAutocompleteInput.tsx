@@ -12,6 +12,7 @@ import type { AddressDetails, AddressSuggestion } from '../hooks/useAddressAutoc
 interface AddressAutocompleteInputProps {
   value?: string;
   onChange: (address: AddressDetails | null) => void;
+  onAddressSelect?: (address: string, components: any) => void;
   onRawInputChange?: (value: string) => void;
   placeholder?: string;
   required?: boolean;
@@ -69,6 +70,8 @@ export function AddressAutocompleteInput({
   } = useAddressAutocomplete({
     onAddressSelect: (address) => {
       onChange(address);
+      // Notify consumer with a simplified signature if provided
+      props.onAddressSelect?.(address.formatted_address, { state: address.administrative_area_level_1 });
       if (clearOnSelect) {
         setQuery('');
         setHasUserInput(false);

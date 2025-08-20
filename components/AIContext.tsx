@@ -480,7 +480,7 @@ export function AIProvider({ children }: AIProviderProps) {
       'contingencies': "Contingencies are conditions in your purchase contract that must be met for the sale to proceed. Common ones include financing, inspection, and appraisal contingencies. They protect buyers by allowing them to cancel if conditions aren't met."
     };
 
-    const explanation = explanations[concept] || "I'd be happy to explain real estate concepts! Could you be more specific about what you'd like to understand?";
+    const explanation = (explanations as Record<string, string>)[concept] || "I'd be happy to explain real estate concepts! Could you be more specific about what you'd like to understand?";
     
     return {
       content: explanation,
