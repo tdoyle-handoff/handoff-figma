@@ -285,6 +285,16 @@ export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, s
             </p>
           </div>
 
+          {/* Welcome */}
+          <Card className="mb-6">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Welcome to Property Details</CardTitle>
+              <CardDescription>
+                We’ll first have you fill out a short form to set up your property details. You can update this any time later.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
           {/* All Sections */}
           <Card className="mb-6">
             <CardHeader className="text-center">
@@ -660,12 +670,10 @@ function PropertyBasicStep({ propertyData, updatePropertyData, screeningData, is
     }
   });
 
-  // Auto-populate from screening data if available
+  // Do not auto-populate any values; user should enter everything manually
   useEffect(() => {
-    if (screeningData?.propertyAddress && !propertyData.propertyAddress) {
-      updatePropertyData({ propertyAddress: screeningData.propertyAddress });
-    }
-  }, [screeningData?.propertyAddress, propertyData.propertyAddress, updatePropertyData]);
+    // intentionally left blank to avoid pre-filling
+  }, []);
 
   // Auto-show analysis if we already have property data
   useEffect(() => {
@@ -712,32 +720,11 @@ function PropertyBasicStep({ propertyData, updatePropertyData, screeningData, is
     }
   };
 
-  // Auto-fill price from Attom data if available and not already set
+  // Do not auto-fill purchase price from ATTOM; user must enter manually
   useEffect(() => {
-    if (attomProperty && !propertyData.propertyPrice && attomProperty.valuation.estimated_value) {
-      const suggestedPrice = formatCurrency(attomProperty.valuation.estimated_value);
-      // Don't auto-fill in edit mode to preserve user's existing data
-      if (!isEditMode) {
-        updatePropertyData({ propertyPrice: suggestedPrice });
-      }
-    }
-  }, [attomProperty, propertyData.propertyPrice, updatePropertyData, isEditMode]);
+    // intentionally no-op: avoid auto-filling price
+  }, []);
 
-  if (!(screeningData?.hasSpecificProperty)  screeningData?.buyingStage !== 'under-contract') {
-    return (
-      div className="text-center py-8"e
-        div className="mb-4"e
-          div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4"e
-            MapPin className="w-8 h-8 text-muted-foreground" /e
-          /dive
-          h3 className="text-lg font-medium mb-2"eReady when you are/h3e
-          p className="text-muted-foreground"e
-            Once you find a property you're interested in, come back here to add the details.
-          /pe
-        /dive
-      /dive
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -1065,17 +1052,12 @@ function FinancialInfoStep({ propertyData, updatePropertyData, screeningData, is
           id="hoaFees"
           type="text"
           placeholder="$250"
-          value={propertyData.hoaFees || (propertyData.attomProperty?.neighborhood?.hoa_info?.monthly_fee ? formatCurrency(propertyData.attomProperty.neighborhood.hoa_info.monthly_fee) : '')}
+          value={propertyData.hoaFees || ''}
           onChange={(e) => updatePropertyData({ hoaFees: e.target.value })}
           className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary ${
             isMobile ? 'mobile-input' : ''
           }`}
         />
-        {propertyData.attomProperty?.neighborhood?.hoa_info?.monthly_fee && (
-          <p className="text-xs text-muted-foreground">
-            Auto-filled from Attom data: {formatCurrency(propertyData.attomProperty.neighborhood.hoa_info.monthly_fee)}
-          </p>
-        )}
       </div>
     </div>
   );
