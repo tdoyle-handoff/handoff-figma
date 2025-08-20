@@ -15,7 +15,11 @@ import {
   Target,
   CreditCard,
   FileText,
-  Shield
+  Shield,
+  Bed,
+  Bath,
+  ListChecks,
+  Sparkles
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -56,6 +60,36 @@ const TIMELINE_OPTIONS = [
   { value: '6-months', label: 'Within 6 months', description: 'Planning ahead, getting prepared' },
   { value: '1-year', label: 'Within a year', description: 'Early planning stage' },
   { value: 'exploring', label: 'Just exploring', description: 'Learning about the process' }
+];
+
+// Buying stage options
+const BUYING_STAGES = [
+  { value: 'just-looking', label: 'Just looking' },
+  { value: 'researching', label: 'Researching & planning' },
+  { value: 'touring', label: 'Touring homes' },
+  { value: 'making-offers', label: 'Making offers' },
+  { value: 'under-contract', label: 'Under contract' }
+];
+
+// Intended use options
+const HOME_USES = [
+  { value: 'primary', label: 'Primary residence' },
+  { value: 'investment', label: 'Investment property' },
+  { value: 'vacation', label: 'Vacation/second home' }
+];
+
+const BEDROOM_OPTIONS = ['Studio', '1+', '2+', '3+', '4+', '5+'];
+const BATHROOM_OPTIONS = ['1+', '1.5+', '2+', '2.5+', '3+', '3.5+'];
+
+const FEATURE_OPTIONS = [
+  'Garage',
+  'Yard',
+  'Pool',
+  'Updated kitchen',
+  'Air conditioning',
+  'In-unit laundry',
+  'Walkability',
+  'Good schools'
 ];
 
 // State-specific legal requirements (simplified)
@@ -103,6 +137,15 @@ interface OnboardingData {
   propertyAddress: string;
   propertyType: string;
   propertyState: string;
+
+  // Home search preferences
+  buyerStage: string; // stage in the process
+  homeUse: string; // primary, investment, vacation
+  bedrooms: string; // desired bedrooms
+  bathrooms: string; // desired bathrooms
+  features: string[]; // desired features
+  mustHaves: string; // free-text must-haves
+  niceToHaves: string; // free-text nice-to-haves
   
   // Step 2: Budget & Financing
   priceRange: string;
@@ -171,10 +214,19 @@ const ProgressIndicator = ({ currentStep, totalSteps }: { currentStep: number; t
 
 export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<OnboardingData>>({
+const [formData, setFormData] = useState<Partial<OnboardingData>>({
     propertyAddress: '',
     propertyType: '',
     propertyState: '',
+
+    buyerStage: '',
+    homeUse: '',
+    bedrooms: '',
+    bathrooms: '',
+    features: [],
+    mustHaves: '',
+    niceToHaves: '',
+
     priceRange: '',
     downPayment: '',
     financingType: '',
@@ -294,7 +346,7 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
     });
   }, [updateFormData]);
 
-  // Step 1: Location & Property Type
+// Step 1: Location & Property Type
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -339,6 +391,111 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
           {errors.propertyType && (
             <p className="text-sm text-red-600">{errors.propertyType}</p>
           )}
+        </div>
+
+        {/* New: Home search preferences */}
+        <div className="space-y-6 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Where are you in the process?</Label>
+              <Select value={formData.buyerStage || ''} onValueChange={(value) => updateFormData({ buyerStage: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your stage" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUYING_STAGES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Intended use</Label>
+              <Select value={formData.homeUse || ''} onValueChange={(value) => updateFormData({ homeUse: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select intended use" />
+                </SelectTrigger>
+                <SelectContent>
+                  {HOME_USES.map((u) => (
+                    <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Bedrooms</Label>
+              <Select value={formData.bedrooms || ''} onValueChange={(value) => updateFormData({ bedrooms: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BEDROOM_OPTIONS.map((b) => (
+                    <SelectItem key={b} value={b}>{b}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Bathrooms</Label>
+              <Select value={formData.bathrooms || ''} onValueChange={(value) => updateFormData({ bathrooms: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BATHROOM_OPTIONS.map((b) => (
+                    <SelectItem key={b} value={b}>{b}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Desired features</Label>
+            <div className="flex flex-wrap gap-2">
+              {FEATURE_OPTIONS.map((f) => {
+                const active = (formData.features || []).includes(f);
+                return (
+                  <button
+                    type="button"
+                    key={f}
+                    onClick={() => {
+                      const set = new Set(formData.features || []);
+                      if (set.has(f)) set.delete(f); else set.add(f);
+                      updateFormData({ features: Array.from(set) });
+                    }}
+                    className={`px-3 py-1 rounded-full border text-sm transition ${active ? 'bg-primary text-white border-primary' : 'bg-white hover:bg-muted/50'}`}
+                  >
+                    <ListChecks className="w-3 h-3 inline mr-1" /> {f}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Must-haves (optional)</Label>
+              <Input
+                type="text"
+                placeholder="e.g., garage, fenced yard, office"
+                value={formData.mustHaves || ''}
+                onChange={(e) => updateFormData({ mustHaves: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Nice-to-haves (optional)</Label>
+              <Input
+                type="text"
+                placeholder="e.g., pool, finished basement"
+                value={formData.niceToHaves || ''}
+                onChange={(e) => updateFormData({ niceToHaves: e.target.value })}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -638,6 +795,111 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               {errors.propertyType && (
                 <p className="text-sm text-red-600">{errors.propertyType}</p>
               )}
+            </div>
+
+            {/* New: Home search preferences */}
+            <div className="space-y-6 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Where are you in the process?</Label>
+                  <Select value={formData.buyerStage || ''} onValueChange={(value) => updateFormData({ buyerStage: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your stage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BUYING_STAGES.map((s) => (
+                        <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Intended use</Label>
+                  <Select value={formData.homeUse || ''} onValueChange={(value) => updateFormData({ homeUse: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select intended use" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {HOME_USES.map((u) => (
+                        <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Bedrooms</Label>
+                  <Select value={formData.bedrooms || ''} onValueChange={(value) => updateFormData({ bedrooms: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BEDROOM_OPTIONS.map((b) => (
+                        <SelectItem key={b} value={b}>{b}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Bathrooms</Label>
+                  <Select value={formData.bathrooms || ''} onValueChange={(value) => updateFormData({ bathrooms: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BATHROOM_OPTIONS.map((b) => (
+                        <SelectItem key={b} value={b}>{b}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Desired features</Label>
+                <div className="flex flex-wrap gap-2">
+                  {FEATURE_OPTIONS.map((f) => {
+                    const active = (formData.features || []).includes(f);
+                    return (
+                      <button
+                        type="button"
+                        key={f}
+                        onClick={() => {
+                          const set = new Set(formData.features || []);
+                          if (set.has(f)) set.delete(f); else set.add(f);
+                          updateFormData({ features: Array.from(set) });
+                        }}
+                        className={`px-3 py-1 rounded-full border text-sm transition ${active ? 'bg-primary text-white border-primary' : 'bg-white hover:bg-muted/50'}`}
+                      >
+                        <ListChecks className="w-3 h-3 inline mr-1" /> {f}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Must-haves (optional)</Label>
+                  <Input
+                    type="text"
+                    placeholder="e.g., garage, fenced yard, office"
+                    value={formData.mustHaves || ''}
+                    onChange={(e) => updateFormData({ mustHaves: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Nice-to-haves (optional)</Label>
+                  <Input
+                    type="text"
+                    placeholder="e.g., pool, finished basement"
+                    value={formData.niceToHaves || ''}
+                    onChange={(e) => updateFormData({ niceToHaves: e.target.value })}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

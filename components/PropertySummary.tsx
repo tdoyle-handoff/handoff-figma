@@ -141,28 +141,6 @@ export default function PropertySummary({
   // ATTOM API endpoints configuration
   const endpoints: AttomEndpoint[] = [
     {
-      id: 'basicprofile',
-      name: 'Basic Profile',
-      path: '/propertyapi/v1.0.0/property/basicprofile',
-      description: 'Get basic property information including address, lot size, and building details',
-      icon: <Home className="w-4 h-4" />,
-      sampleAddress: '586 Franklin Ave, Brooklyn, NY'
-    },
-    {
-      id: 'detail',
-      name: 'Property Detail',
-      path: '/propertyapi/v1.0.0/property/detail',
-      description: 'Get detailed property information including rooms, features, and history',
-      icon: <Database className="w-4 h-4" />
-    },
-    {
-      id: 'saledetail',
-      name: 'Sale Detail',
-      path: '/propertyapi/v1.0.0/sale/detail',
-      description: 'Get detailed sale information and transaction history',
-      icon: <Receipt className="w-4 h-4" />
-    },
-    {
       id: 'expandedprofile',
       name: 'Expanded Profile',
       path: '/propertyapi/v1.0.0/property/expandedprofile',
@@ -974,20 +952,20 @@ export default function PropertySummary({
 
             {/* Property Data & API Results Tab */}
             <TabsContent value="property-data" className="space-y-6 mt-6">
-              {/* Status Alert */}
+{/* Status Alert */}
               {propertyAddress ? (
                 <Alert>
                   <Zap className="h-4 w-4 text-green-600" />
                   <AlertDescription>
                     <div className="flex items-center justify-between">
-                      <span><strong>Auto-Testing Property:</strong> {displayAddress} - All ATTOM API endpoints are automatically tested.</span>
+                      <span><strong>Loading Property Data:</strong> {displayAddress} — fetching ATTOM Expanded Profile.</span>
                       <Button onClick={refreshAllEndpoints} variant="outline" size="sm" disabled={isTestingInProgress}>
                         {isTestingInProgress ? (
                           <Loader2 className="w-4 h-4 animate-spin mr-2" />
                         ) : (
                           <RefreshCw className="w-4 h-4 mr-2" />
                         )}
-                        Refresh All
+                        Refresh
                       </Button>
                     </div>
                   </AlertDescription>
@@ -996,7 +974,7 @@ export default function PropertySummary({
                 <Alert className="border-amber-200 bg-amber-50">
                   <AlertCircle className="h-4 w-4 text-amber-600" />
                   <AlertDescription>
-                    <strong>No Property Address Found:</strong> Please complete your property setup to enable automatic API testing.
+                    <strong>No Property Address Found:</strong> Please complete your property setup to load property data.
                   </AlertDescription>
                 </Alert>
               )}
@@ -1011,130 +989,35 @@ export default function PropertySummary({
                 </Alert>
               )}
 
-              {/* All API Results */}
-              {Object.keys(endpointResults).length > 0 && (
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <TestTube className="w-5 h-5 text-primary" />
-                        All ATTOM API Results
-                        <Badge variant="outline" className="ml-auto">
-                          {completedResults}/{totalEndpoints} Complete
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {isTestingInProgress && (
-                        <div className="mb-6">
-                          <div className="flex items-center justify-between text-sm mb-2">
-                            <span>Loading all property data...</span>
-                            <span>{Math.round(testingProgress)}%</span>
-                          </div>
-                          <Progress value={testingProgress} className="w-full" />
-                        </div>
-                      )}
-                      
-                      <div className="space-y-6">
-                        {endpoints.map(endpoint => {
-                          const result = endpointResults[endpoint.id];
-                          if (!result) return null;
-
-                          return (
-                            <div key={endpoint.id} className="border rounded-lg p-4">
-                              <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-2">
-                                  {endpoint.icon}
-                                  <h4 className="font-medium">{endpoint.name}</h4>
-                                  {result.isLoading ? (
-                                    <Badge variant="outline">
-                                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
-                                      Loading...
-                                    </Badge>
-                                  ) : result.response?.success ? (
-                                    <Badge variant="default">Success</Badge>
-                                  ) : (
-                                    <Badge variant="destructive">Error</Badge>
-                                  )}
-                                </div>
-                                {result.response && (
-                                  <div className="flex gap-2">
-                                    <Button
-                                      onClick={() => toggleRawJson(endpoint.id)}
-                                      variant="outline"
-                                      size="sm"
-                                    >
-                                      {showRawJson[endpoint.id] ? 'Show Formatted' : 'Show Raw JSON'}
-                                    </Button>
-                                    <Button
-                                      onClick={() => copyToClipboard(JSON.stringify(result.response, null, 2))}
-                                      variant="outline"
-                                      size="sm"
-                                    >
-                                      <Copy className="w-4 h-4 mr-1" />
-                                      Copy
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
-
-                              <p className="text-sm text-muted-foreground mb-4">{endpoint.description}</p>
-
-                              {result.isLoading && (
-                                <div className="flex items-center justify-center py-8">
-                                  <Loader2 className="w-6 h-6 animate-spin mr-2" />
-                                  <span>Testing {endpoint.name}...</span>
-                                </div>
-                              )}
-
-                              {result.error && !result.response && (
-                                <Alert className="border-red-200 bg-red-50">
-                                  <AlertCircle className="h-4 w-4 text-red-600" />
-                                  <AlertDescription>
-                                    <strong>Error:</strong> {result.error}
-                                  </AlertDescription>
-                                </Alert>
-                              )}
-
-                              {result.response && (
-                                <div>
-                                  {showRawJson[endpoint.id] ? (
-                                    <div className="space-y-4">
-                                      <div>
-                                        <Label className="text-sm font-medium">Request URL</Label>
-                                        <Textarea
-                                          value={result.response.url || 'N/A'}
-                                          readOnly
-                                          className="text-xs font-mono mt-1"
-                                          rows={2}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label className="text-sm font-medium">Response Data</Label>
-                                        <Textarea
-                                          value={JSON.stringify(result.response.data || result.response.error || {}, null, 2)}
-                                          readOnly
-                                          className="text-xs font-mono mt-1"
-                                          rows={10}
-                                        />
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <AttomResponseDisplay 
-                                      response={result.response} 
-                                      endpointName={endpoint.name}
-                                    />
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
+{/* Minimal ATTOM load status */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TestTube className="w-5 h-5 text-primary" />
+                    ATTOM Data Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isTestingInProgress ? (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Fetching Expanded Profile...</span>
+                    </div>
+                  ) : endpointResults['expandedprofile']?.response?.success ? (
+                    <div className="flex items-center gap-3 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" />
+                      <span>Expanded Profile loaded successfully.</span>
+                    </div>
+                  ) : endpointResults['expandedprofile']?.error ? (
+                    <div className="flex items-center gap-3 text-sm">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                      <span>Error: {endpointResults['expandedprofile'].error}</span>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">Ready.</div>
+                  )}
+                </CardContent>
+              </Card>
 
               <Separator />
 

@@ -66,7 +66,7 @@ export function useAddressAutocomplete({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<AddressDetails | null>(null);
   const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(null);
-  const [fallbackMode, setFallbackMode] = useState(false);
+  const [fallbackMode] = useState(false);
   
   const debounceRef = useRef<NodeJS.Timeout>();
   const abortControllerRef = useRef<AbortController>();
@@ -126,9 +126,8 @@ export function useAddressAutocomplete({
   const checkApiKeyValidity = useCallback(async () => {
     const serverConfig = getServerUrl();
     if (!serverConfig) {
-      console.log('useAddressAutocomplete: No server configuration, using fallback mode');
+      console.log('useAddressAutocomplete: No server configuration, Google Places required');
       setApiKeyValid(false);
-      setFallbackMode(true);
       return;
     }
 
@@ -145,7 +144,6 @@ export function useAddressAutocomplete({
       if (response.ok) {
         const validation = await response.json();
         setApiKeyValid(validation.valid);
-        setFallbackMode(!validation.valid);
         
         if (!validation.valid) {
           console.log('useAddressAutocomplete: API key validation failed:', validation.message);
@@ -158,7 +156,6 @@ export function useAddressAutocomplete({
       } else {
         console.log('useAddressAutocomplete: API key validation request failed:', response.status);
         setApiKeyValid(false);
-        setFallbackMode(true);
         if (debugMode) {
           setError('Unable to verify Google Places API configuration. Manual address entry is available.');
         }
@@ -166,7 +163,6 @@ export function useAddressAutocomplete({
     } catch (error) {
       console.warn('useAddressAutocomplete: API key validation failed:', error);
       setApiKeyValid(false);
-      setFallbackMode(true);
       if (debugMode) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         if (errorMessage.includes('timeout') || errorMessage.includes('AbortError')) {
@@ -183,8 +179,8 @@ export function useAddressAutocomplete({
     console.log('useAddressAutocomplete: fetchSuggestions called with:', searchQuery);
     
     // If in fallback mode, don't make API calls
-    if (fallbackMode || apiKeyValid === false) {
-      console.log('useAddressAutocomplete: In fallback mode, not making API call');
+    if (apiKeyValid === false) {
+      console.log('useAddressAutocomplete: API key invalid; cannot fetch suggestions');
       setSuggestions([]);
       return;
     }
@@ -199,9 +195,9 @@ export function useAddressAutocomplete({
     if (!serverConfig) {
       console.error('useAddressAutocomplete: Server configuration not available');
       if (debugMode) {
-        setError('Server configuration not available. Manual address entry is available.');
+        setError('Google Places API configuration not available.');
       }
-      setFallbackMode(true);
+      setApiKeyValid(false);
       return;
     }
 
@@ -248,9 +244,8 @@ export function useAddressAutocomplete({
             errorData.api_key_error || isApiKeyError(errorMessage)) {
           console.log('useAddressAutocomplete: API key issue detected, switching to fallback mode');
           setApiKeyValid(false);
-          setFallbackMode(true);
           if (debugMode) {
-            setError('Google Places API is not properly configured. Manual address entry is available.');
+            setError('Google Places API is not properly configured.');
           }
           setSuggestions([]);
           return;
@@ -282,9 +277,8 @@ export function useAddressAutocomplete({
         // Check if this is an API key related error
         if (isApiKeyError(err.message)) {
           setApiKeyValid(false);
-          setFallbackMode(true);
           if (debugMode) {
-            setError('Google Places API configuration issue. Manual address entry is available.');
+            setError('Google Places API configuration issue.');
           }
         } else {
           if (debugMode) {
@@ -403,23 +397,6 @@ export function useAddressAutocomplete({
     }
   }, [getServerUrl, debugMode, getErrorMessage]);
 
-  // Create a manual address entry
-  const createManualAddress = useCallback((addressString: string): AddressDetails => {
-    // Parse address string as best as possible
-    const addressParts = addressString.split(',').map(part => part.trim());
-    
-    return {
-      formatted_address: addressString,
-      place_id: `manual_${Date.now()}`,
-      street_number: addressParts[0]?.match(/^\d+/)?.[0] || undefined,
-      route: addressParts[0]?.replace(/^\d+\s*/, '') || undefined,
-      locality: addressParts[1] || undefined,
-      administrative_area_level_1: addressParts[2]?.match(/[A-Z]{2}/)?.[0] || undefined,
-      postal_code: addressParts[2]?.match(/\d{5}(-\d{4})?/)?.[0] || undefined,
-      country: country.toUpperCase(),
-    };
-  }, [country]);
-
   // Select a suggestion and fetch details
   const selectSuggestion = useCallback(async (suggestion: AddressSuggestion) => {
     setQuery(suggestion.description);
@@ -433,19 +410,6 @@ export function useAddressAutocomplete({
     }
   }, [fetchAddressDetails, onAddressSelect]);
 
-  // Handle manual address entry (fallback mode)
-  const handleManualEntry = useCallback((addressString: string) => {
-    if (!addressString.trim()) {
-      setSelectedAddress(null);
-      onAddressSelect?.(null);
-      return;
-    }
-
-    const manualAddress = createManualAddress(addressString);
-    setSelectedAddress(manualAddress);
-    onAddressSelect?.(manualAddress);
-  }, [createManualAddress, onAddressSelect]);
-
   // Clear suggestions
   const clearSuggestions = useCallback(() => {
     setSuggestions([]);
@@ -458,20 +422,6 @@ export function useAddressAutocomplete({
     setQuery(newQuery);
     setSelectedAddress(null);
 
-    // In fallback mode, handle manual entry directly
-    if (fallbackMode) {
-      setShowSuggestions(false);
-      // Clear previous timeout
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-      // Debounce manual entry handling
-      debounceRef.current = setTimeout(() => {
-        handleManualEntry(newQuery);
-      }, debounceMs);
-      return;
-    }
-
     setShowSuggestions(true);
 
     // Clear previous timeout
@@ -483,7 +433,7 @@ export function useAddressAutocomplete({
     debounceRef.current = setTimeout(() => {
       fetchSuggestions(newQuery);
     }, debounceMs);
-  }, [fetchSuggestions, handleManualEntry, debounceMs, fallbackMode]);
+  }, [fetchSuggestions, debounceMs]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -508,7 +458,7 @@ export function useAddressAutocomplete({
     selectSuggestion,
     clearSuggestions,
     selectedAddress,
-    fallbackMode,
+    fallbackMode: false,
     apiKeyValid
   };
 }

@@ -100,45 +100,45 @@ export function AddressInputEnhanced({
 
   // Parse Google Places address details into ATTOM-compatible format
   const parseAddressForAttom = (addressDetails: AddressDetails): AttomAddressComponents => {
-    const components = addressDetails.address_components || [];
-    const geometry = addressDetails.geometry;
-    
-    let street_number = '';
-    let street_name = '';
-    let city = '';
-    let state = '';
-    let zip_code = '';
-    
-    // Extract components from Google Places response
-    components.forEach(component => {
-      const types = component.types;
-      
-      if (types.includes('street_number')) {
-        street_number = component.long_name;
-      } else if (types.includes('route')) {
-        street_name = component.long_name;
-      } else if (types.includes('locality')) {
-        city = component.long_name;
-      } else if (types.includes('administrative_area_level_1')) {
-        state = component.short_name; // Use short name for state (e.g., "NY" not "New York")
-      } else if (types.includes('postal_code')) {
-        zip_code = component.long_name;
-      }
-    });
+    // Prefer structured fields provided by our hook; fall back to parsing formatted_address
+    let street_number = addressDetails.street_number || '';
+    let street_name = addressDetails.route || '';
+    let city = addressDetails.locality || '';
+    let state = addressDetails.administrative_area_level_1 || '';
+    let zip_code = addressDetails.postal_code || '';
 
-    // Construct ATTOM-compatible address parts
+    // If some pieces are missing, try a light-weight parse from the formatted address
+    const formatted = addressDetails.formatted_address || '';
+    if ((!street_number || !street_name) && formatted) {
+      const firstComma = formatted.split(',')[0]?.trim() || '';
+      const match = firstComma.match(/^(\d+)\s+(.+)$/);
+      if (!street_number && match?.[1]) street_number = match[1];
+      if (!street_name && match?.[2]) street_name = match[2];
+    }
+    if ((!city || !state || !zip_code) && formatted) {
+      const parts = formatted.split(',').map(p => p.trim());
+      // Typical format: "123 Main St, City, ST 12345, USA"
+      if (parts.length >= 3) {
+        if (!city) city = parts[1] || city;
+        const stateZip = parts[2];
+        const stateMatch = stateZip?.match(/\b[A-Z]{2}\b/);
+        const zipMatch = stateZip?.match(/\b\d{5}(?:-\d{4})?\b/);
+        if (!state && stateMatch?.[0]) state = stateMatch[0];
+        if (!zip_code && zipMatch?.[0]) zip_code = zipMatch[0];
+      }
+    }
+
     const address1 = `${street_number} ${street_name}`.trim();
     const address2 = `${city}, ${state} ${zip_code}`.trim();
-    
+
     // Validate the address components
     const validation_errors: string[] = [];
-    
     if (!street_number) validation_errors.push('Street number is missing');
     if (!street_name) validation_errors.push('Street name is missing');
     if (!city) validation_errors.push('City is missing');
     if (!state) validation_errors.push('State is missing');
     if (!zip_code) validation_errors.push('ZIP code is missing');
-    
+
     // Additional ATTOM-specific validations
     if (validateForAttom) {
       if (state && state.length !== 2) {
@@ -160,112 +160,7 @@ export function AddressInputEnhanced({
       city,
       state,
       zip_code,
-      formatted_address: addressDetails.formatted_address,
-      is_valid: validation_errors.length === 0,
-      validation_errors
-    };
-  };
-
-  // Parse manual address input (fallback mode)
-  const parseManualAddress = (inputValue: string): AttomAddressComponents => {
-    const validation_errors: string[] = [];
-    
-    // Try to parse the manually entered address
-    const normalized = inputValue.trim().replace(/\s+/g, ' ');
-    
-    // Strategy 1: Comma-separated format
-    const parts = normalized.split(',').map(part => part.trim());
-    
-    let address1 = '';
-    let address2 = '';
-    let street_number = '';
-    let street_name = '';
-    let city = '';
-    let state = '';
-    let zip_code = '';
-    
-    if (parts.length >= 3) {
-      // Format: "123 Main St, New York, NY 10001"
-      address1 = parts[0];
-      city = parts[1];
-      
-      // Parse state and ZIP from last part
-      const stateZipMatch = parts[2].match(/^([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
-      if (stateZipMatch) {
-        state = stateZipMatch[1];
-        zip_code = stateZipMatch[2];
-      } else {
-        validation_errors.push('Could not parse state and ZIP code from "' + parts[2] + '"');
-      }
-      
-      // Parse street number and name from address1
-      const streetMatch = address1.match(/^(\d+)\s+(.+)$/);
-      if (streetMatch) {
-        street_number = streetMatch[1];
-        street_name = streetMatch[2];
-      } else {
-        validation_errors.push('Could not parse street number and name from "' + address1 + '"');
-      }
-      
-      address2 = `${city}, ${state} ${zip_code}`.trim();
-      
-    } else if (parts.length === 2) {
-      // Format: "123 Main St, New York NY 10001"
-      address1 = parts[0];
-      const cityStateZip = parts[1];
-      
-      // Try to parse city, state, and ZIP
-      const cityStateZipMatch = cityStateZip.match(/^(.+?)\s+([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
-      if (cityStateZipMatch) {
-        city = cityStateZipMatch[1];
-        state = cityStateZipMatch[2];
-        zip_code = cityStateZipMatch[3];
-        address2 = `${city}, ${state} ${zip_code}`;
-      } else {
-        validation_errors.push('Could not parse city, state, and ZIP from "' + cityStateZip + '"');
-        address2 = cityStateZip;
-      }
-      
-      // Parse street number and name
-      const streetMatch = address1.match(/^(\d+)\s+(.+)$/);
-      if (streetMatch) {
-        street_number = streetMatch[1];
-        street_name = streetMatch[2];
-      } else {
-        validation_errors.push('Could not parse street number and name from "' + address1 + '"');
-      }
-      
-    } else {
-      validation_errors.push('Address format not recognized');
-      address1 = normalized;
-      address2 = '';
-    }
-
-    // Additional validation
-    if (!street_number) validation_errors.push('Street number is required');
-    if (!street_name) validation_errors.push('Street name is required');
-    if (!city) validation_errors.push('City is required');
-    if (!state) validation_errors.push('State is required');
-    if (!zip_code) validation_errors.push('ZIP code is required');
-    
-    if (validateForAttom) {
-      if (state && state.length !== 2) {
-        validation_errors.push('State must be 2-letter abbreviation');
-      }
-      if (zip_code && !/^\d{5}(-\d{4})?$/.test(zip_code)) {
-        validation_errors.push('ZIP code must be 5 digits or ZIP+4 format');
-      }
-    }
-
-    return {
-      address1,
-      address2,
-      street_number,
-      street_name,
-      city,
-      state,
-      zip_code,
-      formatted_address: normalized,
+      formatted_address: formatted,
       is_valid: validation_errors.length === 0,
       validation_errors
     };
@@ -275,15 +170,8 @@ export function AddressInputEnhanced({
   useEffect(() => {
     if (value !== query && !isSelecting) {
       setQuery(value);
-      
-      // If in fallback mode and we have a value, parse it
-      if (fallbackMode && value.trim()) {
-        const components = parseManualAddress(value);
-        setAttomComponents(components);
-        onChange?.(components);
-      }
     }
-  }, [value, query, setQuery, isSelecting, fallbackMode, onChange]);
+  }, [value, query, setQuery, isSelecting]);
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -292,12 +180,7 @@ export function AddressInputEnhanced({
     onInputChange?.(newValue);
     setSelectedIndex(-1);
     
-    // If in fallback mode, parse the address as the user types
-    if (fallbackMode && newValue.trim()) {
-      const components = parseManualAddress(newValue);
-      setAttomComponents(components);
-      onChange?.(components);
-    } else if (!newValue.trim()) {
+    if (!newValue.trim()) {
       setAttomComponents(null);
       onChange?.(null);
     }
@@ -437,12 +320,6 @@ export function AddressInputEnhanced({
             <Home className="w-4 h-4" />
             {label}
           </Label>
-          {fallbackMode && (
-            <Badge variant="secondary" className="text-xs">
-              <Edit3 className="w-3 h-3 mr-1" />
-              Manual Entry
-            </Badge>
-          )}
         </div>
       )}
 
@@ -453,8 +330,6 @@ export function AddressInputEnhanced({
             <CheckCircle2 className="w-4 h-4 text-green-600" />
           ) : hasValidationErrors ? (
             <AlertTriangle className="w-4 h-4 text-orange-500" />
-          ) : fallbackMode ? (
-            <Edit3 className="w-4 h-4 text-muted-foreground" />
           ) : (
             <Search className="w-4 h-4 text-muted-foreground" />
           )}
@@ -470,7 +345,7 @@ export function AddressInputEnhanced({
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           onKeyDown={handleKeyDown}
-          placeholder={fallbackMode ? "Enter address manually" : placeholder}
+          placeholder={placeholder}
           disabled={disabled}
           className={`
             pl-10 ${showClearButton ? 'pr-10' : 'pr-4'}
@@ -560,7 +435,7 @@ export function AddressInputEnhanced({
       )}
 
       {/* No results message */}
-      {showSuggestions && !isLoading && query.length >= 3 && suggestions.length === 0 && (!apiError || debugMode) && !fallbackMode && (
+      {showSuggestions && !isLoading && query.length >= 3 && suggestions.length === 0 && (!apiError || debugMode) && (
         <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="px-4 py-6 text-center">
             <Search className="w-8 h-8 text-gray-300 mx-auto mb-2" />
