@@ -15,6 +15,21 @@ export interface UrlModes {
   isPasswordResetMode: boolean;
   isApiConfigEditor: boolean;
   isFieldMappingDebugger: boolean;
+  // Additional flags used by AppNotifications and diagnostic tools
+  isDevMode?: boolean;
+  isApiKeyManagerMode?: boolean;
+  isAttomDebugMode?: boolean;
+  isAttomTestMode?: boolean;
+  isAuthDebugMode?: boolean;
+  isAttomAdminMode?: boolean;
+  isAttomAdminDiagnosticMode?: boolean;
+  isApiKeyValidatorMode?: boolean;
+  isAttomSearchDiagnosticMode?: boolean;
+  isAttomApiFixSummaryMode?: boolean;
+  isAttomEndpointAccessMode?: boolean;
+  isAttomOfficialTesterMode?: boolean;
+  isAttomApiKeySetupMode?: boolean;
+  isPropertyFieldMappingMode?: boolean;
 }
 
 export function getUrlModes(): UrlModes {
@@ -53,6 +68,21 @@ export function getUrlModes(): UrlModes {
       isPasswordResetMode: urlParams.get('reset-password') === 'true',
       isApiConfigEditor: urlParams.get('api-config-editor') === 'true',
       isFieldMappingDebugger: urlParams.get('field-mapping-debugger') === 'true',
+      // Map additional flags for compatibility
+      isDevMode: urlParams.get('dev') === 'true',
+      isApiKeyManagerMode: urlParams.get('api-key-manager') === 'true',
+      isAttomDebugMode: urlParams.get('attom-debug') === 'true' || urlParams.get('debug') === 'true',
+      isAttomTestMode: urlParams.get('attom-test') === 'true',
+      isAuthDebugMode: urlParams.get('auth-debug') === 'true' || urlParams.get('debug') === 'true',
+      isAttomAdminMode: urlParams.get('attom-admin') === 'true',
+      isAttomAdminDiagnosticMode: urlParams.get('attom-admin-diagnostic') === 'true',
+      isApiKeyValidatorMode: urlParams.get('api-key-validator') === 'true',
+      isAttomSearchDiagnosticMode: urlParams.get('attom-search-diagnostic') === 'true',
+      isAttomApiFixSummaryMode: urlParams.get('attom-api-fix-summary') === 'true',
+      isAttomEndpointAccessMode: urlParams.get('attom-endpoint-access') === 'true',
+      isAttomOfficialTesterMode: urlParams.get('attom-official-tester') === 'true',
+      isAttomApiKeySetupMode: urlParams.get('attom-api-key-setup') === 'true',
+      isPropertyFieldMappingMode: urlParams.get('property-field-mapping') === 'true',
     };
   } catch (error) {
     console.warn('Error parsing URL modes:', error);

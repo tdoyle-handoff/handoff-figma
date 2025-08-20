@@ -10,6 +10,7 @@ export interface Task {
   subcategory?: 'financing' | 'legal' | 'inspections' | 'insurance' | 'general';
   priority: 'high' | 'medium' | 'low';
   status: 'completed' | 'in-progress' | 'pending' | 'overdue' | 'active' | 'upcoming';
+  completed?: boolean;
   dueDate?: string;
   assignedTo?: string;
   notes?: string;

@@ -1,6 +1,13 @@
 export interface AttomProperty {
   id: string;
   attom_id: string;
+  // Commonly used fields (subset)
+  identifier?: {
+    attomId?: string;
+    fips?: string;
+    apn?: string;
+    obPropId?: string;
+  };
   address: {
     street: string;
     city: string;
@@ -48,6 +55,37 @@ export interface AttomProperty {
     quality?: string;
     zoning?: string;
   };
+  // Optional sections paralleling AttomPropertyDetail for convenience in UI components
+  lot?: {
+    lotNum?: string;
+    lotsize1?: number;
+    lotsize2?: number;
+    pooltype?: string;
+    situsCounty?: string;
+    subdname?: string;
+    subdtractnum?: string;
+  };
+  area?: {
+    areaLot?: number;
+    areaSqFt?: number;
+    bathrooms?: number;
+    bathroomsFull?: number;
+    bathroomsPartial?: number;
+    bedrooms?: number;
+    roomsTotal?: number;
+  };
+  building?: {
+    construction?: Record<string, any>;
+    interior?: Record<string, any>;
+    parking?: { garagetype?: string; prkgSize?: number; prkgType?: string };
+    size?: { livingSize?: number; grossSizeAdjusted?: number; grossSizeGeneral?: number };
+    summary?: { yearBuilt?: number; noOfBeds?: number; noOfBaths?: number };
+  };
+  assessment?: any;
+  sale?: any;
+  location?: any;
+  owner?: any;
+  
   valuation: {
     estimated_value?: number;
     value_range_low?: number;

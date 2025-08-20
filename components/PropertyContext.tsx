@@ -51,6 +51,8 @@ export interface PropertyData {
   realtorEmail?: string;
   realtorPhone?: string;
   hasLender: boolean;
+  hasAttorney?: boolean;
+  realtorCompany?: string;
   lenderContactName?: string;
   lenderEmail?: string;
   lenderPhone?: string;
@@ -63,6 +65,8 @@ export interface PropertyData {
   // Current Status
   currentStep: string;
   completionPercentage: number;
+  // Optional purchase details referenced by Dashboard and others
+  purchasePrice?: number;
 }
 
 // Property search criteria
@@ -195,6 +199,8 @@ const defaultPropertyData: PropertyData = {
   realtorEmail: '',
   realtorPhone: '',
   hasLender: false,
+  hasAttorney: false,
+  realtorCompany: '',
   lenderContactName: '',
   lenderEmail: '',
   lenderPhone: '',
