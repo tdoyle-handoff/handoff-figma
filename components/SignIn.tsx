@@ -206,9 +206,6 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
       {/* Right: form */}
       <div className="flex items-center justify-center px-6 py-10">
         <div className="w-full max-w-md">
-          <div className="flex items-center justify-end mb-10 lg:hidden">
-            <Button variant="outline" size="sm">Sign in</Button>
-          </div>
 
           <div className="space-y-2">
             {isRegisterMode ? (
@@ -361,9 +358,6 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
             </div>
           )}
 
-          <div className="mt-4 flex justify-center">
-            <Button type="button" variant="ghost" onClick={handleGuest} className="text-xs">Continue as Guest</Button>
-          </div>
 
           {showResetModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">

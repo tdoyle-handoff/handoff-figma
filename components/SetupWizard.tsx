@@ -167,15 +167,6 @@ const AuthErrorAlert = ({
                 <Fragment>
                   <Button
                     size="sm"
-                    onClick={onContinueAsGuest}
-                    className="flex items-center gap-2 text-sm h-10 bg-blue-600 hover:bg-blue-700 text-white shadow-md font-medium rounded-lg"
-                  >
-                    <Users className="w-4 h-4" />
-                    Continue as Guest
-                    <span className="text-xs opacity-90 ml-auto">Full features available</span>
-                  </Button>
-                  <Button
-                    size="sm"
                     onClick={() => window.location.href = '?server-deployment=true'}
                     className="flex items-center gap-2 text-sm h-10 bg-purple-600 hover:bg-purple-700 text-white shadow-md font-medium rounded-lg"
                   >
@@ -200,18 +191,7 @@ const AuthErrorAlert = ({
                   </Button>
                 )}
 
-                {!isServerUnavailable && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onContinueAsGuest}
-                    className="flex items-center gap-2 text-xs h-9 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-300"
-                  >
-                    <Users className="w-3 h-3" />
-                    Continue as Guest
-                    <span className="text-xs text-gray-600 ml-auto">Try app without account</span>
-                  </Button>
-                )}
+                {/* Continue as Guest option removed */}
                 
                 <Button
                   variant="ghost"
@@ -436,27 +416,7 @@ export function SetupWizard({
   );
 
   // Quick start options for when server is connected
-  const ServerConnectedOptions = () => (
-    <div className="space-y-4 border-t pt-6 mt-6">
-      <div className="text-center">
-        <h3 className="text-sm font-medium text-gray-900 mb-3">Quick Start Options</h3>
-        <div className="grid gap-2">
-          <Button
-            variant="outline"
-            onClick={() => continueAsGuest && continueAsGuest()}
-            className="flex items-center gap-2 text-sm h-10 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
-          >
-            <Play className="w-4 h-4" />
-            Try App as Guest
-            <span className="text-xs text-blue-500 ml-auto">No account needed</span>
-          </Button>
-        </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Guest mode gives you full access to explore all features
-        </p>
-      </div>
-    </div>
-  );
+  const ServerConnectedOptions = () => null;
 
   // Mobile layout for forgot password (unchanged)
   if (showForgotPassword && isMobile) {

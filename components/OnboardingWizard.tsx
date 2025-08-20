@@ -575,14 +575,298 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
     );
   };
 
-  const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 1: return renderStep1();
-      case 2: return renderStep2();
-      case 3: return renderStep3();
-      case 4: return renderStep4();
-      default: return renderStep1();
+  const validateAll = useCallback((): boolean => {
+    const ok1 = validateStep(1);
+    const ok2 = validateStep(2);
+    const ok3 = validateStep(3);
+    const ok4 = validateStep(4);
+    return ok1 && ok2 && ok3 && ok4;
+  }, [validateStep]);
+
+  const handleSubmitAll = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateAll()) {
+      onComplete(formData as OnboardingData);
     }
+  }, [validateAll, formData, onComplete]);
+
+  const renderSinglePage = () => {
+    const legalInfo = formData.legalRequirements || STATE_LEGAL_INFO.DEFAULT;
+
+    return (
+      <form onSubmit={handleSubmitAll} className="space-y-8">
+        {/* Section 1: Location & Property Type */}
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mx-auto mb-4">
+              <MapPin className="w-6 h-6 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-semibold">Where are you looking?</h2>
+            <p className="text-muted-foreground">Tell us about the property location and type you're interested in.</p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="propertyAddress">Property Location</Label>
+              <AddressAutocompleteInput
+                value={formData.propertyAddress || ''}
+                onChange={(value) => updateFormData({ propertyAddress: value })}
+                onAddressSelect={handleAddressSelect}
+                placeholder="Enter city, state, or specific address..."
+                className={errors.propertyAddress ? 'border-red-500' : ''}
+              />
+              {errors.propertyAddress && (
+                <p className="text-sm text-red-600">{errors.propertyAddress}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Property Type</Label>
+              <RadioGroup 
+                value={formData.propertyType || ''} 
+                onValueChange={(value) => updateFormData({ propertyType: value })}
+                className="grid grid-cols-1 gap-3"
+              >
+                {PROPERTY_TYPES.map((type) => (
+                  <div key={type.value} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                    <RadioGroupItem value={type.value} id={type.value} />
+                    <label htmlFor={type.value} className="flex items-center space-x-3 cursor-pointer flex-1">
+                      <span className="text-2xl">{type.icon}</span>
+                      <span className="font-medium">{type.label}</span>
+                    </label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {errors.propertyType && (
+                <p className="text-sm text-red-600">{errors.propertyType}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Budget & Financing */}
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mx-auto mb-4">
+              <DollarSign className="w-6 h-6 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-semibold">What's your budget?</h2>
+            <p className="text-muted-foreground">Help us understand your budget and financing preferences.</p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="priceRange">Price Range</Label>
+              <Select value={formData.priceRange || ''} onValueChange={(value) => updateFormData({ priceRange: value })}>
+                <SelectTrigger className={errors.priceRange ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Select your price range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="under-200k">Under $200,000</SelectItem>
+                  <SelectItem value="200k-300k">$200,000 - $300,000</SelectItem>
+                  <SelectItem value="300k-500k">$300,000 - $500,000</SelectItem>
+                  <SelectItem value="500k-750k">$500,000 - $750,000</SelectItem>
+                  <SelectItem value="750k-1m">$750,000 - $1,000,000</SelectItem>
+                  <SelectItem value="1m-1.5m">$1,000,000 - $1,500,000</SelectItem>
+                  <SelectItem value="over-1.5m">Over $1,500,000</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.priceRange && (
+                <p className="text-sm text-red-600">{errors.priceRange}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="downPayment">Down Payment</Label>
+              <Select value={formData.downPayment || ''} onValueChange={(value) => updateFormData({ downPayment: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select down payment amount" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="3-5">3% - 5%</SelectItem>
+                  <SelectItem value="5-10">5% - 10%</SelectItem>
+                  <SelectItem value="10-15">10% - 15%</SelectItem>
+                  <SelectItem value="15-20">15% - 20%</SelectItem>
+                  <SelectItem value="20-plus">20% or more</SelectItem>
+                  <SelectItem value="cash">Cash purchase</SelectItem>
+                  <SelectItem value="unsure">Not sure yet</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Financing Type</Label>
+              <RadioGroup 
+                value={formData.financingType || ''} 
+                onValueChange={(value) => updateFormData({ financingType: value })}
+                className="grid grid-cols-1 gap-3"
+              >
+                {FINANCING_OPTIONS.map((option) => (
+                  <div key={option.value} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                    <RadioGroupItem value={option.value} id={option.value} className="mt-1" />
+                    <label htmlFor={option.value} className="cursor-pointer flex-1">
+                      <div className="font-medium">{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
+                    </label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {errors.financingType && (
+                <p className="text-sm text-red-600">{errors.financingType}</p>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-2 p-3 border rounded-lg">
+              <input
+                type="checkbox"
+                id="preApproved"
+                checked={formData.preApproved || false}
+                onChange={(e) => updateFormData({ preApproved: e.target.checked })}
+                className="rounded"
+              />
+              <label htmlFor="preApproved" className="text-sm cursor-pointer">
+                I am pre-approved for a mortgage
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Timeline */}
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mx-auto mb-4">
+              <Calendar className="w-6 h-6 text-purple-600" />
+            </div>
+            <h2 className="text-2xl font-semibold">When do you want to buy?</h2>
+            <p className="text-muted-foreground">Tell us about your timeline so we can prioritize the right tasks.</p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Purchase Timeline</Label>
+              <RadioGroup 
+                value={formData.purchaseTimeline || ''} 
+                onValueChange={(value) => updateFormData({ purchaseTimeline: value })}
+                className="grid grid-cols-1 gap-3"
+              >
+                {TIMELINE_OPTIONS.map((option) => (
+                  <div key={option.value} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                    <RadioGroupItem value={option.value} id={option.value} className="mt-1" />
+                    <label htmlFor={option.value} className="cursor-pointer flex-1">
+                      <div className="font-medium flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        {option.label}
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
+                    </label>
+                  </div>
+                ))}
+              </RadioGroup>
+              {errors.purchaseTimeline && (
+                <p className="text-sm text-red-600">{errors.purchaseTimeline}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="moveInDate">Preferred Move-in Date (Optional)</Label>
+              <Input
+                id="moveInDate"
+                type="date"
+                value={formData.moveInDate || ''}
+                onChange={(e) => updateFormData({ moveInDate: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Legal Requirements & Contact Info */}
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mx-auto mb-4">
+              <Scale className="w-6 h-6 text-orange-600" />
+            </div>
+            <h2 className="text-2xl font-semibold">Legal Requirements</h2>
+            <p className="text-muted-foreground">Based on your location, here are the legal requirements for your state.</p>
+          </div>
+
+          <Card className="border-orange-200 bg-orange-50/50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-orange-800">
+                <Shield className="w-5 h-5" />
+                {legalInfo.name} Requirements
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium text-sm text-orange-800">Attorney Required</h4>
+                  <p className="text-sm">{legalInfo.attorney}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm text-orange-800">Disclosure Requirements</h4>
+                  <p className="text-sm">{legalInfo.disclosure}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm text-orange-800">Inspection Period</h4>
+                  <p className="text-sm">{legalInfo.inspection}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-medium text-sm text-orange-800 mb-2">Required Documents</h4>
+                <div className="flex flex-wrap gap-2">
+                  {legalInfo.templates.map((template: string, index: number) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      <FileText className="w-3 h-3 mr-1" />
+                      {template}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Your Information</h3>
+            <div className="space-y-2">
+              <Label htmlFor="buyerName">Full Name</Label>
+              <Input
+                id="buyerName"
+                type="text"
+                placeholder="Enter your full name"
+                value={formData.buyerName || ''}
+                onChange={(e) => updateFormData({ buyerName: e.target.value })}
+                className={errors.buyerName ? 'border-red-500' : ''}
+              />
+              {errors.buyerName && (
+                <p className="text-sm text-red-600">{errors.buyerName}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="buyerEmail">Email Address</Label>
+              <Input
+                id="buyerEmail"
+                type="email"
+                placeholder="Enter your email"
+                value={formData.buyerEmail || ''}
+                onChange={(e) => updateFormData({ buyerEmail: e.target.value })}
+                className={errors.buyerEmail ? 'border-red-500' : ''}
+              />
+              {errors.buyerEmail && (
+                <p className="text-sm text-red-600">{errors.buyerEmail}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <Button type="submit" size="lg">
+            <CheckCircle className="w-4 h-4 mr-2" />
+            Complete Setup
+          </Button>
+        </div>
+      </form>
+    );
   };
 
   if (isMobile) {
@@ -591,57 +875,13 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
         <div className="w-full max-w-md mx-auto flex-1 flex flex-col justify-center space-y-8">
           <div className="text-center">
             <HandoffLogo className="mb-6" size="h-12" />
-            <ProgressIndicator currentStep={currentStep} totalSteps={4} />
           </div>
 
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0">
-              {renderCurrentStep()}
+              {renderSinglePage()}
             </CardContent>
           </Card>
-
-          <div className="flex flex-col space-y-3">
-            <Button 
-              onClick={handleNext}
-              className="w-full mobile-button"
-              size="lg"
-            >
-              {currentStep === 4 ? (
-                <Fragment>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Complete Setup
-                </Fragment>
-              ) : (
-                <Fragment>
-                  Continue
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Fragment>
-              )}
-            </Button>
-
-            <div className="flex justify-between">
-              {currentStep > 1 && (
-                <Button 
-                  variant="ghost" 
-                  onClick={handleBack}
-                  className="mobile-button"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
-              )}
-              
-              {onSkip && (
-                <Button 
-                  variant="ghost" 
-                  onClick={onSkip}
-                  className="mobile-button text-muted-foreground ml-auto"
-                >
-                  Skip Setup
-                </Button>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -691,46 +931,11 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
       {/* Right Side - Form Section */}
       <div className="flex-1 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-lg space-y-8">
-          <ProgressIndicator currentStep={currentStep} totalSteps={4} />
-
           <Card>
             <CardContent className="p-8">
-              {renderCurrentStep()}
+              {renderSinglePage()}
             </CardContent>
           </Card>
-
-          <div className="flex justify-between items-center">
-            {currentStep > 1 ? (
-              <Button variant="outline" onClick={handleBack}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            ) : (
-              <div></div>
-            )}
-
-            <div className="flex space-x-3">
-              {onSkip && (
-                <Button variant="ghost" onClick={onSkip} className="text-muted-foreground">
-                  Skip Setup
-                </Button>
-              )}
-              
-              <Button onClick={handleNext} size="lg">
-                {currentStep === 4 ? (
-                  <Fragment>
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Complete Setup
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    Continue
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Fragment>
-                )}
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
