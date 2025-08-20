@@ -14,7 +14,7 @@ export function validateEmail(email: string): boolean {
 }
 
 export function validatePassword(password: string): boolean {
-  return password && password.length >= AUTH_VALIDATION.MIN_PASSWORD_LENGTH;
+  return !!password && password.length >= AUTH_VALIDATION.MIN_PASSWORD_LENGTH;
 }
 
 export function validateName(name: string): boolean {

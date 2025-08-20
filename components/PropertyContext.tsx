@@ -642,7 +642,7 @@ export function PropertyProvider({ children }: PropertyProviderProps) {
       
       stringFields.forEach(field => {
         if (data[field] !== undefined) {
-          sanitized[field as keyof PropertyData] = ensureString(data[field]);
+          (sanitized as any)[field] = ensureString(data[field]);
         }
       });
       
@@ -654,7 +654,7 @@ export function PropertyProvider({ children }: PropertyProviderProps) {
       
       arrayFields.forEach(field => {
         if (data[field] !== undefined) {
-          sanitized[field as keyof PropertyData] = ensureArray(data[field]);
+          (sanitized as any)[field] = ensureArray(data[field]);
         }
       });
       
@@ -662,13 +662,13 @@ export function PropertyProvider({ children }: PropertyProviderProps) {
       const booleanFields = ['needToSellCurrent', 'hasRealtor', 'hasLender'];
       booleanFields.forEach(field => {
         if (data[field] !== undefined) {
-          sanitized[field as keyof PropertyData] = ensureBoolean(data[field]);
+          (sanitized as any)[field] = ensureBoolean(data[field]);
         }
       });
       
       // Number fields
       if (data.completionPercentage !== undefined) {
-        sanitized.completionPercentage = ensureNumber(data.completionPercentage);
+        (sanitized as any).completionPercentage = ensureNumber(data.completionPercentage);
       }
       
       return sanitized;
@@ -731,16 +731,17 @@ export function PropertyProvider({ children }: PropertyProviderProps) {
       // Copy other compatible fields
       Object.keys(oldData).forEach(key => {
         if (key in defaultPropertyData && !(key in converted)) {
-          const value = oldData[key];
+          const value = (oldData as any)[key];
           if (value !== undefined && value !== null) {
-            if (Array.isArray(defaultPropertyData[key as keyof PropertyData])) {
-              converted[key as keyof PropertyData] = ensureArray(value);
-            } else if (typeof defaultPropertyData[key as keyof PropertyData] === 'boolean') {
-              converted[key as keyof PropertyData] = ensureBoolean(value);
-            } else if (typeof defaultPropertyData[key as keyof PropertyData] === 'string') {
-              converted[key as keyof PropertyData] = ensureString(value);
-            } else if (typeof defaultPropertyData[key as keyof PropertyData] === 'number') {
-              converted[key as keyof PropertyData] = ensureNumber(value);
+            const defaultVal = (defaultPropertyData as any)[key];
+            if (Array.isArray(defaultVal)) {
+              (converted as any)[key] = ensureArray(value);
+            } else if (typeof defaultVal === 'boolean') {
+              (converted as any)[key] = ensureBoolean(value);
+            } else if (typeof defaultVal === 'string') {
+              (converted as any)[key] = ensureString(value);
+            } else if (typeof defaultVal === 'number') {
+              (converted as any)[key] = ensureNumber(value);
             }
           }
         }
@@ -755,7 +756,15 @@ export function PropertyProvider({ children }: PropertyProviderProps) {
 
   const generateTimeline = (closingDate: Date, data: PropertyData) => {
     try {
-      const milestones = [];
+      type Milestone = {
+        date: string;
+        title: string;
+        description: string;
+        category: string;
+        completed: boolean;
+        daysFromNow: number;
+      };
+      const milestones: Milestone[] = [];
       const today = new Date();
       
       // Work backwards from closing date

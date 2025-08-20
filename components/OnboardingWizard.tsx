@@ -285,8 +285,13 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
 
     switch (step) {
       case 1:
-        if (!formData.propertyAddress?.trim()) {
-          newErrors.propertyAddress = 'Property location is required';
+        {
+          const addrValid = typeof formData.propertyAddress === 'string'
+            ? formData.propertyAddress.trim()
+            : formData.propertyAddress?.formatted_address?.trim();
+          if (!addrValid) {
+            newErrors.propertyAddress = 'Property location is required';
+          }
         }
         if (!formData.propertyType) {
           newErrors.propertyType = 'Property type is required';

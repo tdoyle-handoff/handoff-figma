@@ -32,6 +32,7 @@ interface AddressAutocompleteInputProps {
 export function AddressAutocompleteInput({
   value = '',
   onChange,
+  onAddressSelect,
   onRawInputChange,
   placeholder = 'Start typing an address...',
   required = false,
@@ -71,7 +72,7 @@ export function AddressAutocompleteInput({
     onAddressSelect: (address) => {
       onChange(address);
       // Notify consumer with a simplified signature if provided
-      props.onAddressSelect?.(address.formatted_address, { state: address.administrative_area_level_1 });
+      onAddressSelect?.(address.formatted_address, { state: address.administrative_area_level_1 });
       if (clearOnSelect) {
         setQuery('');
         setHasUserInput(false);
