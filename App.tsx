@@ -5,20 +5,21 @@ import { PropertyProvider } from './components/PropertyContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthLoader } from './components/LoadingComponents';
 import { PageRenderer } from './components/PageRenderer';
-import { AppNotifications } from './components/AppNotifications';
-import { DebugModeRenderer } from './components/DebugModeRenderer';
+const AppNotifications = React.lazy(() => import('./components/AppNotifications').then(m => ({ default: m.AppNotifications })));
+const DebugModeRenderer = React.lazy(() => import('./components/DebugModeRenderer').then(m => ({ default: m.DebugModeRenderer })));
 import { withSafeInitialization } from './utils/appInitializer';
 import { clearPersistedUserDisplayInfo } from './utils/userHelpers';
 
 // Authentication and setup components
-import { OnboardingWizard } from './components/OnboardingWizard';
-import { SetupWizard } from './components/SetupWizard';
-import { PasswordReset } from './components/PasswordReset';
-import { SignIn } from './components/SignIn';
+// Auth and setup (lazy-loaded to reduce initial bundle)
+const OnboardingWizard = React.lazy(() => import('./components/OnboardingWizard').then(m => ({ default: m.OnboardingWizard })));
+const SetupWizard = React.lazy(() => import('./components/SetupWizard').then(m => ({ default: m.SetupWizard })));
+const PasswordReset = React.lazy(() => import('./components/PasswordReset').then(m => ({ default: m.PasswordReset })));
+const SignIn = React.lazy(() => import('./components/SignIn').then(m => ({ default: m.SignIn })));
 
-// Layout components
-import DashboardLayout from './components/DashboardLayout';
-import MobileLayout from './components/MobileLayout';
+// Layout components (lazy-loaded)
+const DashboardLayout = React.lazy(() => import('./components/DashboardLayout').then(m => ({ default: m.default })));
+const MobileLayout = React.lazy(() => import('./components/MobileLayout').then(m => ({ default: m.default })));
 
 // Hooks
 import { useAuth } from './hooks/useAuth';
@@ -244,7 +245,11 @@ function AppCore() {
                           modes.isApiConfigEditor;
       
       if (hasDebugMode) {
-        return <DebugModeRenderer modes={modes} />;
+        return (
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"/>}>
+            <DebugModeRenderer modes={modes} />
+          </Suspense>
+        );
       }
       
       return null;
@@ -278,17 +283,19 @@ function AppCore() {
 
   // Show password reset page
   if (passwordReset.showPasswordReset && passwordReset.resetToken) {
-    return (
-      <ErrorBoundary fallback={AppErrorFallback}>
-        <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
-          <PasswordReset
-            resetToken={passwordReset.resetToken}
-            onSuccess={passwordReset.handlePasswordResetSuccess}
-            onBackToLogin={passwordReset.handleBackToLogin}
-          />
-        </div>
-      </ErrorBoundary>
-    );
+      return (
+        <ErrorBoundary fallback={AppErrorFallback}>
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"/>}>
+            <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
+              <PasswordReset
+                resetToken={passwordReset.resetToken}
+                onSuccess={passwordReset.handlePasswordResetSuccess}
+                onBackToLogin={passwordReset.handleBackToLogin}
+              />
+            </div>
+          </Suspense>
+        </ErrorBoundary>
+      );
   }
 
   // Show loading state
@@ -320,12 +327,14 @@ function AppCore() {
     if (showOnboarding) {
       return (
         <ErrorBoundary fallback={AppErrorFallback}>
-          <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
-            <OnboardingWizard 
-              onComplete={handleOnboardingComplete}
-              onSkip={handleOnboardingSkip}
-            />
-          </div>
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"/>}>
+            <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
+              <OnboardingWizard 
+                onComplete={handleOnboardingComplete}
+                onSkip={handleOnboardingSkip}
+              />
+            </div>
+          </Suspense>
         </ErrorBoundary>
       );
     }
@@ -333,16 +342,18 @@ function AppCore() {
     if (showTraditionalAuth) {
       return (
         <ErrorBoundary fallback={AppErrorFallback}>
-          <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
-            <SetupWizard 
-              onComplete={auth.handleAuthComplete}
-              onGoogleSignIn={auth.handleGoogleSignIn}
-              authError={auth.authError}
-              isLoading={auth.isLoading}
-              continueAsGuest={auth.continueAsGuest}
-              clearAuthError={auth.clearAuthError}
-            />
-          </div>
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"/>}>
+            <div className={`setup-wizard-container ${isMobile ? 'mobile-device h-full' : 'h-full'}`}>
+              <SetupWizard 
+                onComplete={auth.handleAuthComplete}
+                onGoogleSignIn={auth.handleGoogleSignIn}
+                authError={auth.authError}
+                isLoading={auth.isLoading}
+                continueAsGuest={auth.continueAsGuest}
+                clearAuthError={auth.clearAuthError}
+              />
+            </div>
+          </Suspense>
         </ErrorBoundary>
       );
     }
@@ -350,7 +361,9 @@ function AppCore() {
     // Default: Sign In page (Google, email/password when configured, or Guest)
     return (
       <ErrorBoundary fallback={AppErrorFallback}>
-        <SignIn />
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"/>}>
+          <SignIn />
+        </Suspense>
       </ErrorBoundary>
     )
   }
@@ -360,25 +373,28 @@ function AppCore() {
     <ErrorBoundary fallback={AppErrorFallback}>
       <PropertyProvider>
         <TaskProvider userProfile={auth.userProfile}>
-          <AppNotifications
-            modes={modes}
-            authStatusMessage={authStatusMessage}
-            isGuestMode={auth.isGuestMode}
-            isLoading={auth.isLoading}
-            onSignOut={handleSignOut}
-            onNavigateToDevTools={handleNavigateToDevTools}
-          />
+          <Suspense fallback={null}>
+            <AppNotifications
+              modes={modes}
+              authStatusMessage={authStatusMessage}
+              isGuestMode={auth.isGuestMode}
+              isLoading={auth.isLoading}
+              onSignOut={handleSignOut}
+              onNavigateToDevTools={handleNavigateToDevTools}
+            />
+          </Suspense>
 
           {isMobile ? (
             <div className="mobile-device h-full min-h-screen bg-background relative">
               <ErrorBoundary fallback={AppErrorFallback}>
-                <MobileLayout 
-                  currentPage={navigation.currentPage} 
-                  onPageChange={navigation.navigateTo}
-                  setupData={userDisplayInfo}
-                  onSignOut={handleSignOut}
-                  isPropertySetupComplete={setupComplete}
-                >
+                <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div></div>}>
+                  <MobileLayout 
+                    currentPage={navigation.currentPage} 
+                    onPageChange={navigation.navigateTo}
+                    setupData={userDisplayInfo}
+                    onSignOut={handleSignOut}
+                    isPropertySetupComplete={setupComplete}
+                  >
                   <Suspense fallback={
                     <div className="flex items-center justify-center p-8">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
@@ -393,19 +409,21 @@ function AppCore() {
                       isPropertySetupComplete={setupComplete}
                     />
                   </Suspense>
-                </MobileLayout>
+                  </MobileLayout>
+                </Suspense>
               </ErrorBoundary>
             </div>
           ) : (
             <div className="size-full relative">
               <ErrorBoundary fallback={AppErrorFallback}>
-                <DashboardLayout 
-                  currentPage={navigation.currentPage} 
-                  onPageChange={navigation.navigateTo}
-                  setupData={userDisplayInfo}
-                  onSignOut={handleSignOut}
-                  isPropertySetupComplete={setupComplete}
-                >
+                <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+                  <DashboardLayout 
+                    currentPage={navigation.currentPage} 
+                    onPageChange={navigation.navigateTo}
+                    setupData={userDisplayInfo}
+                    onSignOut={handleSignOut}
+                    isPropertySetupComplete={setupComplete}
+                  >
                   <Suspense fallback={
                     <div className="flex items-center justify-center p-8">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -420,7 +438,8 @@ function AppCore() {
                       isPropertySetupComplete={setupComplete}
                     />
                   </Suspense>
-                </DashboardLayout>
+                  </DashboardLayout>
+                </Suspense>
               </ErrorBoundary>
             </div>
           )}
