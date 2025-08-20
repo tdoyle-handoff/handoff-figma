@@ -1,8 +1,10 @@
 import React from 'react';
 
+type FallbackRender = (p: { error: Error; resetError: () => void }) => React.ReactElement;
+
 interface ErrorBoundaryProps {
   children: React.ReactNode;
-  fallback?: React.ReactNode;
+  fallback?: React.ReactNode | FallbackRender;
 }
 
 interface ErrorBoundaryState {
@@ -24,9 +26,17 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
+  private resetError = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
+
   render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
+      if (typeof this.props.fallback === 'function' && this.state.error) {
+        const Fallback = this.props.fallback as (p: { error: Error; resetError: () => void }) => React.ReactElement;
+        return <Fallback error={this.state.error} resetError={this.resetError} />;
+      }
+      return (this.props.fallback as React.ReactNode) || (
         <div className="flex items-center justify-center min-h-screen bg-background">
           <div className="text-center space-y-4">
             <h2 className="text-xl font-semibold">Something went wrong</h2>
