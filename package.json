@@ -38,7 +38,8 @@
     "release:tag": "npm version patch -m 'chore(release): v%s'",
     "release:push": "git push && git push --tags",
     "ci:install": "npm ci || npm install",
-"build": "dotenv -e .env -- node scripts/check-env.mjs && dotenv -e .env -- vite build --debug --logLevel info",
+"typecheck": "tsc --noEmit",
+"build": "dotenv -e .env -- node scripts/check-env.mjs && npm run typecheck && dotenv -e .env -- vite build --debug --logLevel info",
     "ci:build": "npm run ci:install && npm run build",
     "prepare": "husky install",
     "db:check": "node scripts/db-check.mjs"

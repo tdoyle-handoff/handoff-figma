@@ -109,6 +109,31 @@ interface HomeSearchData {
   niceToHaves?: string;
 }
 
+const BUYING_STAGES = [
+  { value: 'just-looking', label: 'Just looking' },
+  { value: 'researching', label: 'Researching & planning' },
+  { value: 'touring', label: 'Touring homes' },
+  { value: 'making-offers', label: 'Making offers' },
+  { value: 'under-contract', label: 'Under contract' }
+];
+
+const HOME_USES = [
+  { value: 'primary', label: 'Primary residence' },
+  { value: 'investment', label: 'Investment property' },
+  { value: 'vacation', label: 'Vacation/second home' }
+];
+
+const FEATURE_OPTIONS = [
+  'Garage',
+  'Yard',
+  'Pool',
+  'Updated kitchen',
+  'Air conditioning',
+  'In-unit laundry',
+  'Walkability',
+  'Good schools'
+];
+
 interface AttomEndpoint {
   id: string;
   name: string;
@@ -222,15 +247,33 @@ export default function PropertySummary({
           }
         }
 
-        // Load home search preferences (from onboarding wizard)
+        // Load home search preferences: prefer merged fields in property-data, else migrate from legacy key
+        const merged: HomeSearchData = {};
+        const pd = (() => { try { return JSON.parse(localStorage.getItem('handoff-property-data') || '{}'); } catch { return {}; } })();
+        if (pd) {
+          if (pd.buyerStage) merged.buyerStage = pd.buyerStage;
+          if (pd.homeUse) merged.homeUse = pd.homeUse;
+          if (pd.bedrooms) merged.bedrooms = pd.bedrooms;
+          if (pd.bathrooms) merged.bathrooms = pd.bathrooms;
+          if (Array.isArray(pd.features)) merged.features = pd.features;
+          if (pd.mustHaves) merged.mustHaves = pd.mustHaves;
+          if (pd.niceToHaves) merged.niceToHaves = pd.niceToHaves;
+        }
+
+        // Legacy key support + migration
         const savedHomeSearch = localStorage.getItem('handoff-home-search-preferences');
-        if (savedHomeSearch) {
+        if ((!merged || Object.keys(merged).length === 0) && savedHomeSearch) {
           try {
             const parsed = JSON.parse(savedHomeSearch);
             setHomeSearch(parsed);
+            // Migrate into property-data
+            const newPd = { ...pd, ...parsed };
+            localStorage.setItem('handoff-property-data', JSON.stringify(newPd));
           } catch (e) {
             console.warn('Error parsing home search preferences:', e);
           }
+        } else {
+          setHomeSearch(merged);
         }
 
         // Check if setup is complete
@@ -763,6 +806,28 @@ export default function PropertySummary({
     return baseData;
   };
 
+  // Merge-and-save helper for editable Home Search preferences
+  const saveHomeSearch = (updates: Partial<HomeSearchData>) => {
+    const next = { ...(homeSearch || {}), ...updates } as HomeSearchData;
+    setHomeSearch(next);
+    try {
+      const pdRaw = localStorage.getItem('handoff-property-data');
+      const pd = pdRaw ? JSON.parse(pdRaw) : {};
+      const merged = { ...pd, ...next };
+      localStorage.setItem('handoff-property-data', JSON.stringify(merged));
+      // keep legacy key in sync for now (optional)
+      localStorage.setItem('handoff-home-search-preferences', JSON.stringify(next));
+    } catch (e) {
+      console.warn('Failed to merge/save home search preferences:', e);
+    }
+  };
+
+  const toggleFeature = (feature: string) => {
+    const set = new Set(homeSearch.features || []);
+    if (set.has(feature)) set.delete(feature); else set.add(feature);
+    saveHomeSearch({ features: Array.from(set) });
+  };
+
   return (
     <div className="space-y-6">
       {/* Property Summary Tabs */}
@@ -878,7 +943,7 @@ export default function PropertySummary({
                 className="mb-6"
               />
 
-              {/* Home Search Preferences Tab Content */}
+              {/* Home Search Preferences Tab Content (Editable) */}
               <TabsContent value="home-search" className="space-y-6 mt-6">
                 <Card>
                   <CardHeader>
@@ -888,56 +953,108 @@ export default function PropertySummary({
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {(!homeSearch || Object.keys(homeSearch).length === 0) ? (
-                      <div className="text-sm text-muted-foreground">
-                        No home search preferences saved yet.
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Stage</div>
+                        <Select 
+                          value={homeSearch.buyerStage || ''}
+                          onValueChange={(value) => saveHomeSearch({ buyerStage: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select stage" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BUYING_STAGES.map(s => (
+                              <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <div className="text-xs text-muted-foreground">Stage</div>
-                          <div className="font-medium">{homeSearch.buyerStage || '—'}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">Intended Use</div>
-                          <div className="font-medium">{homeSearch.homeUse || '—'}</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Bed className="w-4 h-4 text-muted-foreground" />
-                          <div>
-                            <div className="text-xs text-muted-foreground">Bedrooms</div>
-                            <div className="font-medium">{homeSearch.bedrooms || '—'}</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Bath className="w-4 h-4 text-muted-foreground" />
-                          <div>
-                            <div className="text-xs text-muted-foreground">Bathrooms</div>
-                            <div className="font-medium">{homeSearch.bathrooms || '—'}</div>
-                          </div>
-                        </div>
-                        <div className="md:col-span-2">
-                          <div className="text-xs text-muted-foreground mb-1">Features</div>
-                          <div className="flex flex-wrap gap-2">
-                            {(homeSearch.features && homeSearch.features.length > 0) ? (
-                              homeSearch.features.map((f, i) => (
-                                <Badge key={`${f}-${i}`} variant="outline">{f}</Badge>
-                              ))
-                            ) : (
-                              <span className="text-sm text-muted-foreground">—</span>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">Must-haves</div>
-                          <div className="font-medium break-words">{homeSearch.mustHaves || '—'}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">Nice-to-haves</div>
-                          <div className="font-medium break-words">{homeSearch.niceToHaves || '—'}</div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Intended Use</div>
+                        <Select 
+                          value={homeSearch.homeUse || ''}
+                          onValueChange={(value) => saveHomeSearch({ homeUse: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select intended use" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HOME_USES.map(u => (
+                              <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Bedrooms</div>
+                        <Select 
+                          value={homeSearch.bedrooms || ''}
+                          onValueChange={(value) => saveHomeSearch({ bedrooms: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {['Studio','1+','2+','3+','4+','5+'].map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Bathrooms</div>
+                        <Select 
+                          value={homeSearch.bathrooms || ''}
+                          onValueChange={(value) => saveHomeSearch({ bathrooms: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {['1+','1.5+','2+','2.5+','3+','3.5+'].map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="md:col-span-2 space-y-2">
+                        <div className="text-xs text-muted-foreground">Features</div>
+                        <div className="flex flex-wrap gap-2">
+                          {FEATURE_OPTIONS.map(f => {
+                            const active = (homeSearch.features || []).includes(f);
+                            return (
+                              <button
+                                key={f}
+                                type="button"
+                                onClick={() => toggleFeature(f)}
+                                className={`px-3 py-1 rounded-full border text-sm transition ${active ? 'bg-primary text-white border-primary' : 'bg-white hover:bg-muted/50'}`}
+                              >
+                                {f}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
-                    )}
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Must-haves</div>
+                        <Textarea 
+                          value={homeSearch.mustHaves || ''}
+                          onChange={(e) => saveHomeSearch({ mustHaves: e.target.value })}
+                          placeholder="e.g., garage, fenced yard, office"
+                          rows={3}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Nice-to-haves</div>
+                        <Textarea 
+                          value={homeSearch.niceToHaves || ''}
+                          onChange={(e) => saveHomeSearch({ niceToHaves: e.target.value })}
+                          placeholder="e.g., pool, finished basement"
+                          rows={3}
+                        />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
