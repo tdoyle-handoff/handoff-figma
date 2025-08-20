@@ -87,9 +87,6 @@ export interface Database {
 }
 
 // Use env-only configuration (Option C)
-const SUPABASE_URL = SUPABASE_URL;
-const SUPABASE_ANON_KEY = SUPABASE_ANON_KEY as string;
-
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('Missing Supabase configuration:');
   console.error('- URL:', SUPABASE_URL ? '✓' : '❌');
@@ -97,7 +94,7 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error('Supabase configuration incomplete. Ensure base URL and publicAnonKey are available.');
 }
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL as string, SUPABASE_ANON_KEY as string, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
