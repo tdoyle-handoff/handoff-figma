@@ -29,7 +29,7 @@ import {
   Code,
   Globe
 } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
 import { parseAddressForAPI } from '../utils/propertyHelpers';
 
 interface RequestDetails {
@@ -173,7 +173,7 @@ export function AttomEndpointFieldMappingDebugger() {
         // ENHANCED: Capture request details
         const headers = {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Accept': 'application/json'
         };
 

@@ -19,7 +19,7 @@ import {
   Wrench
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
 
 interface ApiKeyStatus {
   name: string;
@@ -76,7 +76,7 @@ export function ApiKeyManager() {
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/api-key-status`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
+'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
       });
@@ -117,7 +117,7 @@ export function ApiKeyManager() {
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-a24396d5/${endpoint}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
+'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(testData)

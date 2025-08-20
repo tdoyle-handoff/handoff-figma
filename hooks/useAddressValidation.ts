@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
 import type { AttomAddressComponents } from '../components/AddressInputEnhanced';
 
 interface AddressValidationResult {
@@ -35,7 +35,7 @@ export function useAddressValidation() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
+'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
             address1: addressComponents.address1,

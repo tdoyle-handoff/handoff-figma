@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
 
 export interface AddressSuggestion {
   description: string;
@@ -77,7 +77,7 @@ export function useAddressAutocomplete({
       return {
         baseUrl: `https://${projectId}.supabase.co/functions/v1/make-server-a24396d5`,
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
+'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         }
       };

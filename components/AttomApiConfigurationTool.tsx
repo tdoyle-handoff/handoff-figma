@@ -35,7 +35,7 @@ import {
   Upload,
   Trash2
 } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId, SUPABASE_ANON_KEY } from '../utils/supabase/info';
 
 interface ApiKeyTestResult {
   success: boolean;

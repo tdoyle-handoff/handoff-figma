@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { SafeProfileCache } from '../mapPolyfill';
-import { projectUrl, publicAnonKey } from './info';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './info';
 
 // Define the user profile types based on Supabase auth.users only
 export interface UserProfile {
@@ -87,8 +87,8 @@ export interface Database {
 }
 
 // Use env-only configuration (Option C)
-const SUPABASE_URL = projectUrl;
-const SUPABASE_ANON_KEY = publicAnonKey as string;
+const SUPABASE_URL = SUPABASE_URL;
+const SUPABASE_ANON_KEY = SUPABASE_ANON_KEY as string;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('Missing Supabase configuration:');
