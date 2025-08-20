@@ -331,7 +331,6 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               <div key={type.value} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                 <RadioGroupItem value={type.value} id={type.value} />
                 <label htmlFor={type.value} className="flex items-center space-x-3 cursor-pointer flex-1">
-                  <span className="text-2xl">{type.icon}</span>
                   <span className="font-medium">{type.label}</span>
                 </label>
               </div>
@@ -631,7 +630,6 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
                   <div key={type.value} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
                     <RadioGroupItem value={type.value} id={type.value} />
                     <label htmlFor={type.value} className="flex items-center space-x-3 cursor-pointer flex-1">
-                      <span className="text-2xl">{type.icon}</span>
                       <span className="font-medium">{type.label}</span>
                     </label>
                   </div>
