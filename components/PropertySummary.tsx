@@ -35,7 +35,11 @@ import {
   Shield,
   Key,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Bed,
+  Bath,
+  ListChecks,
+  Sparkles
 } from 'lucide-react';
 import { ComprehensiveAttomDisplay } from './ComprehensiveAttomDisplay';
 import { PropertyBasicProfile } from './PropertyBasicProfile';
@@ -95,6 +99,16 @@ interface PropertySummaryProps {
   onEditSetup?: () => void;
 }
 
+interface HomeSearchData {
+  buyerStage?: string;
+  homeUse?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  features?: string[];
+  mustHaves?: string;
+  niceToHaves?: string;
+}
+
 interface AttomEndpoint {
   id: string;
   name: string;
@@ -123,6 +137,7 @@ export default function PropertySummary({
   const [screeningData, setScreeningData] = useState<ScreeningData>({});
   const [isSetupComplete, setIsSetupComplete] = useState(false);
   const [activeTab, setActiveTab] = useState('summary');
+  const [homeSearch, setHomeSearch] = useState<HomeSearchData>({});
 
   // ATTOM API Testing States
   const [apiKey, setApiKey] = useState('');
@@ -204,6 +219,17 @@ export default function PropertySummary({
             setScreeningData(JSON.parse(savedScreeningData));
           } catch (error) {
             console.warn('Error parsing screening data:', error);
+          }
+        }
+
+        // Load home search preferences (from onboarding wizard)
+        const savedHomeSearch = localStorage.getItem('handoff-home-search-preferences');
+        if (savedHomeSearch) {
+          try {
+            const parsed = JSON.parse(savedHomeSearch);
+            setHomeSearch(parsed);
+          } catch (e) {
+            console.warn('Error parsing home search preferences:', e);
           }
         }
 
@@ -749,10 +775,14 @@ export default function PropertySummary({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="summary" className="flex items-center gap-2">
                 <Home className="w-4 h-4" />
                 Summary
+              </TabsTrigger>
+              <TabsTrigger value="home-search" className="flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Home Search
               </TabsTrigger>
               <TabsTrigger value="analysis" className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" />
@@ -847,6 +877,70 @@ export default function PropertySummary({
                 isEditable={false}
                 className="mb-6"
               />
+
+              {/* Home Search Preferences Tab Content */}
+              <TabsContent value="home-search" className="space-y-6 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Search className="w-5 h-5 text-primary" />
+                      Home Search Preferences
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {(!homeSearch || Object.keys(homeSearch).length === 0) ? (
+                      <div className="text-sm text-muted-foreground">
+                        No home search preferences saved yet.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Stage</div>
+                          <div className="font-medium">{homeSearch.buyerStage || '—'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Intended Use</div>
+                          <div className="font-medium">{homeSearch.homeUse || '—'}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Bed className="w-4 h-4 text-muted-foreground" />
+                          <div>
+                            <div className="text-xs text-muted-foreground">Bedrooms</div>
+                            <div className="font-medium">{homeSearch.bedrooms || '—'}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Bath className="w-4 h-4 text-muted-foreground" />
+                          <div>
+                            <div className="text-xs text-muted-foreground">Bathrooms</div>
+                            <div className="font-medium">{homeSearch.bathrooms || '—'}</div>
+                          </div>
+                        </div>
+                        <div className="md:col-span-2">
+                          <div className="text-xs text-muted-foreground mb-1">Features</div>
+                          <div className="flex flex-wrap gap-2">
+                            {(homeSearch.features && homeSearch.features.length > 0) ? (
+                              homeSearch.features.map((f, i) => (
+                                <Badge key={`${f}-${i}`} variant="outline">{f}</Badge>
+                              ))
+                            ) : (
+                              <span className="text-sm text-muted-foreground">—</span>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Must-haves</div>
+                          <div className="font-medium break-words">{homeSearch.mustHaves || '—'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Nice-to-haves</div>
+                          <div className="font-medium break-words">{homeSearch.niceToHaves || '—'}</div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
               {/* Transaction Timeline */}
               <Card>

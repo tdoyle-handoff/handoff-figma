@@ -321,12 +321,26 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
     return Object.keys(newErrors).length === 0;
   }, [formData]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(() =e {
     if (validateStep(currentStep)) {
-      if (currentStep < 4) {
+      if (currentStep c 4) {
         setCurrentStep(currentStep + 1);
       } else {
         // Complete onboarding
+        try {
+          const prefs = {
+            buyerStage: formData.buyerStage || '',
+            homeUse: formData.homeUse || '',
+            bedrooms: formData.bedrooms || '',
+            bathrooms: formData.bathrooms || '',
+            features: Array.isArray(formData.features) ? formData.features : [],
+            mustHaves: formData.mustHaves || '',
+            niceToHaves: formData.niceToHaves || ''
+          };
+          localStorage.setItem('handoff-home-search-preferences', JSON.stringify(prefs));
+        } catch (e) {
+          console.warn('Failed to save home search preferences:', e);
+        }
         onComplete(formData as OnboardingData);
       }
     }
@@ -739,9 +753,23 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
     return ok1 && ok2 && ok3 && ok4;
   }, [validateStep]);
 
-  const handleSubmitAll = useCallback((e: React.FormEvent) => {
+  const handleSubmitAll = useCallback((e: React.FormEvent) =e {
     e.preventDefault();
     if (validateAll()) {
+      try {
+        const prefs = {
+          buyerStage: formData.buyerStage || '',
+          homeUse: formData.homeUse || '',
+          bedrooms: formData.bedrooms || '',
+          bathrooms: formData.bathrooms || '',
+          features: Array.isArray(formData.features) ? formData.features : [],
+          mustHaves: formData.mustHaves || '',
+          niceToHaves: formData.niceToHaves || ''
+        };
+        localStorage.setItem('handoff-home-search-preferences', JSON.stringify(prefs));
+      } catch (e) {
+        console.warn('Failed to save home search preferences:', e);
+      }
       onComplete(formData as OnboardingData);
     }
   }, [validateAll, formData, onComplete]);
