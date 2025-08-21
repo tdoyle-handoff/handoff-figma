@@ -3,6 +3,7 @@ import { PropertySetupFlow } from './PropertySetupFlow';
 import PropertySummary from './PropertySummary';
 import { PropertyCompletionNotice } from './PropertyCompletionNotice';
 import { useIsMobile } from './ui/use-mobile';
+import AdminShell from './layout/AdminShell';
 
 interface PropertyDetailsProps {
   userProfile?: any;
@@ -153,12 +154,14 @@ export function PropertyDetails({ userProfile, setupData, onNavigate }: Property
 
   // Show property summary if setup is complete
   return (
-    <PropertySummary 
-      userProfile={userProfile}
-      setupData={setupData}
-      onNavigate={onNavigate}
-      onStartOver={handleStartOver}
-      onEditSetup={handleEditSetup}
-    />
+    cAdminShelle
+      cPropertySummary 
+        userProfile={userProfile}
+        setupData={setupData}
+        onNavigate={onNavigate}
+        onStartOver={handleStartOver}
+        onEditSetup={handleEditSetup}
+      /e
+    c/AdminShelle
   );
 }
