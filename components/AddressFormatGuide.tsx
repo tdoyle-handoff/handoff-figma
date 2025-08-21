@@ -565,7 +565,7 @@ export function AddressFormatGuide() {
                         Avoid
                       </h4>
                       <ul className="space-y-2">
-                        {rule.avoid.map((avoid, idx) => (
+                        {rule.avoid.map((avoid: string, idx: number) => (
                           <li
                             key={idx}
                             className="text-sm p-2 bg-red-50 border border-red-200 rounded text-red-800"

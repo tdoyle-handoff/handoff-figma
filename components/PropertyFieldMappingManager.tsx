@@ -725,7 +725,7 @@ export function PropertyFieldMappingManager() {
         <div className="space-y-4 max-h-[600px] overflow-y-auto">
           {Object.entries(fieldsByCategory).map(([category, fields]) => {
             const isExpanded = expandedCategories.includes(category);
-            const categoryIcon = fields[0]?.icon || FileText;
+            const CategoryIcon = fields[0]?.icon || FileText;
             
             return (
               <Card key={category}>
@@ -735,7 +735,7 @@ export function PropertyFieldMappingManager() {
                 >
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <categoryIcon className="w-5 h-5 text-primary" />
+                      <CategoryIcon className="w-5 h-5 text-primary" />
                       {category}
                       <Badge variant="outline">
                         {fields.length} fields

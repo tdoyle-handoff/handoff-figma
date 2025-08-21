@@ -464,7 +464,13 @@ export function MobilePropertyDetails({
     return baseData;
   };
 
-  const enrichedData = getEnrichedPropertyData();
+  type EnrichedData = ReturnType<typeof getEnrichedPropertyData> & {
+    estimatedValue?: number;
+    pricePerSqft?: number;
+    garage?: number;
+    parking?: number;
+  };
+  const enrichedData = getEnrichedPropertyData() as EnrichedData;
 
   const handleEditSetup = () => {
     localStorage.setItem("handoff-setup-edit-mode", "true");

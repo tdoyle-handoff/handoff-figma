@@ -152,7 +152,7 @@ export function InitialPropertySetup({
   const SINGLE_PAGE = true;
   const [propertyData, setPropertyData] = useState<PropertyData>({});
   const [screeningData, setScreeningData] = useState<ScreeningData | null>(
-    propScreeningData,
+    propScreeningData ?? null,
   );
   const isMobile = useIsMobile();
 
@@ -249,7 +249,7 @@ export function InitialPropertySetup({
 
     // Financial Information (forced visible when forceAllSections)
     if (
-      screeningData?.experienceLevel !== "just-starting" ||
+      screeningData?.buyingStage !== "just-starting" ||
       screeningData?.hasPreApproval ||
       forceAllSections
     ) {
@@ -266,7 +266,7 @@ export function InitialPropertySetup({
       });
     }
 
-    // Team  Services (forced visible when forceAllSections)
+    // Team & Services (forced visible when forceAllSections)
     if (
       screeningData?.experienceLevel === "first-time" ||
       screeningData?.timeframe === "immediate" ||
@@ -546,7 +546,7 @@ export function InitialPropertySetup({
           <p className="text-muted-foreground">
             {isEditMode
               ? "Update your property details and information"
-              : screeningData.hasSpecificProperty
+              : screeningData?.hasSpecificProperty
                 ? "Let's set up your property details and view comprehensive analysis"
                 : "We'll customize this based on your needs"}
           </p>
