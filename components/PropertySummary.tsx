@@ -287,9 +287,26 @@ export default function PropertySummary({
 
     loadPropertyData();
     
-    // Refresh data every 15 seconds (increased to reduce load)
-    const interval = setInterval(loadPropertyData, 15000);
-    return () => clearInterval(interval);
+    // In production, refresh periodically; in dev, avoid polling by default
+    const shouldPoll = import.meta.env.PROD;
+    let interval: number | undefined;
+
+    // Refresh only when the tab is visible to reduce background work
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        loadPropertyData();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    if (shouldPoll) {
+      interval = window.setInterval(loadPropertyData, 30000); // 30s in prod
+    }
+
+    return () => {
+      if (interval) window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   // Load API key on component mount
@@ -298,12 +315,13 @@ export default function PropertySummary({
   }, []);
 
   // Auto-search for Attom data when address is available (with rate limiting)
-  useEffect(() => {
+  useEffect(() =e {
     if (propertyAddress && propertyAddress.trim() && !hasAuthError) {
       try {
-        // Only refetch if we haven't done so recently
+        // Longer cooldown in dev to speed up refresh; shorter in prod
+        const cooldownMs = import.meta.env.PROD ? 60000 : 300000; // 1 min prod, 5 min dev
         const now = Date.now();
-        if (now - lastApiCallRef.current > 60000) { // 1 minute cooldown for auto-fetch
+        if (now - lastApiCallRef.current > cooldownMs) {
           refetchAttom(propertyAddress);
           lastApiCallRef.current = now;
         }
@@ -315,16 +333,20 @@ export default function PropertySummary({
 
   // Auto-test all endpoints when property address is available
   useEffect(() => {
-    if (propertyAddress && 
-        propertyAddress.trim() && 
-        apiKey && 
-        !hasAuthError && 
-        !isTestingInProgress &&
-        hasTestedAddressRef.current !== propertyAddress) {
-      
+    const devAutoTestEnabled = localStorage.getItem('handoff-attom-autotest') === 'true';
+    const allowAutoTest = import.meta.env.PROD || devAutoTestEnabled;
+
+    if (
+      allowAutoTest &&
+      propertyAddress &&
+      propertyAddress.trim() &&
+      apiKey &&
+      !hasAuthError &&
+      !isTestingInProgress &&
+      hasTestedAddressRef.current !== propertyAddress
+    ) {
       // Mark this address as tested to prevent duplicate calls
       hasTestedAddressRef.current = propertyAddress;
-      
       // Start testing all endpoints
       testAllEndpoints();
     }
