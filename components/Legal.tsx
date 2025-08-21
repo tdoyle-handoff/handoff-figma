@@ -1129,19 +1129,39 @@ export default function Legal() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold mb-2">Vendor Marketplace</h1>
-        <p className="text-black">
-          Book providers with ratings & reviews.
+        <h1 className="text-2xl font-semibold mb-2">Legal Services</h1>
+        <p className="text-muted-foreground">
+          Manage legal aspects of your real estate transaction including contracts, title search, and closing documentation.
         </p>
       </div>
 
-      <Tabs defaultValue="marketplace" className="w-full">
-        <TabsList className="grid w-full grid-cols-1">
-          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+      <Tabs defaultValue="progress" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="progress">Progress</TabsTrigger>
+          <TabsTrigger value="attorney">Attorney</TabsTrigger>
+          <TabsTrigger value="contract">Contract</TabsTrigger>
+          <TabsTrigger value="title">Title</TabsTrigger>
+          <TabsTrigger value="settlement">Settlement</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="marketplace" className="space-y-6">
+        <TabsContent value="progress" className="space-y-6">
+          <LegalProgressTracker />
+        </TabsContent>
+
+        <TabsContent value="attorney" className="space-y-6">
           <LawyerSearch />
+        </TabsContent>
+
+        <TabsContent value="contract" className="space-y-6">
+          <ContractReview />
+        </TabsContent>
+
+        <TabsContent value="title" className="space-y-6">
+          <TitleSearch />
+        </TabsContent>
+
+        <TabsContent value="settlement" className="space-y-6">
+          <SettlementReview />
         </TabsContent>
       </Tabs>
     </div>

@@ -399,13 +399,15 @@ export default function Insurance() {
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="marketplace" className="w-full">
-        <TabsList className="grid w-full grid-cols-1">
-          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+      <Tabs defaultValue="quotes" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="quotes">Quotes</TabsTrigger>
+          <TabsTrigger value="providers">Providers</TabsTrigger>
+          <TabsTrigger value="calculator">Calculator</TabsTrigger>
+          <TabsTrigger value="policies">Policies</TabsTrigger>
         </TabsList>
 
-        {/* Unified Vendor Marketplace single tab */}
-        <TabsContent value="marketplace" className="space-y-6">
+        <TabsContent value="quotes" className="space-y-6">
           {/* Insurance Type Filter */}
           <div className="flex gap-2">
             {insuranceTypes.map((type) => (
@@ -538,6 +540,9 @@ export default function Insurance() {
               </Card>
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="providers" className="space-y-6">
           <div className="flex gap-4">
             <div className="flex-1">
               <Input
@@ -631,6 +636,9 @@ export default function Insurance() {
             ))}
           </div>
 
+        </TabsContent>
+
+        <TabsContent value="calculator" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Insurance Calculator</CardTitle>
@@ -747,6 +755,9 @@ export default function Insurance() {
             </CardContent>
           </Card>
 
+        </TabsContent>
+
+        <TabsContent value="policies" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Current Policies</CardTitle>
