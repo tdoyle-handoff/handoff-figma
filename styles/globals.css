@@ -1657,26 +1657,26 @@
   }
 }
 
-/* Ensure Tailwind HSL tokens reflect original theme */
+/* Ensure Tailwind HSL tokens reflect neutral black text and non-red borders */
 :root {
   --background: 0 0% 100%;
-  --foreground: 354 66% 15%;
-  --muted: 43 48% 68%;
-  --muted-foreground: 354 66% 15%;
-  --popover: 58 57% 87%;
-  --popover-foreground: 354 66% 15%;
-  --card: 58 57% 87%;
-  --card-foreground: 354 66% 15%;
-  --border: 351 70% 38%;
+  --foreground: 0 0% 0%;            /* all text black */
+  --muted: 0 0% 96%;                /* light neutral */
+  --muted-foreground: 0 0% 0%;      /* muted text also black */
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --border: 0 0% 100%;             /* remove red borders by making borders white */
   --input: 0 0% 100%;
-  --primary: 354 66% 15%;
+  --primary: 0 0% 0%;              /* primary text accents black if used as text */
   --primary-foreground: 0 0% 100%;
-  --secondary: 43 48% 68%;
-  --secondary-foreground: 354 66% 15%;
-  --accent: 351 70% 38%;
-  --accent-foreground: 0 0% 100%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 0%;
+  --accent: 0 0% 100%;             /* replace any prior red accent with white */
+  --accent-foreground: 0 0% 0%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 351 70% 38%;
+  --ring: 0 0% 0%;                 /* neutral focus ring */
   --radius: 0.75rem;
 }
