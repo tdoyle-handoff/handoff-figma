@@ -21,14 +21,33 @@ export default function Dashboard() {
   )
 
   return (
-    <AppLayout
-      topNav={<TopNav />}
-      leftSidebar={<LeftSidebar />}
-      rightSidebar={<RightSidebar />}
-      progressTracker={<Progress />}
-      actions={<Actions />}
-    >
+    AppLayout
+      topNav={TopNav /}
+      leftSidebar={LeftSidebar /}
+      rightSidebar={RightSidebar /}
+      progressTracker={Progress /}
+      actions={Actions /}
+    >
       div className="grid gap-4"
+        {/* KPI Row */}
+        div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          {
+            // Inline import to avoid changing project structure; at top of file we keep imports minimal
+          }
+          {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
+          {(() => {
+            // dynamic require to avoid circular imports warnings in some bundlers
+            const { KpiTile } = require('../../components/ui/kpi');
+            return (
+              React.Fragment
+                KpiTile title="Current MRR" value="$12.4k" tone="maroon" /
+                KpiTile title="Current Customers" value="16,601" tone="gold" /
+                KpiTile title="Active Customers" value="33%" tone="sand" /
+                KpiTile title="Churn Rate" value="2%" tone="taupe" /
+              /React.Fragment
+            );
+          })()}
+        /div
         section id="transactions" className="bg-card border rounded-xl p-6 shadow-soft"
           h2 className="font-semibold mb-2"Guided Transaction Workflow/h2
           p className="text-sm text-muted-foreground"Interactive checklist with color-coded milestones./p
