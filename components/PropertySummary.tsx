@@ -1245,6 +1245,7 @@ export default function PropertySummary({
                     </div>
                   </div>
                 </CardContent>
+              </CardContent>
               </Card>
             </TabsContent>
 
