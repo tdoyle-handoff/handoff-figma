@@ -172,7 +172,6 @@ export default function PropertySummary({
   const [propertyData, setPropertyData] = useState<PropertyData>({});
   const [screeningData, setScreeningData] = useState<ScreeningData>({});
   const [isSetupComplete, setIsSetupComplete] = useState(false);
-  const [activeTab, setActiveTab] = useState("onboarding");
   const [homeSearch, setHomeSearch] = useState<HomeSearchData>({});
 
   // ATTOM API Testing States
@@ -989,27 +988,17 @@ export default function PropertySummary({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            TabsList className="grid w-full grid-cols-4"
-              TabsTrigger
-                value="onboarding"
-                className="flex items-center gap-2"
-              e
-                ListChecks className="w-4 h-4" /
+          <Tabs defaultValue="summary" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="onboarding" className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4" />
                 Onboarding
-              /TabsTrigger
-              TabsTrigger value="summary" className="flex items-center gap-2"
-                Home className="w-4 h-4" /
+              </TabsTrigger>
+              <TabsTrigger value="summary" className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
                 Summary
-              /TabsTrigger
-              <TabsTrigger
-                value="home-search"
-                className="flex items-center gap-2"
-              >
+              </TabsTrigger>
+              <TabsTrigger value="home-search" className="flex items-center gap-2">
                 <Search className="w-4 h-4" />
                 Home Search
               </TabsTrigger>
@@ -1020,7 +1009,9 @@ export default function PropertySummary({
             </TabsList>
 
             {/* Summary Tab */}
-            <TabsContent value="summary" className="space-y-6 mt-6">
+            <TabsContent value="summary" className="mt-6">
+              <Card>
+                <CardContent className="space-y-6">
               {/* Setup Progress */}
               <Card>
                 <CardHeader>
@@ -1122,177 +1113,7 @@ export default function PropertySummary({
                 className="mb-6"
               />
 
-              {/* Onboarding Tab (Editable) */}
-              <TabsContent value="onboarding" className="space-y-6 mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ListChecks className="w-5 h-5 text-primary" />
-                      Onboarding Questions
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {/* Embed the new Buyer Intake form */}
-                    <BuyerIntakeForm title="Onboarding" />
-                  </CardContent>
-                </Card>
-              </TabsContent>
 
-              {/* Home Search Preferences Tab Content (Editable) */}
-              <TabsContent value="home-search" className="space-y-6 mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Search className="w-5 h-5 text-primary" />
-                      Home Search Preferences
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Stage
-                        </div>
-                        <Select
-                          value={homeSearch.buyerStage || ""}
-                          onValueChange={(value) =>
-                            saveHomeSearch({ buyerStage: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select stage" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BUYING_STAGES.map((s) => (
-                              <SelectItem key={s.value} value={s.value}>
-                                {s.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Intended Use
-                        </div>
-                        <Select
-                          value={homeSearch.homeUse || ""}
-                          onValueChange={(value) =>
-                            saveHomeSearch({ homeUse: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select intended use" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {HOME_USES.map((u) => (
-                              <SelectItem key={u.value} value={u.value}>
-                                {u.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Bedrooms
-                        </div>
-                        <Select
-                          value={homeSearch.bedrooms || ""}
-                          onValueChange={(value) =>
-                            saveHomeSearch({ bedrooms: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {["Studio", "1+", "2+", "3+", "4+", "5+"].map(
-                              (b) => (
-                                <SelectItem key={b} value={b}>
-                                  {b}
-                                </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Bathrooms
-                        </div>
-                        <Select
-                          value={homeSearch.bathrooms || ""}
-                          onValueChange={(value) =>
-                            saveHomeSearch({ bathrooms: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {["1+", "1.5+", "2+", "2.5+", "3+", "3.5+"].map(
-                              (b) => (
-                                <SelectItem key={b} value={b}>
-                                  {b}
-                                </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="md:col-span-2 space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Features
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {FEATURE_OPTIONS.map((f) => {
-                            const active = (homeSearch.features || []).includes(
-                              f,
-                            );
-                            return (
-                              <button
-                                key={f}
-                                type="button"
-                                onClick={() => toggleFeature(f)}
-                                className={`px-3 py-1 rounded-full border text-sm transition ${active ? "bg-primary text-white border-primary" : "bg-white hover:bg-muted/50"}`}
-                              >
-                                {f}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Must-haves
-                        </div>
-                        <Textarea
-                          value={homeSearch.mustHaves || ""}
-                          onChange={(e) =>
-                            saveHomeSearch({ mustHaves: e.target.value })
-                          }
-                          placeholder="e.g., garage, fenced yard, office"
-                          rows={3}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          Nice-to-haves
-                        </div>
-                        <Textarea
-                          value={homeSearch.niceToHaves || ""}
-                          onChange={(e) =>
-                            saveHomeSearch({ niceToHaves: e.target.value })
-                          }
-                          placeholder="e.g., pool, finished basement"
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
 
               {/* Transaction Timeline */}
               <Card>
@@ -1421,6 +1242,177 @@ export default function PropertySummary({
                             </p>
                           )}
                       </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Onboarding Tab (Editable) */}
+            <TabsContent value="onboarding" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ListChecks className="w-5 h-5 text-primary" />
+                    Onboarding Questions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <BuyerIntakeForm title="Onboarding" />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Home Search Preferences Tab Content (Editable) */}
+            <TabsContent value="home-search" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="w-5 h-5 text-primary" />
+                    Home Search Preferences
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Stage
+                      </div>
+                      <Select
+                        value={homeSearch.buyerStage || ""}
+                        onValueChange={(value) =>
+                          saveHomeSearch({ buyerStage: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select stage" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {BUYING_STAGES.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Intended Use
+                      </div>
+                      <Select
+                        value={homeSearch.homeUse || ""}
+                        onValueChange={(value) =>
+                          saveHomeSearch({ homeUse: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select intended use" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HOME_USES.map((u) => (
+                            <SelectItem key={u.value} value={u.value}>
+                              {u.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Bedrooms
+                      </div>
+                      <Select
+                        value={homeSearch.bedrooms || ""}
+                        onValueChange={(value) =>
+                          saveHomeSearch({ bedrooms: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["Studio", "1+", "2+", "3+", "4+", "5+"].map(
+                            (b) => (
+                              <SelectItem key={b} value={b}>
+                                {b}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Bathrooms
+                      </div>
+                      <Select
+                        value={homeSearch.bathrooms || ""}
+                        onValueChange={(value) =>
+                          saveHomeSearch({ bathrooms: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["1+", "1.5+", "2+", "2.5+", "3+", "3.5+"].map(
+                            (b) => (
+                              <SelectItem key={b} value={b}>
+                                {b}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Features
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {FEATURE_OPTIONS.map((f) => {
+                          const active = (homeSearch.features || []).includes(
+                            f,
+                          );
+                          return (
+                            <button
+                              key={f}
+                              type="button"
+                              onClick={() => toggleFeature(f)}
+                              className={`px-3 py-1 rounded-full border text-sm transition ${active ? "bg-primary text-white border-primary" : "bg-white hover:bg-muted/50"}`}
+                            >
+                              {f}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Must-haves
+                      </div>
+                      <Textarea
+                        value={homeSearch.mustHaves || ""}
+                        onChange={(e) =>
+                          saveHomeSearch({ mustHaves: e.target.value })
+                        }
+                        placeholder="e.g., garage, fenced yard, office"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-xs text-muted-foreground">
+                        Nice-to-haves
+                      </div>
+                      <Textarea
+                        value={homeSearch.niceToHaves || ""}
+                        onChange={(e) =>
+                          saveHomeSearch({ niceToHaves: e.target.value })
+                        }
+                        placeholder="e.g., pool, finished basement"
+                        rows={3}
+                      />
                     </div>
                   </div>
                 </CardContent>
@@ -1646,6 +1638,7 @@ export default function PropertySummary({
                     </Button>
                   </div>
                 </CardContent>
+              </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
