@@ -270,22 +270,7 @@ export default function DashboardLayout({
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           {Object.entries(groupedNavigation).map(([category, items]) => (
             <div key={category}>
-              {sidebarOpen && (
-                <div className="mb-3">
-                  <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-                    {category}
-                  </h3>
-                  {false && category === 'Core' && (
-                    <div className={`text-xs p-2 rounded-lg border ${categoryColors[category as keyof typeof categoryColors]}`}>
-                      <div className="flex items-center gap-1 font-medium mb-1">
-                        <Building className="w-3 h-3" />
-                        Essential Features
-                      </div>
-                      <div>Core tools for your real estate transaction</div>
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* Category headers removed per request */}
               
               <div className="space-y-1">
                 {items.map((item) => {

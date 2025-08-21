@@ -207,7 +207,7 @@ export default function Documents({ setupData }: DocumentsProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold mb-2">Offer & Document Hub</h1>
-          <p className="text-muted-foreground">
+          <p className="text-black">
             Smart offer builder, templates, and e-sign integration
           </p>
         </div>

@@ -189,7 +189,7 @@ export default function Resources({ onNavigate }: ResourcesProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold mb-2">Education Hub</h1>
-          <p className="text-muted-foreground">
+          <p className="text-black">
             Stage-based guides, videos, checklists, calculators, and a glossary to support every step
           </p>
         </div>

@@ -815,7 +815,7 @@ export default function Communications() {
                 <Badge className={`${isMobile ? 'text-xs' : ''}`}>{unreadCount} new</Badge>
               )}
             </CardTitle>
-            <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
+            <p className={`${isMobile ? 'text-sm' : ''} text-black`}>
               Secure chat, email, SMS, and file sharing in one place
             </p>
           </div>

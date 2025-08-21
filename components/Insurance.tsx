@@ -264,7 +264,7 @@ export default function Insurance() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold mb-2">Vendor Marketplace</h1>
-          <p className="text-muted-foreground">
+          <p className="text-black">
             Book providers with ratings & reviews
           </p>
         </div>
@@ -399,15 +399,13 @@ export default function Insurance() {
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="quotes" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="quotes">Quotes</TabsTrigger>
-          <TabsTrigger value="providers">Shop Providers</TabsTrigger>
-          <TabsTrigger value="calculator">Calculator</TabsTrigger>
-          <TabsTrigger value="policies">My Policies</TabsTrigger>
+      <Tabs defaultValue="marketplace" className="w-full">
+        <TabsList className="grid w-full grid-cols-1">
+          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="quotes" className="space-y-6">
+        {/* Unified Vendor Marketplace single tab */}
+        <TabsContent value="marketplace" className="space-y-6">
           {/* Insurance Type Filter */}
           <div className="flex gap-2">
             {insuranceTypes.map((type) => (
@@ -541,8 +539,6 @@ export default function Insurance() {
             )}
           </div>
         </TabsContent>
-
-        <TabsContent value="providers" className="space-y-6">
           <div className="flex gap-4">
             <div className="flex-1">
               <Input
@@ -637,7 +633,6 @@ export default function Insurance() {
           </div>
         </TabsContent>
 
-        <TabsContent value="calculator" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Insurance Calculator</CardTitle>
@@ -755,7 +750,6 @@ export default function Insurance() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="policies" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Current Policies</CardTitle>

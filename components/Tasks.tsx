@@ -295,7 +295,7 @@ export default function Tasks({ onNavigate }: TasksProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Transaction Checklist</h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-black mt-1">
             Color-coded milestones, interactive checklist, and deadline tracker
           </p>
         </div>
