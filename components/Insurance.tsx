@@ -59,6 +59,19 @@ export default function Insurance() {
   const [coverageAmount, setCoverageAmount] = useState([450000]);
   const [deductible, setDeductible] = useState([1000]);
 
+  // Deprecated: This page has moved into Vendor Marketplace.
+  // Left in place temporarily for backwards-compatibility.
+  return (
+    <Card>
+      <CardContent className="p-8 text-center">
+        <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <h3 className="font-medium mb-2">Insurance has moved</h3>
+        <p className="text-muted-foreground mb-2">This page is now available in the Vendor Marketplace.</p>
+        <p className="text-sm text-muted-foreground">Use Vendor Marketplace tabs for Providers, Quotes, and Calculator.</p>
+      </CardContent>
+    </Card>
+  );
+
   const insuranceProviders: InsuranceProvider[] = [
     {
       id: '1',

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Shield, Clock, FileText, Home, Waves, Wind } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -126,9 +126,18 @@ const INITIAL_QUOTES: InsuranceQuote[] = [
   }
 ];
 
-export default function InsuranceQuotes() {
-  const [selectedInsuranceType, setSelectedInsuranceType] = useState<InsuranceTypeValue>('home');
-  const [quotes] = useState<InsuranceQuote[]>(INITIAL_QUOTES);
+interface InsuranceQuotesProps {
+  quotes?: InsuranceQuote[];
+  defaultType?: InsuranceTypeValue;
+}
+
+export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'home' }: InsuranceQuotesProps) {
+  const [selectedInsuranceType, setSelectedInsuranceType] = useState<InsuranceTypeValue>(defaultType);
+  const quotes = quotesProp ?? INITIAL_QUOTES;
+
+  useEffect(() => {
+    setSelectedInsuranceType(defaultType);
+  }, [defaultType]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
