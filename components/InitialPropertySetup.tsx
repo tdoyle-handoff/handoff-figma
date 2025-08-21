@@ -1054,8 +1054,7 @@ function PropertyBasicStep({
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-green-600" />
                 <span className="text-sm text-muted-foreground">
-                  ${Math.round(attomProperty.valuation.price_per_sqft)} per sq
-                  ft
+                  {`${Math.round(attomProperty.valuation.price_per_sqft)} per sq ft`}
                 </span>
               </div>
             </div>

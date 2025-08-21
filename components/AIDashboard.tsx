@@ -545,7 +545,7 @@ export function AIDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="text-center p-3 bg-muted/30 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">
-                  ${marketInsights.averagePrice.toLocaleString()}
+                  {marketInsights.averagePrice.toLocaleString()}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Average Price
