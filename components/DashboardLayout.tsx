@@ -60,48 +60,48 @@ export default function DashboardLayout({
     // Core Features
     {
       id: 'overview',
-      label: 'Dashboard',
+      label: 'Analytics & Budget',
       icon: BarChart3,
-      description: 'Overview and progress tracking',
+      description: 'Budgets, offers, and transaction analytics',
       category: 'Core'
     },
     
     // Property & Transaction
     {
       id: 'property',
-      label: 'Property Details',
+      label: 'Property Search',
       icon: Home,
-      description: 'Property information and preferences',
+      description: 'Search and evaluate homes',
       category: 'Property'
     },
     {
       id: 'tasks',
-      label: 'Tasks & Timeline',
+      label: 'Transaction Checklist',
       icon: CheckSquare,
-      description: 'Transaction milestones and deadlines',
+      description: 'State-specific interactive milestones',
       category: 'Property'
     },
     
     // Transaction Details
     {
       id: 'legal',
-      label: 'Legal',
+      label: 'Vendor Marketplace',
       icon: Scale,
-      description: 'Contracts and legal documents',
+      description: 'Inspectors, appraisers, attorneys, lenders, title, insurance',
       category: 'Transaction Details'
     },
     {
       id: 'inspections',
-      label: 'Inspections',
+      label: 'Offer & Document Hub',
       icon: Eye,
-      description: 'Property inspections and reports',
+      description: 'Smart offer builder, templates, e-sign',
       category: 'Transaction Details'
     },
     {
       id: 'insurance',
-      label: 'Insurance',
+      label: 'Vendor Marketplace',
       icon: Shield,
-      description: 'Home insurance planning',
+      description: 'Book providers with ratings & reviews',
       category: 'Transaction Details'
     },
     

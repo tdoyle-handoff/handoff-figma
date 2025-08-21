@@ -366,7 +366,7 @@ const InspectionsProgressTracker = () => {
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Scheduled</p>
+          <p className="text-sm text-muted-foreground mt-1">Browse and book providers with ratings, availability, and price</p>
                 <p className="text-xl font-semibold">1</p>
               </div>
             </div>
@@ -765,7 +765,7 @@ export default function Inspections() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold mb-2">Inspections</h1>
+          <h1 className="text-xl md:text-2xl font-semibold">Vendor Marketplace</h1>
           <p className="text-muted-foreground">
             Schedule and track all property inspections for your new home
           </p>
