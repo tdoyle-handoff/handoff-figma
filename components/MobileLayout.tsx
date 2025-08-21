@@ -61,23 +61,23 @@ export default function MobileLayout({
     // Core Features
     {
       id: 'overview',
-      label: 'Dashboard',
+      label: 'Analytics & Budget',
       icon: BarChart3,
-      description: 'Overview \u0026 progress',
+      description: 'Budgets, offers, and transaction analytics',
       category: 'Core'
     },
     {
       id: 'property',
-      label: 'Property',
+      label: 'Property Search',
       icon: Home,
-      description: 'Property details',
+      description: 'Search and evaluate homes',
       category: 'Core'
     },
     {
       id: 'tasks',
-      label: 'Tasks',
+      label: 'Transaction Checklist',
       icon: CheckSquare,
-      description: 'Track your progress',
+      description: 'State-specific interactive milestones',
       category: 'Core'
     },
 
@@ -85,32 +85,32 @@ export default function MobileLayout({
     // Transaction Details
     {
       id: 'legal',
-      label: 'Legal',
+      label: 'Vendor Marketplace',
       icon: Scale,
-      description: 'Legal documents',
+      description: 'Inspectors, appraisers, attorneys, lenders, title, insurance',
       category: 'Transaction Details'
     },
     {
       id: 'inspections',
-      label: 'Inspections',
+      label: 'Vendor Marketplace',
       icon: Eye,
-      description: 'Property inspections',
+      description: 'Browse and book providers with ratings, availability, and price',
       category: 'Transaction Details'
     },
     {
       id: 'insurance',
-      label: 'Insurance',
+      label: 'Vendor Marketplace',
       icon: Shield,
-      description: 'Home insurance',
+      description: 'Book providers with ratings & reviews',
       category: 'Transaction Details'
     },
     
     // Additional Services
     {
       id: 'communications',
-      label: 'Messages',
+      label: 'Communication Suite',
       icon: MessageSquare,
-      description: 'Team communications',
+      description: 'Secure chat and file sharing',
       category: 'Services'
     },
     {
@@ -122,16 +122,16 @@ export default function MobileLayout({
     },
     {
       id: 'documents',
-      label: 'Documents',
+      label: 'Offer & Document Hub',
       icon: FileText,
-      description: 'Important documents',
+      description: 'Smart offers, templates, e-sign',
       category: 'Services'
     },
     {
       id: 'resources',
-      label: 'Resources',
+      label: 'Education Hub',
       icon: BookOpen,
-      description: 'Helpful resources',
+      description: 'Stage-based guides, videos, glossary',
       category: 'Services'
     }
   ];
@@ -140,23 +140,23 @@ export default function MobileLayout({
   const bottomNavItems: { id: PageType; label: string; icon: React.ElementType }[] = [
     {
       id: 'overview',
-      label: 'Dashboard',
+      label: 'Analytics & Budget',
       icon: BarChart3
     },
     {
       id: 'property',
-      label: 'Property',
+      label: 'Property Search',
       icon: Home
     },
     {
       id: 'tasks',
-      label: 'Tasks',
+      label: 'Transaction Checklist',
       icon: CheckSquare
     },
 
     {
       id: 'communications',
-      label: 'Messages',
+      label: 'Communication Suite',
       icon: MessageSquare
     }
   ];

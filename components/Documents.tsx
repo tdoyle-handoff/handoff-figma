@@ -206,9 +206,9 @@ export default function Documents({ setupData }: DocumentsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold mb-2">Documents</h1>
+          <h1 className="text-2xl font-semibold mb-2">Offer & Document Hub</h1>
           <p className="text-muted-foreground">
-            Manage all transaction documents in one secure location
+            Smart offer builder, templates, and e-sign integration
           </p>
         </div>
         <div className="flex gap-2">
@@ -297,11 +297,18 @@ export default function Documents({ setupData }: DocumentsProps) {
       )}
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className={`grid w-full grid-cols-4 ${isMobile ? 'tab-container-multiline' : ''}`}>
+        <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2 tab-container-multiline' : 'grid-cols-7'}`}>
           <TabsTrigger value="all" className={isMobile ? 'tab-multiline' : ''}>All Documents</TabsTrigger>
           <TabsTrigger value="shared" className={isMobile ? 'tab-multiline' : ''}>Shared</TabsTrigger>
           <TabsTrigger value="signatures" className={isMobile ? 'tab-multiline' : ''}>Signatures Needed</TabsTrigger>
           <TabsTrigger value="archive" className={isMobile ? 'tab-multiline' : ''}>Archive</TabsTrigger>
+          {!isMobile && (
+            <Fragment>
+              <TabsTrigger value="offer">Offer Builder</TabsTrigger>
+              <TabsTrigger value="templates">Templates</TabsTrigger>
+              <TabsTrigger value="esign">E-Sign</TabsTrigger>
+            </Fragment>
+          )}
         </TabsList>
 
         <TabsContent value="all" className="space-y-6">
@@ -499,6 +506,62 @@ export default function Documents({ setupData }: DocumentsProps) {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {!isMobile && (
+          <Fragment>
+            <TabsContent value="offer" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Smart Offer Builder</CardTitle>
+                  <CardDescription>Draft offers with templates, contingencies, and auto-filled details</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="p-4 border rounded-lg text-sm text-muted-foreground">
+                    Offer builder coming soon — create offers faster with reusable templates and e-sign support.
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="templates" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Templates</CardTitle>
+                  <CardDescription>Standard forms and reusable documents</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {['Purchase Agreement', 'Counter Offer', 'Inspection Addendum', 'Repair Request'].map((tpl, idx) => (
+                      <Card key={idx} className="border-dashed">
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div>
+                            <div className="font-medium">{tpl}</div>
+                            <div className="text-sm text-muted-foreground">Preconfigured template</div>
+                          </div>
+                          <Button variant="outline" size="sm">Use</Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="esign" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>E-Sign</CardTitle>
+                  <CardDescription>Send documents for electronic signature</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="p-4 border rounded-lg text-sm text-muted-foreground">
+                    Connect your preferred e-sign provider to send and track signature requests.
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Fragment>
+        )}
       </Tabs>
     </div>
   );

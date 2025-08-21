@@ -92,9 +92,9 @@ export default function DashboardLayout({
     },
     {
       id: 'inspections',
-      label: 'Offer & Document Hub',
+      label: 'Vendor Marketplace',
       icon: Eye,
-      description: 'Smart offer builder, templates, e-sign',
+      description: 'Browse and book providers with ratings, availability, and price',
       category: 'Transaction Details'
     },
     {
@@ -108,9 +108,9 @@ export default function DashboardLayout({
     // Communication & Support
     {
       id: 'communications',
-      label: 'Communications',
+      label: 'Communication Suite',
       icon: MessageSquare,
-      description: 'Messages and coordination',
+      description: 'Secure chat and file sharing',
       category: 'Support'
     },
     {
@@ -122,16 +122,16 @@ export default function DashboardLayout({
     },
     {
       id: 'documents',
-      label: 'Documents',
+      label: 'Offer & Document Hub',
       icon: FileText,
-      description: 'Contract and transaction documents',
+      description: 'Smart offer builder, templates, e-sign',
       category: 'Support'
     },
     {
       id: 'resources',
-      label: 'Resources',
+      label: 'Education Hub',
       icon: BookOpen,
-      description: 'Guides and helpful information',
+      description: 'Stage-based guides, videos, glossary',
       category: 'Support'
     }
   ];

@@ -294,9 +294,9 @@ export default function Tasks({ onNavigate }: TasksProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Task Management</h1>
+          <h1 className="text-2xl font-semibold">Transaction Checklist</h1>
           <p className="text-gray-600 mt-1">
-            Track your real estate transaction progress
+            Color-coded milestones, interactive checklist, and deadline tracker
           </p>
         </div>
         <div className="text-right">

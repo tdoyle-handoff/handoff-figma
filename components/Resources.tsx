@@ -188,15 +188,15 @@ export default function Resources({ onNavigate }: ResourcesProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold mb-2">Resources</h1>
+          <h1 className="text-2xl font-semibold mb-2">Education Hub</h1>
           <p className="text-muted-foreground">
-            Educational content and tools to guide you through the home buying process
+            Stage-based guides, videos, checklists, calculators, and a glossary to support every step
           </p>
         </div>
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2' : 'grid-cols-5'}`}>
+        <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2' : 'grid-cols-7'}`}>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="calculators">Calculators</TabsTrigger>
           {!isMobile && (
@@ -204,6 +204,8 @@ export default function Resources({ onNavigate }: ResourcesProps) {
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="videos">Videos</TabsTrigger>
               <TabsTrigger value="checklists">Checklists</TabsTrigger>
+              <TabsTrigger value="glossary">Glossary</TabsTrigger>
+              <TabsTrigger value="stages">Stage Guides</TabsTrigger>
             </Fragment>
           )}
         </TabsList>
@@ -372,6 +374,54 @@ export default function Resources({ onNavigate }: ResourcesProps) {
 
         {!isMobile && (
           <Fragment>
+            <TabsContent value="glossary" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Glossary</CardTitle>
+                  <CardDescription>Plain-English definitions of common real estate terms</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      { term: 'Appraisal', def: 'A professional opinion of property value performed by a licensed appraiser.' },
+                      { term: 'Contingency', def: 'A condition that must be met for the contract to proceed.' },
+                      { term: 'Earnest Money', def: 'A deposit made to demonstrate good faith when making an offer.' },
+                      { term: 'Escrow', def: 'A neutral third party that holds funds and documents until closing.' }
+                    ].map((item, idx) => (
+                      <div key={idx} className="p-4 border rounded-lg">
+                        <div className="font-medium">{item.term}</div>
+                        <div className="text-sm text-muted-foreground">{item.def}</div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="stages" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Stage-Based Guides</CardTitle>
+                  <CardDescription>Learn what to expect at each stage of your transaction</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { title: 'Home Search', desc: 'How to evaluate listings, schedule tours, and compare properties.' },
+                      { title: 'Making an Offer', desc: 'Offer strategy, contingencies, and negotiation tips.' },
+                      { title: 'Diligence', desc: 'Inspections, appraisals, and addressing findings.' },
+                      { title: 'Financing', desc: 'Underwriting, rate locks, and closing disclosures.' },
+                      { title: 'Closing', desc: 'Final walkthrough, signing, and getting the keys.' }
+                    ].map((stage, idx) => (
+                      <div key={idx} className="p-4 border rounded-lg">
+                        <div className="font-medium">{stage.title}</div>
+                        <div className="text-sm text-muted-foreground">{stage.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
             <TabsContent value="guides" className="space-y-6">
               <div className="flex gap-4 mb-6">
                 <Input

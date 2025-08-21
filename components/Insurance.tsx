@@ -263,9 +263,9 @@ export default function Insurance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold mb-2">Insurance</h1>
+          <h1 className="text-2xl font-semibold mb-2">Vendor Marketplace</h1>
           <p className="text-muted-foreground">
-            Shop for and manage insurance coverage for your new home
+            Book providers with ratings & reviews
           </p>
         </div>
         <div className="flex gap-2">
