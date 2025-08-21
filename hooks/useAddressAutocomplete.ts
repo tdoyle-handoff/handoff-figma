@@ -65,8 +65,8 @@ export function useAddressAutocomplete({
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<AddressDetails | null>(null);
-  const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(null);
-  const [fallbackMode, setFallbackMode] = useState(false);
+  const [apiKeyValid, setApiKeyValid] = useState<boolean | null>(false);
+  const [fallbackMode, setFallbackMode] = useState(true);
   
   const debounceRef = useRef<NodeJS.Timeout>();
   const abortControllerRef = useRef<AbortController>();
@@ -88,7 +88,7 @@ export function useAddressAutocomplete({
   }, []);
 
   // Helper function to safely extract error message
-  const getErrorMessage = useCallback((errorData: any): string => {
+  const getErrorMessage = useCallback((errorData: unknown): string => {
     if (typeof errorData === 'string') {
       return errorData;
     }
@@ -124,277 +124,36 @@ export function useAddressAutocomplete({
 
   // Check if API key is valid
   const checkApiKeyValidity = useCallback(async () => {
-    const serverConfig = getServerUrl();
-    if (!serverConfig) {
-      console.log('useAddressAutocomplete: No server configuration, Google Places required');
-      setApiKeyValid(false);
-      return;
+    // Google Places disabled globally: force manual entry mode
+    setApiKeyValid(false);
+    setFallbackMode(true);
+    if (debugMode) {
+      setError('Address suggestions disabled. Manual entry is available.');
     }
-
-    try {
-      const response = await fetch(
-        `${serverConfig.baseUrl}/places/validate-key`,
-        {
-          headers: serverConfig.headers,
-          // Add timeout to prevent hanging
-          signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined
-        }
-      );
-
-      if (response.ok) {
-        const validation = await response.json();
-        setApiKeyValid(validation.valid);
-        
-        if (!validation.valid) {
-          console.log('useAddressAutocomplete: API key validation failed:', validation.message);
-          if (debugMode) {
-            setError(`Google Places API: ${validation.message || 'API key not configured'}. Manual address entry is available.`);
-          }
-        } else {
-          console.log('useAddressAutocomplete: API key is valid');
-        }
-      } else {
-        console.log('useAddressAutocomplete: API key validation request failed:', response.status);
-        setApiKeyValid(false);
-        if (debugMode) {
-          setError('Unable to verify Google Places API configuration. Manual address entry is available.');
-        }
-      }
-    } catch (error) {
-      console.warn('useAddressAutocomplete: API key validation failed:', error);
-      setApiKeyValid(false);
-      if (debugMode) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        if (errorMessage.includes('timeout') || errorMessage.includes('AbortError')) {
-          setError('Google Places API validation timed out. Manual address entry is available.');
-        } else {
-          setError('Google Places API not available. Manual address entry is available.');
-        }
-      }
-    }
-  }, [getServerUrl, debugMode]);
+  }, [debugMode]);
 
   // Fetch address suggestions
   const fetchSuggestions = useCallback(async (searchQuery: string) => {
-    console.log('useAddressAutocomplete: fetchSuggestions called with:', searchQuery);
-    
-    // If in fallback mode, don't make API calls
-    if (apiKeyValid === false) {
-      console.log('useAddressAutocomplete: API key invalid; cannot fetch suggestions');
-      setSuggestions([]);
-      return;
+    // Suggestions disabled: always clear list and remain in manual mode
+    setSuggestions([]);
+    setIsLoading(false);
+    setFallbackMode(true);
+    setApiKeyValid(false);
+    if (debugMode && searchQuery.length >= 3) {
+      setError('Address suggestions are disabled. Please enter the address manually.');
     }
-
-    // Check API key validity on first use
-    if (apiKeyValid === null) {
-      await checkApiKeyValidity();
-      return; // Let the effect re-trigger this function
-    }
-    
-    const serverConfig = getServerUrl();
-    if (!serverConfig) {
-      console.error('useAddressAutocomplete: Server configuration not available');
-      if (debugMode) {
-        setError('Google Places API configuration not available.');
-      }
-      setApiKeyValid(false);
-      return;
-    }
-
-    if (!searchQuery.trim() || searchQuery.length < 3) {
-      console.log('useAddressAutocomplete: Query too short, clearing suggestions');
-      setSuggestions([]);
-      return;
-    }
-
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const params = new URLSearchParams({
-        input: searchQuery,
-        country: country,
-        types: types.join('|')
-      });
-
-      const url = `${serverConfig.baseUrl}/places/autocomplete?${params}`;
-      console.log('useAddressAutocomplete: Making request to:', url);
-
-      const response = await fetch(url, {
-        signal: abortControllerRef.current.signal,
-        headers: serverConfig.headers,
-      });
-
-      console.log('useAddressAutocomplete: Response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        console.error('useAddressAutocomplete: API error:', errorData);
-        
-        const errorMessage = getErrorMessage(errorData);
-        
-        // Check for API key errors or service unavailable
-        if (response.status === 403 || response.status === 503 || 
-            errorData.api_key_error || isApiKeyError(errorMessage)) {
-          console.log('useAddressAutocomplete: API key issue detected, switching to fallback mode');
-          setApiKeyValid(false);
-          if (debugMode) {
-            setError('Google Places API is not properly configured.');
-          }
-          setSuggestions([]);
-          return;
-        }
-        
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      console.log('useAddressAutocomplete: Response data:', data);
-      
-      const predictions = data.predictions || [];
-      console.log('useAddressAutocomplete: Setting suggestions:', predictions.length, 'items');
-      setSuggestions(predictions);
-      
-      // Mark API key as valid if we get here
-      if (apiKeyValid !== true) {
-        setApiKeyValid(true);
-        setFallbackMode(false);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        if (err.name === 'AbortError') {
-          console.log('useAddressAutocomplete: Request was cancelled');
-          return; // Request was cancelled, don't update state
-        }
-        console.error('useAddressAutocomplete: Error:', err);
-        
-        // Check if this is an API key related error
-        if (isApiKeyError(err.message)) {
-          setApiKeyValid(false);
-          if (debugMode) {
-            setError('Google Places API configuration issue.');
-          }
-        } else {
-          if (debugMode) {
-            setError(err.message);
-          }
-        }
-      } else {
-        console.error('useAddressAutocomplete: Unexpected error:', err);
-        if (debugMode) {
-          setError('An unexpected error occurred. Manual address entry is available.');
-        }
-      }
-      setSuggestions([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [getServerUrl, country, types, fallbackMode, apiKeyValid, checkApiKeyValidity, debugMode, getErrorMessage, isApiKeyError]);
+  }, [debugMode]);
 
   // Fetch detailed address information
   const fetchAddressDetails = useCallback(async (placeId: string): Promise<AddressDetails | null> => {
-    const serverConfig = getServerUrl();
-    if (!serverConfig) {
-      if (debugMode) {
-        setError('Server configuration not available');
-      }
-      return null;
+    // Suggestions/details disabled: return null and stay in manual mode
+    setIsLoading(false);
+    setFallbackMode(true);
+    setApiKeyValid(false);
+    if (debugMode) {
+      setError('Address details lookup disabled.');
     }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const params = new URLSearchParams({
-        place_id: placeId
-      });
-
-      const response = await fetch(
-        `${serverConfig.baseUrl}/places/details?${params}`,
-        {
-          headers: serverConfig.headers,
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        const errorMessage = getErrorMessage(errorData);
-        
-        // Check for API key errors
-        if (response.status === 403 || response.status === 503 || 
-            errorData.api_key_error || isApiKeyError(errorMessage)) {
-          console.log('useAddressAutocomplete: API key issue during details fetch');
-          setApiKeyValid(false);
-          setFallbackMode(true);
-          if (debugMode) {
-            setError('Google Places API is not properly configured.');
-          }
-        }
-        
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-
-      if (data.result) {
-        const result = data.result;
-        
-        // Parse address components
-        const addressDetails: AddressDetails = {
-          formatted_address: result.formatted_address,
-          place_id: placeId,
-          geometry: result.geometry
-        };
-
-        // Extract address components
-        if (result.address_components) {
-          result.address_components.forEach((component: any) => {
-            const types = component.types;
-            
-            if (types.includes('street_number')) {
-              addressDetails.street_number = component.long_name;
-            } else if (types.includes('route')) {
-              addressDetails.route = component.long_name;
-            } else if (types.includes('locality')) {
-              addressDetails.locality = component.long_name;
-            } else if (types.includes('administrative_area_level_1')) {
-              addressDetails.administrative_area_level_1 = component.short_name;
-            } else if (types.includes('administrative_area_level_2')) {
-              addressDetails.administrative_area_level_2 = component.long_name;
-            } else if (types.includes('postal_code')) {
-              addressDetails.postal_code = component.long_name;
-            } else if (types.includes('country')) {
-              addressDetails.country = component.short_name;
-            }
-          });
-        }
-
-        return addressDetails;
-      } else {
-        throw new Error('No address details found');
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error('Address details error:', err);
-        if (debugMode) {
-          setError(err.message);
-        }
-      } else {
-        console.error('Address details unexpected error:', err);
-        if (debugMode) {
-          setError('An unexpected error occurred');
-        }
-      }
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
+    return null;
   }, [getServerUrl, debugMode, getErrorMessage]);
 
   // Select a suggestion and fetch details

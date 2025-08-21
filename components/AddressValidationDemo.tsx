@@ -160,7 +160,7 @@ export function AddressValidationDemo() {
                   <div className="text-center">
                     <div className="text-xs text-muted-foreground mb-1">Street</div>
                     <div className="p-2 bg-muted rounded font-mono text-sm">
-                      {selectedAddress.street_name?.substring(0, 12) + (selectedAddress.street_name?.length > 12 ? '...' : '') || '?'}
+                      {selectedAddress.street_name ? (selectedAddress.street_name.substring(0, 12) + (selectedAddress.street_name.length > 12 ? '...' : '')) : '?'}
                     </div>
                   </div>
                   <div className="text-center">

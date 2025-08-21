@@ -315,7 +315,7 @@ export default function PropertySummary({
   }, []);
 
   // Auto-search for Attom data when address is available (with rate limiting)
-  useEffect(() =e {
+  useEffect(() => {
     if (propertyAddress && propertyAddress.trim() && !hasAuthError) {
       try {
         // Longer cooldown in dev to speed up refresh; shorter in prod
@@ -628,7 +628,7 @@ export default function PropertySummary({
   // Helper function to combine all property data sources
   const getComprehensivePropertyData = () => {
     // Start with user input data
-    const baseData = {
+    const baseData: any = {
       // Address information from user input
       address: {
         oneLine: displayAddress,
@@ -808,12 +808,7 @@ export default function PropertySummary({
     if (calculatedMonthlyPayment) {
       baseData.financial = {
         ...baseData.financial,
-        estimatedValue: calculatedMonthlyPayment.loanAmount,
-        // Add other calculated financial data
-        marketTrends: {
-          ...(baseData.financial?.marketTrends || {}),
-          // You could add calculated market data here
-        }
+        estimatedMonthlyPayment: calculatedMonthlyPayment
       };
     }
 
