@@ -1640,7 +1640,6 @@ export default function PropertySummary({
                 </CardContent>
               </Card>
             </TabsContent>
-            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
