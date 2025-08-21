@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Badge } from './ui/badge';
-import { Alert, AlertDescription } from './ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { ScrollArea } from './ui/scroll-area';
-import { 
-  CheckCircle, 
-  XCircle, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Badge } from "./ui/badge";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { ScrollArea } from "./ui/scroll-area";
+import {
+  CheckCircle,
+  XCircle,
   AlertCircle,
   Copy,
   MapPin,
@@ -19,8 +19,8 @@ import {
   Info,
   Target,
   Globe,
-  Lightbulb
-} from 'lucide-react';
+  Lightbulb,
+} from "lucide-react";
 
 interface AddressExample {
   type: string;
@@ -38,7 +38,7 @@ interface FormatRule {
 }
 
 export function AddressFormatGuide() {
-  const [testAddress, setTestAddress] = useState('');
+  const [testAddress, setTestAddress] = useState("");
   const [formatAnalysis, setFormatAnalysis] = useState<any>(null);
 
   // Address format examples organized by property type
@@ -50,15 +50,16 @@ export function AddressFormatGuide() {
         "123 Main Street, Anytown, CA 90210",
         "456 Oak Avenue, Springfield, TX 75001",
         "789 Elm Drive, Unit A, Denver, CO 80202",
-        "1000 Maple Lane, Riverside, FL 33101"
+        "1000 Maple Lane, Riverside, FL 33101",
       ],
       bad: [
         "123 main st",
         "456 Oak Ave Apt 2 Springfield TX",
         "789elmdr",
-        "1000 Maple Riverside Florida"
+        "1000 Maple Riverside Florida",
       ],
-      explanation: "Include full street number, complete street name with suffix (Street, Avenue, etc.), city, state abbreviation, and ZIP code. Separate components with commas."
+      explanation:
+        "Include full street number, complete street name with suffix (Street, Avenue, etc.), city, state abbreviation, and ZIP code. Separate components with commas.",
     },
     {
       type: "Condominium/Apartment",
@@ -67,15 +68,16 @@ export function AddressFormatGuide() {
         "123 Park Avenue, Unit 4B, New York, NY 10016",
         "456 Ocean Boulevard, Apt 203, Miami Beach, FL 33139",
         "789 Hill Street, Suite 12, San Francisco, CA 94102",
-        "321 River Road, #5A, Portland, OR 97201"
+        "321 River Road, #5A, Portland, OR 97201",
       ],
       bad: [
         "123 Park Ave 4B NYC",
         "456 Ocean Blvd Apt203 Miami Beach",
         "789 Hill St Ste 12",
-        "321 River Rd Unit 5A Portland Oregon"
+        "321 River Rd Unit 5A Portland Oregon",
       ],
-      explanation: "Always include unit/apartment number with clear designation (Unit, Apt, Suite, #). Separate each component clearly with commas."
+      explanation:
+        "Always include unit/apartment number with clear designation (Unit, Apt, Suite, #). Separate each component clearly with commas.",
     },
     {
       type: "Rural Property",
@@ -84,15 +86,16 @@ export function AddressFormatGuide() {
         "12345 County Road 150, Ruraltown, TX 75050",
         "N8765 State Highway 21, Farmville, WI 54001",
         "45678 Ranch Road 12, Hill Country, TX 78676",
-        "Rural Route 3, Box 125, Countryside, IA 50001"
+        "Rural Route 3, Box 125, Countryside, IA 50001",
       ],
       bad: [
         "12345 CR 150",
         "Hwy 21 Farmville",
         "RR3 Box 125 Iowa",
-        "45678 Ranch Rd Hill Country"
+        "45678 Ranch Rd Hill Country",
       ],
-      explanation: "Rural addresses often use specific naming conventions like County Road, State Highway, or Rural Route. Include the full designation and box numbers when applicable."
+      explanation:
+        "Rural addresses often use specific naming conventions like County Road, State Highway, or Rural Route. Include the full designation and box numbers when applicable.",
     },
     {
       type: "Commercial Property",
@@ -101,33 +104,35 @@ export function AddressFormatGuide() {
         "1500 Commerce Street, Dallas, TX 75201",
         "2000 Business Park Drive, Building A, Austin, TX 73301",
         "750 Industrial Boulevard, Suite 200, Phoenix, AZ 85001",
-        "100 Corporate Center, Tower 3, Atlanta, GA 30309"
+        "100 Corporate Center, Tower 3, Atlanta, GA 30309",
       ],
       bad: [
         "1500 Commerce Dallas",
         "2000 Bus Park Dr Bldg A",
         "750 Industrial Suite200",
-        "100 Corp Center Tower3 Atlanta"
+        "100 Corp Center Tower3 Atlanta",
       ],
-      explanation: "Commercial properties may have building designations, tower numbers, or suite information. Include all relevant identifiers separated by commas."
-    }
+      explanation:
+        "Commercial properties may have building designations, tower numbers, or suite information. Include all relevant identifiers separated by commas.",
+    },
   ];
 
   // Formatting rules and best practices
   const formatRules: FormatRule[] = [
     {
       title: "Street Number & Name",
-      description: "Always include the complete street number and full street name",
+      description:
+        "Always include the complete street number and full street name",
       examples: [
         "123 Main Street (not 123 Main St)",
         "456 Oak Avenue (not 456 Oak Ave)",
-        "789 First Boulevard (not 789 1st Blvd)"
+        "789 First Boulevard (not 789 1st Blvd)",
       ],
       avoid: [
         "Abbreviated street names (St, Ave, Blvd)",
         "Missing street numbers",
-        "Informal street names"
-      ]
+        "Informal street names",
+      ],
     },
     {
       title: "Unit/Apartment Information",
@@ -136,13 +141,13 @@ export function AddressFormatGuide() {
         "Unit 4B (preferred)",
         "Apt 203 (acceptable)",
         "Suite 12 (for commercial)",
-        "#5A (acceptable shorthand)"
+        "#5A (acceptable shorthand)",
       ],
       avoid: [
         "Attached unit numbers (123MainSt4B)",
         "Unclear unit designations (123 Main 4B)",
-        "Missing unit numbers for multi-unit properties"
-      ]
+        "Missing unit numbers for multi-unit properties",
+      ],
     },
     {
       title: "City & State",
@@ -150,41 +155,42 @@ export function AddressFormatGuide() {
       examples: [
         "Los Angeles, CA (not LA, California)",
         "New York, NY (not NYC, New York)",
-        "San Francisco, CA (not SF, Calif)"
+        "San Francisco, CA (not SF, Calif)",
       ],
       avoid: [
         "City nicknames or abbreviations",
         "Full state names instead of abbreviations",
-        "Non-standard abbreviations"
-      ]
+        "Non-standard abbreviations",
+      ],
     },
     {
       title: "ZIP Codes",
-      description: "Include 5-digit ZIP codes, plus 4-digit extensions when known",
+      description:
+        "Include 5-digit ZIP codes, plus 4-digit extensions when known",
       examples: [
         "90210 (5-digit ZIP)",
         "90210-1234 (ZIP+4 format)",
-        "10016-0001 (with leading zeros)"
+        "10016-0001 (with leading zeros)",
       ],
       avoid: [
         "Missing ZIP codes",
         "Incorrect ZIP code formats",
-        "Postal codes from other countries"
-      ]
+        "Postal codes from other countries",
+      ],
     },
     {
       title: "Punctuation & Spacing",
       description: "Use consistent comma separation and proper spacing",
       examples: [
         "123 Main Street, Anytown, CA 90210",
-        "456 Oak Ave, Unit 4B, City, TX 75001"
+        "456 Oak Ave, Unit 4B, City, TX 75001",
       ],
       avoid: [
         "Missing commas between components",
         "Extra spaces or inconsistent spacing",
-        "Unnecessary punctuation"
-      ]
-    }
+        "Unnecessary punctuation",
+      ],
+    },
   ];
 
   // Analyze address format in real-time
@@ -200,11 +206,11 @@ export function AddressFormatGuide() {
         streetName: false,
         city: false,
         state: false,
-        zipCode: false
+        zipCode: false,
       },
       issues: [] as string[],
       suggestions: [] as string[],
-      formatted: address
+      formatted: address,
     };
 
     // Check for street number (starts with digits)
@@ -213,21 +219,29 @@ export function AddressFormatGuide() {
       analysis.score += 2;
     } else {
       analysis.issues.push("Missing street number at the beginning");
-      analysis.suggestions.push("Start with the street number (e.g., '123 Main Street')");
+      analysis.suggestions.push(
+        "Start with the street number (e.g., '123 Main Street')",
+      );
     }
 
     // Check for street name and suffix
-    const streetSuffixes = /\b(street|avenue|boulevard|drive|lane|road|court|place|way|circle|parkway|terrace|trail|st|ave|blvd|dr|ln|rd|ct|pl)\b/i;
+    const streetSuffixes =
+      /\b(street|avenue|boulevard|drive|lane|road|court|place|way|circle|parkway|terrace|trail|st|ave|blvd|dr|ln|rd|ct|pl)\b/i;
     if (streetSuffixes.test(address)) {
       analysis.components.streetName = true;
       analysis.score += 2;
     } else {
       analysis.issues.push("Missing or unclear street name");
-      analysis.suggestions.push("Include complete street name with suffix (Street, Avenue, etc.)");
+      analysis.suggestions.push(
+        "Include complete street name with suffix (Street, Avenue, etc.)",
+      );
     }
 
     // Check for comma separation
-    const parts = address.split(',').map(p => p.trim()).filter(p => p.length > 0);
+    const parts = address
+      .split(",")
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
     if (parts.length >= 3) {
       analysis.score += 1;
     } else {
@@ -241,7 +255,9 @@ export function AddressFormatGuide() {
       analysis.score += 2;
     } else {
       analysis.issues.push("Missing state abbreviation");
-      analysis.suggestions.push("Include 2-letter state abbreviation (CA, TX, NY, etc.)");
+      analysis.suggestions.push(
+        "Include 2-letter state abbreviation (CA, TX, NY, etc.)",
+      );
     }
 
     // Check for ZIP code (5 digits, optionally +4)
@@ -286,19 +302,27 @@ export function AddressFormatGuide() {
   // Get quality score color
   const getScoreColor = (score: number, maxScore: number) => {
     const percentage = (score / maxScore) * 100;
-    if (percentage >= 80) return 'text-green-600';
-    if (percentage >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (percentage >= 80) return "text-green-600";
+    if (percentage >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   // Get quality score badge
   const getScoreBadge = (score: number, maxScore: number) => {
     const percentage = (score / maxScore) * 100;
     if (percentage >= 80) {
-      return <Badge className="bg-green-100 text-green-800 border-green-300">Excellent</Badge>;
+      return (
+        <Badge className="bg-green-100 text-green-800 border-green-300">
+          Excellent
+        </Badge>
+      );
     }
     if (percentage >= 60) {
-      return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">Good</Badge>;
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
+          Good
+        </Badge>
+      );
     }
     return <Badge variant="destructive">Needs Improvement</Badge>;
   };
@@ -311,8 +335,8 @@ export function AddressFormatGuide() {
           Address Formatting Guide
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Learn the best practices for formatting addresses to ensure accurate results 
-          with property data APIs and address validation services.
+          Learn the best practices for formatting addresses to ensure accurate
+          results with property data APIs and address validation services.
         </p>
       </div>
 
@@ -333,7 +357,8 @@ export function AddressFormatGuide() {
                 Address Format Analyzer
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                Enter an address below to get real-time formatting feedback and suggestions.
+                Enter an address below to get real-time formatting feedback and
+                suggestions.
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -359,10 +384,15 @@ export function AddressFormatGuide() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className={`text-2xl font-bold ${getScoreColor(formatAnalysis.score, formatAnalysis.maxScore)}`}>
+                      <div
+                        className={`text-2xl font-bold ${getScoreColor(formatAnalysis.score, formatAnalysis.maxScore)}`}
+                      >
                         {formatAnalysis.score}/{formatAnalysis.maxScore}
                       </div>
-                      {getScoreBadge(formatAnalysis.score, formatAnalysis.maxScore)}
+                      {getScoreBadge(
+                        formatAnalysis.score,
+                        formatAnalysis.maxScore,
+                      )}
                     </div>
                   </div>
 
@@ -370,16 +400,23 @@ export function AddressFormatGuide() {
                   <div>
                     <h4 className="font-medium mb-3">Address Components</h4>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                      {Object.entries(formatAnalysis.components).map(([component, present]) => (
-                        <div key={component} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
-                          {present ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <XCircle className="w-4 h-4 text-red-500" />
-                          )}
-                          <span className="text-sm capitalize">{component.replace(/([A-Z])/g, ' $1')}</span>
-                        </div>
-                      ))}
+                      {Object.entries(formatAnalysis.components).map(
+                        ([component, present]) => (
+                          <div
+                            key={component}
+                            className="flex items-center gap-2 p-2 bg-muted/30 rounded"
+                          >
+                            {present ? (
+                              <CheckCircle className="w-4 h-4 text-green-500" />
+                            ) : (
+                              <XCircle className="w-4 h-4 text-red-500" />
+                            )}
+                            <span className="text-sm capitalize">
+                              {component.replace(/([A-Z])/g, " $1")}
+                            </span>
+                          </div>
+                        ),
+                      )}
                     </div>
                   </div>
 
@@ -390,9 +427,13 @@ export function AddressFormatGuide() {
                       <AlertDescription className="text-orange-800">
                         <strong>Issues Found:</strong>
                         <ul className="mt-2 list-disc list-inside space-y-1">
-                          {formatAnalysis.issues.map((issue: string, index: number) = (
-                            li key={index} className="text-sm"{issue}/li
-                          ))}
+                          {formatAnalysis.issues.map(
+                            (issue: string, index: number) => (
+                              <li key={index} className="text-sm">
+                                {issue}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </AlertDescription>
                     </Alert>
@@ -404,9 +445,13 @@ export function AddressFormatGuide() {
                       <AlertDescription className="text-blue-800">
                         <strong>Suggestions for improvement:</strong>
                         <ul className="mt-2 list-disc list-inside space-y-1">
-                          {formatAnalysis.suggestions.map((suggestion: string, index: number) = (
-                            li key={index} className="text-sm"{suggestion}/li
-                          ))}
+                          {formatAnalysis.suggestions.map(
+                            (suggestion: string, index: number) => (
+                              <li key={index} className="text-sm">
+                                {suggestion}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </AlertDescription>
                     </Alert>
@@ -420,14 +465,16 @@ export function AddressFormatGuide() {
         {/* Examples Tab */}
         <TabsContent value="examples" className="space-y-6">
           <div className="grid gap-6">
-            {addressExamples.map((example: any, index: number) = (
-              Card key={index}
+            {addressExamples.map((example: any, index: number) => (
+              <Card key={index}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {example.icon}
                     {example.type}
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground">{example.explanation}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {example.explanation}
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -438,9 +485,14 @@ export function AddressFormatGuide() {
                         Recommended Formats
                       </h4>
                       <div className="space-y-2">
-                        {example.good.map((addr: string, idx: number) = (
-                          div key={idx} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded"
-                            <span className="text-sm text-green-800">{addr}</span>
+                        {example.good.map((addr: string, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded"
+                          >
+                            <span className="text-sm text-green-800">
+                              {addr}
+                            </span>
                             <Button
                               size="sm"
                               variant="ghost"
@@ -461,8 +513,11 @@ export function AddressFormatGuide() {
                         Avoid These Formats
                       </h4>
                       <div className="space-y-2">
-                        {example.bad.map((addr: string, idx: number) = (
-                          div key={idx} className="p-2 bg-red-50 border border-red-200 rounded"
+                        {example.bad.map((addr: string, idx: number) => (
+                          <div
+                            key={idx}
+                            className="p-2 bg-red-50 border border-red-200 rounded"
+                          >
                             <span className="text-sm text-red-800">{addr}</span>
                           </div>
                         ))}
@@ -478,11 +533,13 @@ export function AddressFormatGuide() {
         {/* Best Practices Tab */}
         <TabsContent value="rules" className="space-y-6">
           <div className="grid gap-6">
-            {formatRules.map((rule: any, index: number) = (
-              Card key={index}
+            {formatRules.map((rule: any, index: number) => (
+              <Card key={index}>
                 <CardHeader>
                   <CardTitle>{rule.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{rule.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {rule.description}
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -492,8 +549,11 @@ export function AddressFormatGuide() {
                         Examples
                       </h4>
                       <ul className="space-y-2">
-                        {rule.examples.map((example: string, idx: number) = (
-                          li key={idx} className="text-sm p-2 bg-green-50 border border-green-200 rounded text-green-800"
+                        {rule.examples.map((example: string, idx: number) => (
+                          <li
+                            key={idx}
+                            className="text-sm p-2 bg-green-50 border border-green-200 rounded text-green-800"
+                          >
                             {example}
                           </li>
                         ))}
@@ -506,7 +566,10 @@ export function AddressFormatGuide() {
                       </h4>
                       <ul className="space-y-2">
                         {rule.avoid.map((avoid, idx) => (
-                          <li key={idx} className="text-sm p-2 bg-red-50 border border-red-200 rounded text-red-800">
+                          <li
+                            key={idx}
+                            className="text-sm p-2 bg-red-50 border border-red-200 rounded text-red-800"
+                          >
                             {avoid}
                           </li>
                         ))}
@@ -534,24 +597,27 @@ export function AddressFormatGuide() {
                   <Alert className="border-blue-200 bg-blue-50">
                     <Info className="h-4 w-4 text-blue-600" />
                     <AlertDescription className="text-blue-800">
-                      <strong>For Attom Data API:</strong> Use complete addresses with city, state, and ZIP code. 
-                      The API works best with standardized USPS format addresses.
+                      <strong>For Attom Data API:</strong> Use complete
+                      addresses with city, state, and ZIP code. The API works
+                      best with standardized USPS format addresses.
                     </AlertDescription>
                   </Alert>
 
                   <Alert className="border-green-200 bg-green-50">
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <AlertDescription className="text-green-800">
-                      <strong>For Google Places API:</strong> Include as much detail as possible. 
-                      The API can handle various formats but works best with complete addresses.
+                      <strong>For Google Places API:</strong> Include as much
+                      detail as possible. The API can handle various formats but
+                      works best with complete addresses.
                     </AlertDescription>
                   </Alert>
 
                   <Alert className="border-purple-200 bg-purple-50">
                     <Lightbulb className="h-4 w-4 text-purple-600" />
                     <AlertDescription className="text-purple-800">
-                      <strong>For MLS Integration:</strong> Follow local MLS standards which may vary by region. 
-                      Always include all available address components.
+                      <strong>For MLS Integration:</strong> Follow local MLS
+                      standards which may vary by region. Always include all
+                      available address components.
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -565,9 +631,12 @@ export function AddressFormatGuide() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-2">New Construction/Developments</h4>
+                    <h4 className="font-medium mb-2">
+                      New Construction/Developments
+                    </h4>
                     <p className="text-sm text-muted-foreground mb-2">
-                      New addresses may not be in all databases yet. Try these approaches:
+                      New addresses may not be in all databases yet. Try these
+                      approaches:
                     </p>
                     <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
                       <li>Use the subdivision or development name</li>
@@ -577,7 +646,9 @@ export function AddressFormatGuide() {
                   </div>
 
                   <div>
-                    <h4 className="font-medium mb-2">Rural/Unconventional Addresses</h4>
+                    <h4 className="font-medium mb-2">
+                      Rural/Unconventional Addresses
+                    </h4>
                     <p className="text-sm text-muted-foreground mb-2">
                       Rural properties may have unique addressing systems:
                     </p>
@@ -596,7 +667,9 @@ export function AddressFormatGuide() {
                     <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
                       <li>Use "Unit" for condos: "123 Main St, Unit 4B"</li>
                       <li>Use "Apt" for apartments: "456 Oak Ave, Apt 203"</li>
-                      <li>Use "Suite" for commercial: "789 Business Dr, Suite 100"</li>
+                      <li>
+                        Use "Suite" for commercial: "789 Business Dr, Suite 100"
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -622,9 +695,12 @@ export function AddressFormatGuide() {
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                     <div>
-                      <h4 className="font-medium">Unit Information (if applicable)</h4>
+                      <h4 className="font-medium">
+                        Unit Information (if applicable)
+                      </h4>
                       <p className="text-sm text-muted-foreground">
-                        Include unit, apartment, or suite numbers with proper designation
+                        Include unit, apartment, or suite numbers with proper
+                        designation
                       </p>
                     </div>
                   </div>
@@ -664,7 +740,8 @@ export function AddressFormatGuide() {
                     <div>
                       <h4 className="font-medium">Proper Punctuation</h4>
                       <p className="text-sm text-muted-foreground">
-                        Use commas to separate components, avoid unnecessary punctuation
+                        Use commas to separate components, avoid unnecessary
+                        punctuation
                       </p>
                     </div>
                   </div>
@@ -687,10 +764,14 @@ export function AddressFormatGuide() {
           <div className="bg-white/50 p-4 rounded-lg border border-primary/20">
             <div className="text-center">
               <div className="text-lg font-mono font-medium text-primary mb-2">
-                [Street Number] [Street Name] [Street Suffix], [Unit], [City], [State] [ZIP Code]
+                [Street Number] [Street Name] [Street Suffix], [Unit], [City],
+                [State] [ZIP Code]
               </div>
               <div className="text-sm text-muted-foreground">
-                Example: <span className="font-medium">123 Main Street, Unit 4B, Anytown, CA 90210</span>
+                Example:{" "}
+                <span className="font-medium">
+                  123 Main Street, Unit 4B, Anytown, CA 90210
+                </span>
               </div>
             </div>
           </div>

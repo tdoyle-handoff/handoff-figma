@@ -462,7 +462,6 @@ export function AttomAdminDiagnostic() {
       );
       return false;
     }
-    }
   };
 
   // Test 6: Check environment variables
