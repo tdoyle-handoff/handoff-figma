@@ -538,7 +538,6 @@ export default function Insurance() {
               </Card>
             )}
           </div>
-        </TabsContent>
           <div className="flex gap-4">
             <div className="flex-1">
               <Input
@@ -631,7 +630,6 @@ export default function Insurance() {
               </Card>
             ))}
           </div>
-        </Tabs>
 
           <Card>
             <CardHeader>
@@ -748,7 +746,6 @@ export default function Insurance() {
               </Button>
             </CardContent>
           </Card>
-        </div>
 
           <Card>
             <CardHeader>
