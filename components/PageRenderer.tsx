@@ -13,6 +13,7 @@ const Inspections = React.lazy(() => import('./Inspections'));
 const Insurance = React.lazy(() => import('./Insurance'));
 const Communications = React.lazy(() => import('./Communications'));
 const Settings = React.lazy(() => import('./Settings'));
+const VendorMarketplace = React.lazy(() => import('./VendorMarketplace'));
 
 // MLS Demo components - these are named exports, so we need to import them correctly
 const AddressValidationDemo = React.lazy(async () => {
@@ -110,29 +111,28 @@ export function PageRenderer({
       case 'legal':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'attorneys' })}
+            <VendorMarketplace defaultTab="attorneys" />
           </Suspense>
         );
       
       case 'inspections':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'inspectors' })}
+            <VendorMarketplace defaultTab="inspectors" />
           </Suspense>
         );
       
       case 'insurance':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'insurance-providers' })}
+            <VendorMarketplace defaultTab="insurance-providers" />
           </Suspense>
         );
       
       case 'vendor-marketplace':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            {/** Lazy import not set for VendorMarketplace; import directly to avoid complexity */}
-            {React.createElement(require('./VendorMarketplace').default)}
+            <VendorMarketplace />
           </Suspense>
         );
       
