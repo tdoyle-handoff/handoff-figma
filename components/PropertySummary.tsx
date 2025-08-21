@@ -988,7 +988,7 @@ export default function PropertySummary({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="summary" className="w-full">
+          	<Tabs defaultValue="onboarding" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="onboarding" className="flex items-center gap-2">
                 <ListChecks className="w-4 h-4" />
@@ -1244,7 +1244,7 @@ export default function PropertySummary({
                       </div>
                     </div>
                   </div>
-                </CardContent>
+              </CardContent>
               </Card>
               </CardContent>
               </Card>
