@@ -244,7 +244,7 @@ const TaskInstructionCard = ({ task }: { task: Task }) => {
 };
 
 // Legal Progress Tracker Component
-const LegalProgressTracker = () => {
+export const LegalProgressTracker = () => {
   const taskContext = useTaskContext();
   const [selectedStageInfo, setSelectedStageInfo] = useState(null);
   
@@ -671,7 +671,7 @@ export const LawyerSearch = () => {
   );
 };
 
-const ContractReview = () => {
+export const ContractReview = () => {
   const [contractUploaded, setContractUploaded] = useState(true);
   const [aiSummaryComplete, setAiSummaryComplete] = useState(false);
 
@@ -823,7 +823,7 @@ const ContractReview = () => {
   );
 };
 
-const TitleSearch = () => {
+export const TitleSearch = () => {
   const [titleSearchComplete, setTitleSearchComplete] = useState(true);
 
   return (
@@ -988,7 +988,7 @@ const TitleSearch = () => {
   );
 };
 
-const SettlementReview = () => {
+export const SettlementReview = () => {
   return (
     <div className="space-y-6">
       <div>
