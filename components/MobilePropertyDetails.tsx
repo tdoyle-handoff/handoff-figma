@@ -649,7 +649,7 @@ export function MobilePropertyDetails({
               </p>
               {attomProperty && enrichedData.pricePerSqft && (
                 <p className="text-xs text-muted-foreground">
-                  ${Math.round(enrichedData.pricePerSqft)}/sq ft
+                  {`${Math.round(enrichedData.pricePerSqft)}/sq ft`}
                 </p>
               )}
             </div>
