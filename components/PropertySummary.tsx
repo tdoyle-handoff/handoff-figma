@@ -1648,58 +1648,58 @@ export default function PropertySummary({
 
       {/* Setup Status (hidden) */}
       {false && !isSetupComplete && (
-        Alert
-          AlertCircle className="h-4 w-4" /
-          AlertDescription
-            div className="flex items-center justify-between"
-              span
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="flex items-center justify-between">
+              <span>
                 Complete your property setup to access all features and get the
                 most accurate property data.
-              /span
-              Button size="sm" variant="outline" onClick={onEditSetup}
-                FileText className="w-4 h-4 mr-2" /
+              </span>
+              <Button size="sm" variant="outline" onClick={onEditSetup}>
+                <FileText className="w-4 h-4 mr-2" />
                 Continue Setup
-              /Button
-            /div
-          /AlertDescription
-        /Alert
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* Action Buttons (hidden) */}
       {false && (onEditSetup || onStartOver) && (
-        Card
-          CardHeader
-            CardTitle className="flex items-center gap-2"
-              Settings className="w-5 h-5 text-primary" /
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="w-5 h-5 text-primary" />
               Property Management
-            /CardTitle
-          /CardHeader
-          CardContent
-            div className="flex flex-wrap gap-3"
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
               {onEditSetup && (
-                Button onClick={onEditSetup} variant="outline"
-                  FileText className="w-4 h-4 mr-2" /
+                <Button onClick={onEditSetup} variant="outline">
+                  <FileText className="w-4 h-4 mr-2" />
                   Edit Property Details
-                /Button
+                </Button>
               )}
               {onStartOver && (
-                Button onClick={onStartOver} variant="destructive"
-                  RefreshCw className="w-4 h-4 mr-2" /
+                <Button onClick={onStartOver} variant="destructive">
+                  <RefreshCw className="w-4 h-4 mr-2" />
                   Start Over
-                /Button
+                </Button>
               )}
               {onNavigate && (
-                Button
-                  onClick={() = onNavigate("overview")}
+                <Button
+                  onClick={() => onNavigate && onNavigate("overview")}
                   variant="default"
-                >
-                  Home className="w-4 h-4 mr-2" /
+                >
+                  <Home className="w-4 h-4 mr-2" />
                   Go to Dashboard
-                /Button
+                </Button>
               )}
-            /div
-          /CardContent
-        /Card
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

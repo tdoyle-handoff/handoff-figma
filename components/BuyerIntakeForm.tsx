@@ -139,7 +139,7 @@ function MoneyField({
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">{label}</label>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 min-w-0">
         <input
           type="range"
           min={min}
@@ -147,13 +147,13 @@ function MoneyField({
           step={step}
           value={clamp(v, min, max)}
           onChange={(e) => setValue(Number(e.target.value))}
-          className="range"
+          className="range w-40 shrink-0"
           aria-label={`${label} slider`}
         />
         <input
           name={name}
           inputMode="numeric"
-          className="input w-36"
+          className="input w-28 md:w-36 shrink-0"
           value={value == null ? "" : String(value)}
           onChange={(e) => setValue(num(e.target.value))}
           placeholder={`${min}`}
@@ -190,7 +190,7 @@ function PercentField({
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">{label}</label>
-      <div className="flex items-center gap-3 opacity-100">
+      <div className="flex items-center gap-2 min-w-0 opacity-100">
         <input
           type="range"
           min={min}
@@ -198,14 +198,14 @@ function PercentField({
           step={step}
           value={clamp(v, min, max)}
           onChange={(e) => setValue(Number(e.target.value))}
-          className="range"
+          className="range w-40 shrink-0"
           aria-label={`${label} slider`}
           disabled={disabled}
         />
         <input
           name={name}
           inputMode="numeric"
-          className="input w-28"
+          className="input w-16 md:w-28 shrink-0"
           value={value == null ? "" : String(value)}
           onChange={(e) => setValue(num(e.target.value))}
           placeholder={`${min}`}
@@ -771,9 +771,9 @@ export default function BuyerIntakeForm({
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="flex flex-col">
               <label className="mb-1 text-sm font-medium">Max commute (min)</label>
-              <div className="flex items-center gap-3">
-                <input type="range" min={0} max={120} step={5} value={clamp(commuteMinutes ?? 0, 0, 120)} onChange={(e) => setCommuteMinutes(Number(e.target.value))} className="range" />
-                <input name="commuteMinutes" inputMode="numeric" className="input w-24" value={commuteMinutes ?? ""} onChange={(e) => setCommuteMinutes(num(e.target.value))} />
+              <div className="flex items-center gap-2 min-w-0">
+                <input type="range" min={0} max={120} step={5} value={clamp(commuteMinutes ?? 0, 0, 120)} onChange={(e) => setCommuteMinutes(Number(e.target.value))} className="range w-40 shrink-0" />
+                <input name="commuteMinutes" inputMode="numeric" className="input w-20 md:w-24 shrink-0" value={commuteMinutes ?? ""} onChange={(e) => setCommuteMinutes(num(e.target.value))} />
               </div>
             </div>
             <div className="md:col-span-2 flex flex-col">
@@ -854,9 +854,9 @@ export default function BuyerIntakeForm({
             </label>
             <div className="flex flex-col">
               <label className="mb-1 text-sm font-medium">Lot size min (sqft)</label>
-              <div className="flex items-center gap-3">
-                <input type="range" min={0} max={20_000} step={100} value={clamp(lotSizeMinSqft ?? 0, 0, 20_000)} onChange={(e) => setLotSizeMinSqft(Number(e.target.value))} className="range" />
-                <input name="lotSizeMinSqft" inputMode="numeric" className="input w-28" value={lotSizeMinSqft ?? ""} onChange={(e) => setLotSizeMinSqft(num(e.target.value))} />
+              <div className="flex items-center gap-2 min-w-0">
+                <input type="range" min={0} max={20_000} step={100} value={clamp(lotSizeMinSqft ?? 0, 0, 20_000)} onChange={(e) => setLotSizeMinSqft(Number(e.target.value))} className="range w-40 shrink-0" />
+                <input name="lotSizeMinSqft" inputMode="numeric" className="input w-24 md:w-28 shrink-0" value={lotSizeMinSqft ?? ""} onChange={(e) => setLotSizeMinSqft(num(e.target.value))} />
               </div>
             </div>
           </div>
