@@ -84,24 +84,10 @@ export default function MobileLayout({
     
     // Transaction Details
     {
-      id: 'legal',
-      label: 'Vendor Marketplace',
-      icon: Scale,
-      description: 'Inspectors, appraisers, attorneys, lenders, title, insurance',
-      category: 'Transaction Details'
-    },
-    {
-      id: 'inspections',
+      id: 'vendor-marketplace',
       label: 'Vendor Marketplace',
       icon: Eye,
       description: 'Browse and book providers with ratings, availability, and price',
-      category: 'Transaction Details'
-    },
-    {
-      id: 'insurance',
-      label: 'Vendor Marketplace',
-      icon: Shield,
-      description: 'Book providers with ratings & reviews',
       category: 'Transaction Details'
     },
     

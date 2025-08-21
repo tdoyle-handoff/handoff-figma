@@ -563,7 +563,7 @@ const LegalProgressTracker = () => {
   );
 };
 
-const LawyerSearch = () => {
+export const LawyerSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLawyer, setSelectedLawyer] = useState<string | null>(null);
 

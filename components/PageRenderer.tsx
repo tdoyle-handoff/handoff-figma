@@ -110,28 +110,29 @@ export function PageRenderer({
       case 'legal':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Legal />
+            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'attorneys' })}
           </Suspense>
         );
       
       case 'inspections':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Inspections />
+            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'inspectors' })}
           </Suspense>
         );
       
       case 'insurance':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Insurance />
+            {React.createElement(require('./VendorMarketplace').default, { defaultTab: 'insurance-providers' })}
           </Suspense>
         );
       
       case 'vendor-marketplace':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Insurance />
+            {/** Lazy import not set for VendorMarketplace; import directly to avoid complexity */}
+            {React.createElement(require('./VendorMarketplace').default)}
           </Suspense>
         );
       
