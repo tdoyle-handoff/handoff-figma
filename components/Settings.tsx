@@ -207,11 +207,15 @@ export default function Settings({ onSignOut, setupData, onNavigate }: SettingsP
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-semibold`}>Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account preferences and application settings.
-        </p>
+      <div className="rounded-lg border bg-white p-4 md:p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl md:text-2xl font-semibold">Settings</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage your account preferences and application settings.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Success message */}

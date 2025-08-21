@@ -960,13 +960,9 @@ export default function PropertySummary({
           </div>
           <div className="flex items-center gap-2">
             {isSetupComplete ? (
-              <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-xs">
-                Ready
-              </span>
+              <Badge variant="softSuccess">Ready</Badge>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 text-xs">
-                Setup Incomplete
-              </span>
+              <Badge variant="softWarning">Setup Incomplete</Badge>
             )}
           </div>
         </div>
@@ -1012,43 +1008,63 @@ export default function PropertySummary({
             <TabsContent value="summary" className="mt-6">
               <Card>
                 <CardContent className="space-y-6">
-              {/* Setup Progress */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                    Property Setup Progress
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Overall Progress
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {completedSteps} of {steps.length} steps completed
-                      </span>
-                    </div>
-                    <Progress value={progress} className="w-full" />
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 mt-4">
-                      {steps.map((step, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 p-2 rounded-md bg-muted/50"
-                        >
-                          {step.completed ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <Clock className="w-4 h-4 text-muted-foreground" />
-                          )}
-                          <span className="text-xs">{step.label}</span>
-                        </div>
-                      ))}
-                    </div>
+              {/* Top overview grid formatted like the reference, using existing fields */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Property card */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-sm font-medium text-muted-foreground">Property</div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="space-y-1 text-sm">
+                    <div className="font-medium text-foreground truncate" title={displayAddress}>{displayAddress}</div>
+                    <div className="text-muted-foreground">Type: {propertyData.homeType || 'N/A'}</div>
+                    <div className="text-muted-foreground">Price: {propertyData.price || 'N/A'}</div>
+                  </div>
+                </div>
+                {/* Buyer/Contact card */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-sm font-medium text-muted-foreground">Contact</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="font-medium">{propertyData.buyerName || 'N/A'}</div>
+                    <div className="text-muted-foreground">{propertyData.buyerEmail || 'N/A'}</div>
+                  </div>
+                </div>
+                {/* Payment/Estimate card */}
+                <div className="rounded-lg border bg-card p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-sm font-medium text-muted-foreground">Payment</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-2xl font-semibold text-emerald-600">{typeof calculatedMonthlyPayment === 'number' ? `$${Math.round(calculatedMonthlyPayment).toLocaleString()}` : '—'}</div>
+                    <div className="text-xs text-muted-foreground">Est. monthly payment</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Setup Progress (kept, formatted to be subtle) */}
+              <div className="rounded-lg border bg-card p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Overall Progress</span>
+                  <span className="text-sm text-muted-foreground">{completedSteps} of {steps.length}</span>
+                </div>
+                <div className="mt-3">
+                  <Progress value={progress} className="w-full" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 mt-3">
+                  {steps.map((step, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 rounded-md bg-muted/50">
+                      {step.completed ? (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Clock className="w-4 h-4 text-muted-foreground" />
+                      )}
+                      <span className="text-xs">{step.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               {/* API Testing Progress Overview */}
               {false &&
