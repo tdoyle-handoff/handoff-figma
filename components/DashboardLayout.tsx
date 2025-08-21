@@ -273,7 +273,7 @@ export default function DashboardLayout({
                   <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
                     {category}
                   </h3>
-                  {category === 'Core' && (
+                  {false && category === 'Core' && (
                     <div className={`text-xs p-2 rounded-lg border ${categoryColors[category as keyof typeof categoryColors]}`}>
                       <div className="flex items-center gap-1 font-medium mb-1">
                         <Building className="w-3 h-3" />
