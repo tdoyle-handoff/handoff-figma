@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Shield, Star, DollarSign, Phone, Mail, MapPin, Calculator, FileText, Clock, CheckCircle, AlertCircle, Home, Waves, Wind, Search, Filter, Plus } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -468,7 +467,7 @@ export default function Insurance() {
                           <p className="font-medium">${quote.coverage.personalProperty.toLocaleString()}</p>
                         </div>
                         {quote.type !== 'flood' && (
-                          <Fragment>
+                          <>
                             <div>
                               <p className="text-muted-foreground">Liability</p>
                               <p className="font-medium">${quote.coverage.liability.toLocaleString()}</p>
@@ -477,7 +476,7 @@ export default function Insurance() {
                               <p className="text-muted-foreground">Medical Payments</p>
                               <p className="font-medium">${quote.coverage.medicalPayments.toLocaleString()}</p>
                             </div>
-                          </Fragment>
+                          </>
                         )}
                         <div>
                           <p className="text-muted-foreground">Deductible</p>

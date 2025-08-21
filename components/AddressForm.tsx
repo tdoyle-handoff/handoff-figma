@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState, useCallback, useEffect } from 'react';
 import { AddressInput } from './AddressInput';
 import { AddressDetails } from '../hooks/useAddressAutocomplete';
@@ -193,7 +192,7 @@ export function AddressForm({
 
       <CardContent className="space-y-4">
         {!isManualMode ? (
-          <Fragment>
+          <>
             {/* Autocomplete Mode */}
             <AddressInput
               label={required ? "Search Address *" : "Search Address"}
@@ -321,9 +320,9 @@ export function AddressForm({
                 </Button>
               </div>
             )}
-          </Fragment>
+          </>
         ) : (
-          <Fragment>
+          <>
             {/* Manual Entry Mode */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -424,7 +423,7 @@ export function AddressForm({
                 </div>
               </div>
             </div>
-          </Fragment>
+          </>
         )}
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState, useEffect } from 'react';
 import { Alert, AlertDescription } from './ui/alert';
 import { Badge } from './ui/badge';
@@ -215,15 +214,15 @@ export function ServerStatusBanner({ showDetails = false, onServerAvailable }: S
                 className="h-7 text-xs"
               >
                 {isChecking ? (
-                  <Fragment>
+                  <>
                     <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
                     Checking
-                  </Fragment>
+                  </>
                 ) : (
-                  <Fragment>
+                  <>
                     <RefreshCw className="h-3 w-3 mr-1" />
                     Refresh
-                  </Fragment>
+                  </>
                 )}
               </Button>
             </div>

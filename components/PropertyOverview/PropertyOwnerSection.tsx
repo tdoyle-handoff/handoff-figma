@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { User, Mail, MapPin, Calendar, Shield, FileText } from 'lucide-react';
@@ -164,7 +163,7 @@ export function PropertyOwnerSection({ propertyData, mappedData }: PropertyOwner
                   getExpandedValue('owner.owner1.owner1Address.oneLine') ||
                   getExpandedValue('owner.mailingAddress.line1') ||
                   getExpandedValue('owner.owner1.owner1Address.line1')) && (
-                  <Fragment>
+                  <>
                     <p className="text-sm">
                       {getBestValue('property.owner.mailingAddress.street', 
                         'owner.mailingAddress.oneLine',
@@ -187,7 +186,7 @@ export function PropertyOwnerSection({ propertyData, mappedData }: PropertyOwner
                           'owner.owner1.owner1Address.postal1')
                       ].filter(Boolean).join(', ')}
                     </p>
-                  </Fragment>
+                  </>
                 )}
               </div>
             </div>
