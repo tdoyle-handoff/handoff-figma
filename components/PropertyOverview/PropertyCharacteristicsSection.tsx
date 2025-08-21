@@ -367,7 +367,7 @@ export function PropertyCharacteristicsSection({ propertyData, mappedData }: Pro
                 </div>
               )}
             </div>
-          </Fragment>
+          </>
         )}
       </CardContent>
     </Card>
