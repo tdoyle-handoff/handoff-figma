@@ -42,6 +42,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { ComprehensiveAttomDisplay } from './ComprehensiveAttomDisplay';
+import BuyerIntakeForm from './BuyerIntakeForm';
 import { PropertyBasicProfile } from './PropertyBasicProfile';
 import { ComprehensivePropertyDetails } from './ComprehensivePropertyDetails';
 import { PropertyOverviewWithAttomData } from './PropertyOverviewWithAttomData';
@@ -877,10 +878,14 @@ export default function PropertySummary({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="summary" className="flex items-center gap-2">
                 <Home className="w-4 h-4" />
                 Summary
+              </TabsTrigger>
+              <TabsTrigger value="onboarding" className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4" />
+                Onboarding
               </TabsTrigger>
               <TabsTrigger value="home-search" className="flex items-center gap-2">
                 <Search className="w-4 h-4" />
@@ -928,7 +933,7 @@ export default function PropertySummary({
               </Card>
 
               {/* API Testing Progress Overview */}
-              {(isTestingInProgress || Object.keys(endpointResults).length > 0) && (
+              {false && (isTestingInProgress || Object.keys(endpointResults).length > 0) && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -979,6 +984,22 @@ export default function PropertySummary({
                 isEditable={false}
                 className="mb-6"
               />
+
+              {/* Onboarding Tab (Editable) */}
+              <TabsContent value="onboarding" className="space-y-6 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <ListChecks className="w-5 h-5 text-primary" />
+                      Onboarding Questions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Embed the new Buyer Intake form */}
+                     3cBuyerIntakeForm title="Onboarding" />
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
               {/* Home Search Preferences Tab Content (Editable) */}
               <TabsContent value="home-search" className="space-y-6 mt-6">

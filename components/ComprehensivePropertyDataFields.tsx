@@ -336,6 +336,8 @@ export function ComprehensivePropertyDataFields({
   className = ''
 }: ComprehensivePropertyDataFieldsProps) {
   
+  const SHOW_TECH_SECTIONS = false;
+  
   const renderField = (label: string, value: any, key: string, type: 'text' | 'number' | 'select' | 'textarea' = 'text', options?: string[]) => {
     if (!isEditable) {
       return (
@@ -421,6 +423,7 @@ export function ComprehensivePropertyDataFields({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Property Identification */}
+      {SHOW_TECH_SECTIONS && (
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -437,6 +440,7 @@ export function ComprehensivePropertyDataFields({
           </div>
         </CardContent>
       </Card>
+      )
 
       {/* Address Information */}
       <Card>
@@ -868,6 +872,7 @@ export function ComprehensivePropertyDataFields({
       </Card>
 
       {/* Location Information */}
+      {SHOW_TECH_SECTIONS && (
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -900,6 +905,7 @@ export function ComprehensivePropertyDataFields({
           </div>
         </CardContent>
       </Card>
+      )
 
       {/* Area & Neighborhood */}
       <Card>
