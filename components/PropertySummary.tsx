@@ -1245,7 +1245,6 @@ export default function PropertySummary({
                     </div>
                   </div>
                 </CardContent>
-              </CardContent>
               </Card>
             </TabsContent>
 
@@ -1639,10 +1638,9 @@ export default function PropertySummary({
                     </Button>
                   </div>
                 </CardContent>
+              </CardContent>
               </Card>
             </TabsContent>
-          </Tabs>
-        </CardContent>
       </Card>
 
       {/* Setup Status */}
