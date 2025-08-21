@@ -303,11 +303,11 @@ export default function Documents({ setupData }: DocumentsProps) {
           <TabsTrigger value="signatures" className={isMobile ? 'tab-multiline' : ''}>Signatures Needed</TabsTrigger>
           <TabsTrigger value="archive" className={isMobile ? 'tab-multiline' : ''}>Archive</TabsTrigger>
           {!isMobile && (
-            <Fragment>
+            <>
               <TabsTrigger value="offer">Offer Builder</TabsTrigger>
               <TabsTrigger value="templates">Templates</TabsTrigger>
               <TabsTrigger value="esign">E-Sign</TabsTrigger>
-            </Fragment>
+            </>
           )}
         </TabsList>
 
@@ -508,7 +508,7 @@ export default function Documents({ setupData }: DocumentsProps) {
         </TabsContent>
 
         {!isMobile && (
-          <Fragment>
+          <>
             <TabsContent value="offer" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -560,7 +560,7 @@ export default function Documents({ setupData }: DocumentsProps) {
                 </CardContent>
               </Card>
             </TabsContent>
-          </Fragment>
+          </>
         )}
       </Tabs>
     </div>
