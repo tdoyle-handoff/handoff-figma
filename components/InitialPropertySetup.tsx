@@ -532,6 +532,13 @@ export function InitialPropertySetup({
 
   // Legacy step-based fallback
   const currentStepData = steps[currentStep];
+  const StepComponent = currentStepData.component as React.ComponentType<{
+    propertyData: PropertyData;
+    updatePropertyData: (updates: Partial<PropertyData>) => void;
+    screeningData: ScreeningData | null;
+    isMobile: boolean;
+    isEditMode: boolean | undefined;
+  }>;
 
   return (
     <div
@@ -613,7 +620,7 @@ export function InitialPropertySetup({
                 </div>
               }
             >
-              <currentStepData.component
+              <StepComponent
                 propertyData={propertyData}
                 updatePropertyData={updatePropertyData}
                 screeningData={screeningData}
