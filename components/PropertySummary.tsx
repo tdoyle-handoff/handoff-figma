@@ -1246,6 +1246,8 @@ export default function PropertySummary({
                   </div>
                 </CardContent>
               </Card>
+              </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Onboarding Tab (Editable) */}
