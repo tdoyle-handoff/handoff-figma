@@ -829,27 +829,27 @@ export default function PropertySummary({
   };
 
   return (
-    cdiv className="space-y-6"e
+    <div className="space-y-6">
       {/* Page Header styled like the reference admin UI (style only; no new data) */}
-      cdiv className="rounded-lg border bg-white p-4 md:p-6"e
-        cdiv className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"e
-          cdive
-            ch1 className="text-xl md:text-2xl font-semibold"e{displayAddress}c/h1e
-            cp className="text-sm text-muted-foreground"eProperty Overviewc/pe
-          c/dive
-          cdiv className="flex items-center gap-2"e
+      <div className="rounded-lg border bg-white p-4 md:p-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-xl md:text-2xl font-semibold">{displayAddress}</h1>
+            <p className="text-sm text-muted-foreground">Property Overview</p>
+          </div>
+          <div className="flex items-center gap-2">
             {isSetupComplete ? (
-              cspan className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-xs"eReadyc/spane
+              <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-xs">Ready</span>
             ) : (
-              cspan className="inline-flex items-center rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 text-xs"eSetup Incompletec/spane
+              <span className="inline-flex items-center rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 text-xs">Setup Incomplete</span>
             )}
-          c/dive
-        c/dive
-        cdiv className="mt-4 flex items-center gap-2 border-t pt-4"e
-          cbutton className="h-8 px-3 text-sm rounded-md border bg-white hover:bg-muted"eInfoc/buttone
-          cbutton className="h-8 px-3 text-sm rounded-md border bg-white hover:bg-muted"eWorkflowc/buttone
-        c/dive
-      c/dive
+          </div>
+        </div>
+        <div className="mt-4 flex items-center gap-2 border-t pt-4">
+          <button className="h-8 px-3 text-sm rounded-md border bg-white hover:bg-muted">Info</button>
+          <button className="h-8 px-3 text-sm rounded-md border bg-white hover:bg-muted">Workflow</button>
+        </div>
+      </div>
       {/* Property Summary Tabs */}
       <Card>
         <CardHeader>
