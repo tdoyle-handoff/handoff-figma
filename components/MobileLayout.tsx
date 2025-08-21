@@ -273,19 +273,21 @@ export default function MobileLayout({
                       </div>
                     </div>
                     
-                    {/* Quick Stats */}
-                    <div className="p-3 bg-card rounded-lg border">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">Setup Progress</span>
-                        <span className="font-medium">{Math.round(completionStatus.percentage)}%</span>
+                    {/* Quick Stats - hidden per request */}
+                    {false && (
+                      <div className="p-3 bg-card rounded-lg border">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Setup Progress</span>
+                          <span className="font-medium">{Math.round(completionStatus.percentage)}%</span>
+                        </div>
+                        <div className="mt-1 w-full bg-muted rounded-full h-1.5">
+                          <div 
+                            className="bg-primary h-1.5 rounded-full transition-all duration-300" 
+                            style={{ width: `${completionStatus.percentage}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="mt-1 w-full bg-muted rounded-full h-1.5">
-                        <div 
-                          className="bg-primary h-1.5 rounded-full transition-all duration-300" 
-                          style={{ width: `${completionStatus.percentage}%` }}
-                        />
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Mobile Navigation */}
