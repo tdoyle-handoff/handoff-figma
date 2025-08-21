@@ -22,7 +22,8 @@ import {
   Calculator,
   Eye,
   Building,
-  BarChart3
+  BarChart3,
+  ShoppingCart
 } from 'lucide-react';
 import type { PageType } from '../hooks/useNavigation';
 
@@ -102,6 +103,13 @@ export default function DashboardLayout({
       label: 'Vendor Marketplace',
       icon: Shield,
       description: 'Book providers with ratings & reviews',
+      category: 'Transaction Details'
+    },
+    {
+      id: 'vendor-marketplace',
+      label: 'Vendor Marketplace',
+      icon: ShoppingCart,
+      description: 'Browse and book providers with ratings, availability, and price',
       category: 'Transaction Details'
     },
     

@@ -128,6 +128,13 @@ export function PageRenderer({
           </Suspense>
         );
       
+      case 'vendor-marketplace':
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Insurance />
+          </Suspense>
+        );
+      
       case 'communications':
         return (
           <Suspense fallback={<LoadingSpinner />}>
