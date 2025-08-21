@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -523,15 +522,15 @@ function ReviewStep({
               size="lg"
             >
               {isLoading ? (
-                <Fragment>
+                <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Completing Setup...
-                </Fragment>
+                </>
               ) : (
-                <Fragment>
+                <>
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Complete Property Setup
-                </Fragment>
+                </>
               )}
             </Button>
           </div>

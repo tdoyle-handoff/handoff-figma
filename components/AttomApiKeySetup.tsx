@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -109,7 +108,7 @@ export function AttomApiKeySetup() {
 
   const validateApiKeyFormat = (key: string): ApiKeyValidation => {
     const length = key.length;
-    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<Fragment>]/.test(key);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(key);
     const hasNumbers = /\d/.test(key);
     const hasLetters = /[a-zA-Z]/.test(key);
     
