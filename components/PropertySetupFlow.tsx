@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { PropertySetupScreening } from './PropertySetupScreening';
-import { InitialPropertySetup } from './InitialPropertySetup';
 import { Button } from './ui/button';
 import { ArrowLeft, X } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
@@ -132,59 +131,18 @@ export function PropertySetupFlow({ onComplete, isEditMode = false, onExitEditMo
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Edit Mode Header */}
-      {isEditMode && (
-        <div className="sticky top-0 z-50 bg-card border-b border-border px-4 py-3">
-          <div className="max-w-2xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleExitEdit}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Summary
-              </Button>
-              <div className="h-6 w-px bg-border" />
-              <div>
-                <h2 className="font-medium">Edit Property Setup</h2>
-                <p className="text-sm text-muted-foreground">Update your setup information</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleExitEdit}
-              className="flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+  // Auto-complete setup immediately: remove the Initial Property Setup page entirely
+  useEffect(() => {
+    try {
+      const existing = localStorage.getItem('handoff-property-data');
+      const data = existing ? (JSON.parse(existing) as PropertyData) : {};
+      handleSetupComplete(data);
+    } catch {
+      handleSetupComplete({} as PropertyData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      {/* Edit Mode Notice */}
-      {isEditMode && (
-        <div className="max-w-2xl mx-auto px-4 pt-6">
-          <Alert className="bg-blue-50 border-blue-200 mb-6">
-            <AlertDescription className="text-blue-800">
-              <strong>Editing Mode:</strong> You're updating your existing setup. Your progress and tasks will be preserved. 
-              You can change your responses and they'll be saved automatically.
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
-
-      {/* Main Content: Always use single-page setup */}
-      <InitialPropertySetup
-        onComplete={handleSetupComplete}
-        isEditMode={isEditMode}
-        screeningData={screeningData}
-        forceAllSections={false}
-      />
-    </div>
-  );
+  // No UI required; setup completes automatically
+  return null;
 }
