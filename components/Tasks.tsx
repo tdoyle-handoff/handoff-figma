@@ -266,6 +266,11 @@ export default function Tasks({ onNavigate }: TasksProps) {
   const isMobile = useIsMobile();
   const taskContext = useTaskContext();
   
+  // Feature flags for visibility
+  const SHOW_TASK_CATEGORIES = false;
+  const SHOW_QUICK_ACTIONS = false;
+  const SHOW_PROGRESS_COUNTS = false;
+  
   const { taskPhases } = taskContext;
   const totalTasks = taskContext.getTotalTasksCount();
   const completedTasks = taskContext.getCompletedTasksCount();
@@ -310,11 +315,13 @@ export default function Tasks({ onNavigate }: TasksProps) {
               <span className="text-sm font-medium">{Math.round(overallProgress)}%</span>
             </div>
           </div>
-          <div className="flex gap-4 text-sm text-gray-600">
-            <span>{completedTasks} completed</span>
-            <span>{activeTasks} active</span>
-            <span>{totalTasks - completedTasks - activeTasks} upcoming</span>
-          </div>
+          {SHOW_PROGRESS_COUNTS && (
+            <div className="flex gap-4 text-sm text-gray-600">
+              <span>{completedTasks} completed</span>
+              <span>{activeTasks} active</span>
+              <span>{totalTasks - completedTasks - activeTasks} upcoming</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -327,18 +334,19 @@ export default function Tasks({ onNavigate }: TasksProps) {
 
         <TabsContent value="checklist" className="space-y-6">
           {/* Task Category Navigation */}
-          <Card className="bg-white border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <CheckSquare className="w-5 h-5 text-primary" />
-                Task Categories
-              </CardTitle>
-              <p className="text-sm text-gray-600">
-                Navigate directly to specific task areas
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'} gap-3`}>
+          {SHOW_TASK_CATEGORIES && (
+            <Card className="bg-white border-border">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CheckSquare className="w-5 h-5 text-primary" />
+                  Task Categories
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Navigate directly to specific task areas
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'} gap-3`}>
                 <Button
                   variant="outline"
                   onClick={() => onNavigate('legal')}
@@ -415,11 +423,12 @@ export default function Tasks({ onNavigate }: TasksProps) {
                   <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Actions for Active Tasks */}
-          {activeTasks > 0 && (
+          {SHOW_QUICK_ACTIONS && activeTasks > 0 && (
             <Card className="bg-white border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
