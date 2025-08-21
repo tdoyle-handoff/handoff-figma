@@ -766,7 +766,7 @@ export default function Inspections() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl md:text-2xl font-semibold">Vendor Marketplace</h1>
-          <p className="text-muted-foreground">
+          <p className="text-black">
             Schedule and track all property inspections for your new home
           </p>
         </div>
@@ -943,20 +943,14 @@ export default function Inspections() {
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="progress" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="progress">Progress</TabsTrigger>
-          <TabsTrigger value="scheduled">Scheduled</TabsTrigger>
-          <TabsTrigger value="results">Results</TabsTrigger>
-          <TabsTrigger value="negotiations">Negotiations</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+      <Tabs defaultValue="marketplace" className="w-full">
+        <TabsList className="grid w-full grid-cols-1">
+          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="progress" className="space-y-6">
+        <TabsContent value="marketplace" className="space-y-6">
           <InspectionsProgressTracker />
-        </TabsContent>
 
-        <TabsContent value="scheduled" className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
             {inspections.map((inspection) => (
               <Card key={inspection.id}>
@@ -973,29 +967,29 @@ export default function Inspections() {
                             {inspection.status}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-3">
+                        <p className="text-sm text-black mb-3">
                           {inspection.description}
                         </p>
                         
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <p className="text-muted-foreground">Date &amp; Time</p>
+                            <p className="text-black">Date &amp; Time</p>
                             <p className="font-medium">
                               {inspection.date ? new Date(inspection.date).toLocaleDateString() : 'TBD'} 
                               {inspection.time && ` at ${inspection.time}`}
                             </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Duration</p>
+                            <p className="text-black">Duration</p>
                             <p className="font-medium">{inspection.duration}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Inspector</p>
+                            <p className="text-black">Inspector</p>
                             <p className="font-medium">{inspection.inspector}</p>
-                            <p className="text-xs text-muted-foreground">{inspection.company}</p>
+                            <p className="text-xs text-black">{inspection.company}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Cost</p>
+                            <p className="text-black">Cost</p>
                             <p className="font-medium">{inspection.cost}</p>
                           </div>
                         </div>
@@ -1017,9 +1011,7 @@ export default function Inspections() {
               </Card>
             ))}
           </div>
-        </TabsContent>
 
-        <TabsContent value="results" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Inspection Results Summary</CardTitle>
@@ -1034,7 +1026,7 @@ export default function Inspections() {
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Passed</p>
+                    <p className="text-sm text-black">Passed</p>
                     <p className="text-2xl font-semibold">1</p>
                   </div>
                 </div>
@@ -1043,7 +1035,7 @@ export default function Inspections() {
                     <AlertTriangle className="w-5 h-5 text-yellow-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Issues Found</p>
+                    <p className="text-sm text-black">Issues Found</p>
                     <p className="text-2xl font-semibold">3</p>
                   </div>
                 </div>
@@ -1052,7 +1044,7 @@ export default function Inspections() {
                     <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Pending</p>
+                    <p className="text-sm text-black">Pending</p>
                     <p className="text-2xl font-semibold">1</p>
                   </div>
                 </div>
@@ -1061,7 +1053,7 @@ export default function Inspections() {
                     <MessageSquare className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Negotiating</p>
+                    <p className="text-sm text-black">Negotiating</p>
                     <p className="text-2xl font-semibold">1</p>
                   </div>
                 </div>
@@ -1086,10 +1078,10 @@ export default function Inspections() {
                           {issue.status}
                         </Badge>
                       </div>
-                      <span className="text-sm text-muted-foreground">{issue.cost}</span>
+                      <span className="text-sm text-black">{issue.cost}</span>
                     </div>
                     <h5 className="font-medium mb-1">{issue.issue}</h5>
-                    <p className="text-sm text-muted-foreground mb-2">{issue.description}</p>
+                    <p className="text-sm text-black mb-2">{issue.description}</p>
                     <p className="text-sm mb-2">
                       <strong>Recommendation:</strong> {issue.recommendation}
                     </p>
@@ -1105,9 +1097,7 @@ export default function Inspections() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="negotiations" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Issue Negotiations &amp; Remedies</CardTitle>
@@ -1127,7 +1117,7 @@ export default function Inspections() {
                           {issue.category === 'HVAC' && <Shield className="w-4 h-4 text-green-600" />}
                           {issue.issue}
                         </h4>
-                        <p className="text-sm text-muted-foreground mt-1">{issue.description}</p>
+                        <p className="text-sm text-black mt-1">{issue.description}</p>
                       </div>
                       <Badge className={getIssueStatusColor(issue.status)}>
                         {issue.status}
@@ -1141,7 +1131,7 @@ export default function Inspections() {
                           {issue.severity}
                         </Badge>
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-black">
                         Estimated Cost: {issue.cost}
                       </div>
                     </div>
@@ -1149,7 +1139,7 @@ export default function Inspections() {
                     <div className="space-y-3">
                       <div>
                         <h5 className="font-medium text-sm mb-1">Recommendation</h5>
-                        <p className="text-sm text-muted-foreground">{issue.recommendation}</p>
+                        <p className="text-sm text-black">{issue.recommendation}</p>
                       </div>
 
                       {issue.status === 'negotiating' && issue.negotiationNotes && (
@@ -1157,7 +1147,7 @@ export default function Inspections() {
                           <h5 className="font-medium text-sm mb-2">Negotiation Notes</h5>
                           <ul className="space-y-1">
                             {issue.negotiationNotes.map((note, noteIndex) => (
-                              <li key={noteIndex} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <li key={noteIndex} className="text-sm text-black flex items-start gap-2">
                                 <MessageSquare className="w-3 h-3 mt-1 flex-shrink-0" />
                                 {note}
                               </li>
@@ -1178,9 +1168,7 @@ export default function Inspections() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="reports" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Inspection Reports</CardTitle>
@@ -1196,10 +1184,10 @@ export default function Inspections() {
                       <FileText className="w-8 h-8 text-primary" />
                       <div>
                         <h4 className="font-medium">{inspection.title} Report</h4>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-black">
                           Completed on {new Date(inspection.date).toLocaleDateString()}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-black">
                           Inspector: {inspection.inspector}
                         </p>
                       </div>
