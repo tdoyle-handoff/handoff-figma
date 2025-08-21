@@ -366,7 +366,8 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
           <Label htmlFor="propertyAddress">Property Location</Label>
             <AddressAutocompleteInput
               value={(typeof formData.propertyAddress === 'string' ? formData.propertyAddress : formData.propertyAddress?.formatted_address) || ''}
-              onChange={(value) => updateFormData({ propertyAddress: value || '' })}
+              onChange={(addr) => updateFormData({ propertyAddress: addr || '' })}
+              onRawInputChange={(val) => updateFormData({ propertyAddress: val })}
               onAddressSelect={handleAddressSelect}
               placeholder="Enter city, state, or specific address..."
             className={errors.propertyAddress ? 'border-red-500' : ''}
@@ -784,7 +785,8 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
               <Label htmlFor="propertyAddress">Property Location</Label>
               <AddressAutocompleteInput
                 value={(typeof formData.propertyAddress === 'string' ? formData.propertyAddress : formData.propertyAddress?.formatted_address) || ''}
-                onChange={(value) => updateFormData({ propertyAddress: value || '' })}
+                onChange={(addr) => updateFormData({ propertyAddress: addr || '' })}
+                onRawInputChange={(val) => updateFormData({ propertyAddress: val })}
                 onAddressSelect={handleAddressSelect}
                 placeholder="Enter city, state, or specific address..."
                 className={errors.propertyAddress ? 'border-red-500' : ''}
