@@ -236,8 +236,24 @@ export const AppRecovery = {
       set: () => new Set(),
       promise: () => Promise.resolve(),
       fetch: () => typeof fetch !== 'undefined',
-      localStorage: () => localStorage.setItem('test', 'test') && localStorage.removeItem('test'),
-      json: () => JSON.stringify({}) && JSON.parse('{}'),
+      localStorage: () => {
+        try {
+          localStorage.setItem('test', 'test');
+          localStorage.removeItem('test');
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      json: () => {
+        try {
+          JSON.stringify({});
+          JSON.parse('{}');
+          return true;
+        } catch {
+          return false;
+        }
+      },
     };
     
     const results: Record<string, boolean> = {};

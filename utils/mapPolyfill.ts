@@ -7,62 +7,62 @@ export function ensureMapConstructor() {
     console.error('Map constructor not available, creating polyfill');
     // Simple Map polyfill for older environments
     (global as any).Map = class MapPolyfill<K, V> {
-      private keys: K[] = [];
-      private values: V[] = [];
+      private _keys: K[] = [];
+      private _values: V[] = [];
 
       constructor() {}
 
       has(key: K): boolean {
-        return this.keys.includes(key);
+        return this._keys.includes(key);
       }
 
       get(key: K): V | undefined {
-        const index = this.keys.indexOf(key);
-        return index !== -1 ? this.values[index] : undefined;
+        const index = this._keys.indexOf(key);
+        return index !== -1 ? this._values[index] : undefined;
       }
 
       set(key: K, value: V): this {
-        const index = this.keys.indexOf(key);
+        const index = this._keys.indexOf(key);
         if (index !== -1) {
-          this.values[index] = value;
+          this._values[index] = value;
         } else {
-          this.keys.push(key);
-          this.values.push(value);
+          this._keys.push(key);
+          this._values.push(value);
         }
         return this;
       }
 
       delete(key: K): boolean {
-        const index = this.keys.indexOf(key);
+        const index = this._keys.indexOf(key);
         if (index !== -1) {
-          this.keys.splice(index, 1);
-          this.values.splice(index, 1);
+          this._keys.splice(index, 1);
+          this._values.splice(index, 1);
           return true;
         }
         return false;
       }
 
       clear(): void {
-        this.keys = [];
-        this.values = [];
+        this._keys = [];
+        this._values = [];
       }
 
       get size(): number {
-        return this.keys.length;
+        return this._keys.length;
       }
 
-      keys(): IterableIterator<K> {
-        return this.keys[Symbol.iterator]();
+      keyIterator(): IterableIterator<K> {
+        return this._keys[Symbol.iterator]();
       }
 
-      values(): IterableIterator<V> {
-        return this.values[Symbol.iterator]();
+      valueIterator(): IterableIterator<V> {
+        return this._values[Symbol.iterator]();
       }
 
       entries(): IterableIterator<[K, V]> {
         const entries: [K, V][] = [];
-        for (let i = 0; i < this.keys.length; i++) {
-          entries.push([this.keys[i], this.values[i]]);
+        for (let i = 0; i < this._keys.length; i++) {
+          entries.push([this._keys[i], this._values[i]]);
         }
         return entries[Symbol.iterator]();
       }

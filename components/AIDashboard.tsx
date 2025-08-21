@@ -408,7 +408,7 @@ export function AIDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {aiAnalysis.nextActions.map((action, index) => (
+              {aiAnalysis.nextActions.map((action: string, index: number) = (
                 <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
                   <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
                     {index + 1}
@@ -472,7 +472,7 @@ export function AIDashboard() {
                   AI Market Recommendations
                 </h4>
                 <ul className="space-y-1 text-sm text-muted-foreground">
-                  {marketInsights.recommendedActions.map((action, index) => (
+                  {marketInsights.recommendedActions.map((action: string, index: number) = (
                     <li key={index} className="flex items-start gap-2">
                       <span className="text-primary">•</span>
                       {action}
@@ -495,7 +495,7 @@ export function AIDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {aiAnalysis.insights.slice(0, 3).map((insight, index) => (
+            {aiAnalysis.insights.slice(0, 3).map((insight: any, index: number) = (
               <Alert key={index} className="border-l-4 border-l-primary">
                 <AlertTriangle className="w-4 h-4" />
                 <div className="flex items-start justify-between">

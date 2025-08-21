@@ -606,14 +606,16 @@ export function AttomApiAdminPanel() {
         
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? err.stack : undefined;
       addDebugLog('error', 'Configuration load failed', { 
-        error: error.message,
-        stack: error.stack 
+        error: msg,
+        stack 
       });
       
-      console.error('Failed to load configurations:', error);
-      toast.error(`Failed to load API configurations: ${error.message}`);
+      console.error('Failed to load configurations:', err);
+      toast.error(`Failed to load API configurations: ${msg}`);
       
       // Load default configuration if server fails
       const defaultEndpoints = getDefaultEndpoints();
@@ -694,15 +696,17 @@ export function AttomApiAdminPanel() {
         
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? err.stack : undefined;
       addDebugLog('error', 'Configuration save failed', { 
-        error: error.message,
-        stack: error.stack,
+        error: msg,
+        stack,
         endpoint: endpoint 
       });
       
-      console.error('Save error:', error);
-      toast.error(`Failed to save configuration: ${error.message}`);
+      console.error('Save error:', err);
+      toast.error(`Failed to save configuration: ${msg}`);
     } finally {
       setIsLoading(false);
     }
@@ -757,14 +761,16 @@ export function AttomApiAdminPanel() {
         
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? err.stack : undefined;
       addDebugLog('error', 'Configuration delete failed', { 
-        error: error.message,
-        stack: error.stack 
+        error: msg,
+        stack 
       });
       
-      console.error('Delete error:', error);
-      toast.error(`Failed to delete configuration: ${error.message}`);
+      console.error('Delete error:', err);
+      toast.error(`Failed to delete configuration: ${msg}`);
     } finally {
       setIsLoading(false);
     }
@@ -927,11 +933,12 @@ export function AttomApiAdminPanel() {
       updatedEndpoints
         .filter(endpoint => selectedEndpoints.has(endpoint.id))
         .map(endpoint => saveConfiguration(endpoint))
-    ).then(() => {
+    ).then(() = {
       toast.success(`${activate ? 'Activated' : 'Deactivated'} ${selectedEndpoints.size} endpoints`);
       setSelectedEndpoints(new Set());
-    }).catch(error => {
-      toast.error(`Failed to ${activate ? 'activate' : 'deactivate'} endpoints: ${error.message}`);
+    }).catch((err: unknown) = {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Failed to ${activate ? 'activate' : 'deactivate'} endpoints: ${msg}`);
     });
   };
 
@@ -952,11 +959,12 @@ export function AttomApiAdminPanel() {
       updatedEndpoints
         .filter(endpoint => selectedEndpoints.has(endpoint.id))
         .map(endpoint => saveConfiguration(endpoint))
-    ).then(() => {
+    ).then(() = {
       toast.success(`${show ? 'Enabled' : 'Disabled'} property display for ${selectedEndpoints.size} endpoints`);
       setSelectedEndpoints(new Set());
-    }).catch(error => {
-      toast.error(`Failed to update property display: ${error.message}`);
+    }).catch((err: unknown) = {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Failed to update property display: ${msg}`);
     });
   };
 

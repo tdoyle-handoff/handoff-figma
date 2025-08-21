@@ -87,12 +87,13 @@ export function AttomAdminDiagnostic() {
         );
         return false;
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       addDiagnostic(
         'Server Health Check',
         'error',
-        `Failed to connect to server: ${error.message}`,
-        { error: error.message }
+        `Failed to connect to server: ${msg}`,
+        { error: msg }
       );
       return false;
     }
@@ -130,12 +131,13 @@ export function AttomAdminDiagnostic() {
         );
         return null;
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       addDiagnostic(
         'Attom Admin Endpoint',
         'error',
-        `Error accessing admin endpoint: ${error.message}`,
-        { error: error.message }
+        `Error accessing admin endpoint: ${msg}`,
+        { error: msg }
       );
       return null;
     }
@@ -305,7 +307,7 @@ export function AttomAdminDiagnostic() {
             recommendation = 'Check that the API base URL and endpoint path are correct';
           }
 
-          diagnosticDetails.recommendation = recommendation;
+          (diagnosticDetails as any).recommendation = recommendation;
 
           addDiagnostic(
             'Property Basic Test',
@@ -339,15 +341,16 @@ export function AttomAdminDiagnostic() {
         );
         return false;
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? err.stack : undefined;
       addDiagnostic(
         'Property Basic Test',
         'error',
-        `Network error testing property basic endpoint: ${error.message}`,
+        `Network error testing property basic endpoint: ${msg}`,
         { 
-          error: error.message,
-          stack: error.stack,
-          testParams,
+          error: msg,
+          stack,
           endpointConfig: propertyBasicConfig
         }
       );
@@ -447,17 +450,18 @@ export function AttomAdminDiagnostic() {
         );
         return false;
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       addDiagnostic(
         'Attom API Configuration',
         'error',
-        `Error testing Attom API configuration: ${error.message}`,
+        `Error testing Attom API configuration: ${msg}`,
         { 
-          error: error.message,
-          recommendation: 'Check network connectivity and server status'
+          error: msg,
         }
       );
       return false;
+    }
     }
   };
 
@@ -633,12 +637,13 @@ export function AttomAdminDiagnostic() {
         );
         return false;
       }
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       addDiagnostic(
         'Property Display Config',
         'error',
-        `Error checking property display configuration: ${error.message}`,
-        { error: error.message }
+        `Error checking property display configuration: ${msg}`,
+        { error: msg }
       );
       return false;
     }
@@ -652,7 +657,7 @@ export function AttomAdminDiagnostic() {
     try {
       addDiagnostic(
         'Diagnostic Started',
-        'pending',
+'warning',
         'Starting comprehensive diagnostic of Attom Admin Panel and property-basic endpoint...',
         { timestamp: new Date().toISOString() }
       );
@@ -718,12 +723,14 @@ export function AttomAdminDiagnostic() {
       );
       
       toast.success(`Diagnostic complete - ${finalSuccessCount} tests passed, ${finalErrorCount} failed`);
-    } catch (error) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? err.stack : undefined;
       addDiagnostic(
         'Diagnostic Runner',
         'error',
-        `Diagnostic run failed: ${error.message}`,
-        { error: error.message, stack: error.stack }
+        `Diagnostic run failed: ${msg}`,
+        { error: msg, stack }
       );
       toast.error('Diagnostic run failed');
     } finally {

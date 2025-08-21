@@ -93,14 +93,15 @@ export function useAddressAutocomplete({
       return errorData;
     }
     if (errorData && typeof errorData === 'object') {
-      if (typeof errorData.error === 'string') {
-        return errorData.error;
+      const obj = errorData as { error?: unknown; message?: unknown };
+      if (typeof obj.error === 'string') {
+        return obj.error;
       }
-      if (typeof errorData.message === 'string') {
-        return errorData.message;
+      if (typeof obj.message === 'string') {
+        return obj.message;
       }
-      if (errorData.error && typeof errorData.error.message === 'string') {
-        return errorData.error.message;
+      if (obj && typeof (obj as any).error?.message === 'string') {
+        return (obj as any).error.message as string;
       }
     }
     return 'Unknown error occurred';

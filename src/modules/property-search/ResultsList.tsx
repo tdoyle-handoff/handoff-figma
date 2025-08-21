@@ -4,8 +4,10 @@ interface ResultsListProps {
   onSelect: (item: any) => void
 }
 
+type ResultItem = { id: string; title: string }
+
 export function ResultsList({ onSelect }: ResultsListProps) {
-  const items = [] // wire with real results later
+  const items: ResultItem[] = [] // wire with real results later
   return (
     <div className="border rounded p-4">
       <div className="font-medium mb-2">Results</div>

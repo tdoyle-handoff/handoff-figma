@@ -741,7 +741,7 @@ export function AIRealEstateAgent() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {marketInsights.recommendations.map((rec, index) => (
+                    {marketInsights.recommendations.map((rec: string, index: number) = (
                       <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
                         <Target className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                         <span className="text-sm">{rec}</span>

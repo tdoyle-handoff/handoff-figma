@@ -97,9 +97,10 @@ export function AttomOfficialApiTester() {
         timestamp: new Date().toISOString()
       };
 
-    } catch (error) {
+    } catch (err: unknown) {
       const responseTime = Date.now() - startTime;
-      console.error('Current implementation test error:', error);
+      console.error('Current implementation test error:', err);
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       
       return {
         endpoint: '/attom/property/basic',
@@ -107,7 +108,7 @@ export function AttomOfficialApiTester() {
         success: false,
         responseTime,
         status: 0,
-        error: `Network error: ${error.message}`,
+        error: `Network error: ${msg}`,
         timestamp: new Date().toISOString()
       };
     }
@@ -145,9 +146,10 @@ export function AttomOfficialApiTester() {
         timestamp: new Date().toISOString()
       };
 
-    } catch (error) {
+    } catch (err: unknown) {
       const responseTime = Date.now() - startTime;
-      console.error('Official implementation test error:', error);
+      console.error('Official implementation test error:', err);
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       
       return {
         endpoint: '/attom-official/property/search',
@@ -155,7 +157,7 @@ export function AttomOfficialApiTester() {
         success: false,
         responseTime,
         status: 0,
-        error: `Network error: ${error.message}`,
+        error: `Network error: ${msg}`,
         timestamp: new Date().toISOString()
       };
     }

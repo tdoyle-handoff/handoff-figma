@@ -390,8 +390,8 @@ export function AddressFormatGuide() {
                       <AlertDescription className="text-orange-800">
                         <strong>Issues Found:</strong>
                         <ul className="mt-2 list-disc list-inside space-y-1">
-                          {formatAnalysis.issues.map((issue, index) => (
-                            <li key={index} className="text-sm">{issue}</li>
+                          {formatAnalysis.issues.map((issue: string, index: number) = (
+                            li key={index} className="text-sm"{issue}/li
                           ))}
                         </ul>
                       </AlertDescription>
@@ -404,8 +404,8 @@ export function AddressFormatGuide() {
                       <AlertDescription className="text-blue-800">
                         <strong>Suggestions for improvement:</strong>
                         <ul className="mt-2 list-disc list-inside space-y-1">
-                          {formatAnalysis.suggestions.map((suggestion, index) => (
-                            <li key={index} className="text-sm">{suggestion}</li>
+                          {formatAnalysis.suggestions.map((suggestion: string, index: number) = (
+                            li key={index} className="text-sm"{suggestion}/li
                           ))}
                         </ul>
                       </AlertDescription>
@@ -420,8 +420,8 @@ export function AddressFormatGuide() {
         {/* Examples Tab */}
         <TabsContent value="examples" className="space-y-6">
           <div className="grid gap-6">
-            {addressExamples.map((example, index) => (
-              <Card key={index}>
+            {addressExamples.map((example: any, index: number) = (
+              Card key={index}
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {example.icon}
@@ -438,8 +438,8 @@ export function AddressFormatGuide() {
                         Recommended Formats
                       </h4>
                       <div className="space-y-2">
-                        {example.good.map((addr, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded">
+                        {example.good.map((addr: string, idx: number) = (
+                          div key={idx} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded"
                             <span className="text-sm text-green-800">{addr}</span>
                             <Button
                               size="sm"
@@ -461,8 +461,8 @@ export function AddressFormatGuide() {
                         Avoid These Formats
                       </h4>
                       <div className="space-y-2">
-                        {example.bad.map((addr, idx) => (
-                          <div key={idx} className="p-2 bg-red-50 border border-red-200 rounded">
+                        {example.bad.map((addr: string, idx: number) = (
+                          div key={idx} className="p-2 bg-red-50 border border-red-200 rounded"
                             <span className="text-sm text-red-800">{addr}</span>
                           </div>
                         ))}
@@ -478,8 +478,8 @@ export function AddressFormatGuide() {
         {/* Best Practices Tab */}
         <TabsContent value="rules" className="space-y-6">
           <div className="grid gap-6">
-            {formatRules.map((rule, index) => (
-              <Card key={index}>
+            {formatRules.map((rule: any, index: number) = (
+              Card key={index}
                 <CardHeader>
                   <CardTitle>{rule.title}</CardTitle>
                   <p className="text-sm text-muted-foreground">{rule.description}</p>
@@ -492,8 +492,8 @@ export function AddressFormatGuide() {
                         Examples
                       </h4>
                       <ul className="space-y-2">
-                        {rule.examples.map((example, idx) => (
-                          <li key={idx} className="text-sm p-2 bg-green-50 border border-green-200 rounded text-green-800">
+                        {rule.examples.map((example: string, idx: number) = (
+                          li key={idx} className="text-sm p-2 bg-green-50 border border-green-200 rounded text-green-800"
                             {example}
                           </li>
                         ))}

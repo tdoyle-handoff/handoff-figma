@@ -50,9 +50,10 @@ export function DirectApiTestTool() {
       
       setResults(data);
       
-    } catch (error) {
-      addLog(`💥 Exception: ${error.message}`);
-      setResults({ error: error.message });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addLog(`💥 Exception: ${msg}`);
+      setResults({ error: msg });
     } finally {
       setIsLoading(false);
     }
@@ -83,9 +84,10 @@ export function DirectApiTestTool() {
       
       setResults(data);
       
-    } catch (error) {
-      addLog(`💥 Exception: ${error.message}`);
-      setResults({ error: error.message });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addLog(`💥 Exception: ${msg}`);
+      setResults({ error: msg });
     } finally {
       setIsLoading(false);
     }
@@ -116,9 +118,10 @@ export function DirectApiTestTool() {
       
       setResults(data);
       
-    } catch (error) {
-      addLog(`💥 Exception: ${error.message}`);
-      setResults({ error: error.message });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addLog(`💥 Exception: ${msg}`);
+      setResults({ error: msg });
     } finally {
       setIsLoading(false);
     }

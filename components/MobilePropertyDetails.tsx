@@ -685,7 +685,7 @@ export function MobilePropertyDetails({ userProfile, setupData, onNavigate, onSt
                   <div className="mb-3">
                     <p className="text-sm text-muted-foreground mb-2">Highlighted Features</p>
                     <div className="flex flex-wrap gap-2">
-                      {enrichedData.features.map((feature, index) => (
+                      {enrichedData.features.map((feature: string, index: number) = (
                         <Badge key={index} variant="secondary">{feature}</Badge>
                       ))}
                     </div>
