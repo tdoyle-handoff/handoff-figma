@@ -61,7 +61,7 @@ interface Inspection {
 }
 
 // Inspections Progress Tracker Component
-const InspectionsProgressTracker = () => {
+export const InspectionsProgressTracker = () => {
   const taskContext = useTaskContext();
   const [selectedStageInfo, setSelectedStageInfo] = useState(null);
   

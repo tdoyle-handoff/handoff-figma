@@ -8,6 +8,9 @@ import { Progress } from './ui/progress';
 import { Alert, AlertDescription } from './ui/alert';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { useIsMobile } from './ui/use-mobile';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import ChecklistLegalTabs from './checklist/LegalTabs';
+import ChecklistInspectionTabs from './checklist/InspectionTabs';
 import { useTaskContext, Task, TaskPhase } from './TaskContext';
 
 // Task interfaces are now imported from TaskContext
@@ -314,275 +317,289 @@ export default function Tasks({ onNavigate }: TasksProps) {
           </div>
         </div>
       </div>
-      
-      {/* Task Category Navigation */}
-      <Card className="bg-white border-border">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <CheckSquare className="w-5 h-5 text-primary" />
-            Task Categories
-          </CardTitle>
-          <p className="text-sm text-gray-600">
-            Navigate directly to specific task areas
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'} gap-3`}>
-            <Button
-              variant="outline"
-              onClick={() => onNavigate('legal')}
-              className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
-            >
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
-                <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-red-100 rounded-lg flex-shrink-0`}>
-                  <Scale className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-red-600`} />
-                </div>
-                <div className="text-left min-w-0 flex-1">
-                  <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Legal</div>
-                  <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
-                    {getTaskCountByCategory('legal')} active tasks
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => onNavigate('financing')}
-              className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
-            >
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
-                <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-green-100 rounded-lg flex-shrink-0`}>
-                  <Calculator className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-green-600`} />
-                </div>
-                <div className="text-left min-w-0 flex-1">
-                  <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Financing</div>
-                  <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
-                    {getTaskCountByCategory('financing')} active tasks
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => onNavigate('inspections')}
-              className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
-            >
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
-                <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-blue-100 rounded-lg flex-shrink-0`}>
-                  <FileCheck className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-blue-600`} />
-                </div>
-                <div className="text-left min-w-0 flex-1">
-                  <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Inspections</div>
-                  <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
-                    {getTaskCountByCategory('inspections')} active tasks
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => onNavigate('insurance')}
-              className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
-            >
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
-                <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-yellow-100 rounded-lg flex-shrink-0`}>
-                  <Shield className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-yellow-600`} />
-                </div>
-                <div className="text-left min-w-0 flex-1">
-                  <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Insurance</div>
-                  <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
-                    {getTaskCountByCategory('insurance')} active tasks
-                  </div>
-                </div>
-              </div>
-              <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-      
-      
-      {/* Quick Actions for Active Tasks */}
-      {activeTasks > 0 && (
-        <Card className="bg-white border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
-              {activeTasksForAlert.slice(0, 4).map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                  <div className="flex-1 min-w-0">
-                    <p className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>{task.title}</p>
-                    <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 truncate`}>{task.assignedTo}</p>
-                    {task.dueDate && (
-                      <p className="text-xs text-primary">Due: {formatDate(task.dueDate)}</p>
-                    )}
-                  </div>
-                  {task.linkedPage && (
-                    <Button
-                      size={isMobile ? "icon" : "sm"}
-                      onClick={() => onNavigate(task.linkedPage!)}
-                      className={`${isMobile ? 'mobile-button-sm w-9 h-9' : 'ml-2'}`}
-                      title={isMobile ? (task.actionLabel || 'Go') : undefined}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      {!isMobile && <span className="ml-2">{task.actionLabel || 'Go'}</span>}
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      {/* Filter and View Controls */}
-      <div className="space-y-3">
-        <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
-          <Button 
-            variant={filter === 'all' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setFilter('all')}
-            className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-          >
-            All Tasks
-          </Button>
-          <Button 
-            variant={filter === 'active' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setFilter('active')}
-            className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-          >
-            Active ({activeTasks})
-          </Button>
-          <Button 
-            variant={filter === 'completed' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setFilter('completed')}
-            className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-          >
-            Completed ({completedTasks})
-          </Button>
-        </div>
-        
 
-      </div>
-      
-      {/* Task Display */}
-      <div className="space-y-4">
-        {viewMode === 'phases' && (
-          <Fragment>
-            {filteredPhases.length > 0 ? (
-              filteredPhases.map((phase) => (
-                <PhaseCard key={phase.id} phase={phase} onNavigate={onNavigate} />
-              ))
-            ) : (
-              <Card>
-                <CardContent className="p-6 text-center">
-                  <p className="text-gray-500">No tasks found for the selected filter.</p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setFilter('all')} 
-                    className="mt-2"
-                  >
-                    Show All Tasks
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-          </Fragment>
-        )}
+      <Tabs defaultValue="checklist" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="checklist">Checklist</TabsTrigger>
+          <TabsTrigger value="legal">Legal</TabsTrigger>
+          <TabsTrigger value="inspections">Inspections</TabsTrigger>
+        </TabsList>
 
-        {viewMode === 'categories' && (
-          <Fragment>
-            {['financing', 'legal', 'inspections', 'insurance', 'general'].map(category => {
-              const categoryTasks = taskPhases.flatMap(phase => phase.tasks).filter(task => {
-                const matchesCategory = task.category.toLowerCase() === category;
-                if (filter === 'all') return matchesCategory;
-                if (filter === 'active') return matchesCategory && ['active', 'in-progress', 'overdue'].includes(task.status);
-                if (filter === 'completed') return matchesCategory && task.status === 'completed';
-                return matchesCategory && task.status === filter;
-              });
-
-              if (categoryTasks.length === 0) return null;
-
-              return (
-                <Card key={category} className="mb-4">
-                  <CardHeader>
-                    <CardTitle className="text-lg capitalize">{category} ({categoryTasks.length})</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {categoryTasks.map((task) => (
-                        <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Fragment>
-        )}
-
-        {viewMode === 'list' && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">All Tasks</CardTitle>
+        <TabsContent value="checklist" className="space-y-6">
+          {/* Task Category Navigation */}
+          <Card className="bg-white border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <CheckSquare className="w-5 h-5 text-primary" />
+                Task Categories
+              </CardTitle>
               <p className="text-sm text-gray-600">
-                Complete list of all tasks ({taskPhases.flatMap(p => p.tasks).filter(task => {
-                  if (filter === 'all') return true;
-                  if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
-                  if (filter === 'completed') return task.status === 'completed';
-                  return task.status === filter;
-                }).length})
+                Navigate directly to specific task areas
               </p>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {taskPhases.flatMap(phase => phase.tasks).filter(task => {
-                  if (filter === 'all') return true;
-                  if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
-                  if (filter === 'completed') return task.status === 'completed';
-                  return task.status === filter;
-                }).map((task) => (
-                  <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
-                ))}
+              <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'} gap-3`}>
+                <Button
+                  variant="outline"
+                  onClick={() => onNavigate('legal')}
+                  className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
+                >
+                  <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
+                    <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-red-100 rounded-lg flex-shrink-0`}>
+                      <Scale className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-red-600`} />
+                    </div>
+                    <div className="text-left min-w-0 flex-1">
+                      <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Legal</div>
+                      <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
+                        {getTaskCountByCategory('legal')} active tasks
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => onNavigate('financing')}
+                  className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
+                >
+                  <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
+                    <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-green-100 rounded-lg flex-shrink-0`}>
+                      <Calculator className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-green-600`} />
+                    </div>
+                    <div className="text-left min-w-0 flex-1">
+                      <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Financing</div>
+                      <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
+                        {getTaskCountByCategory('financing')} active tasks
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => onNavigate('inspections')}
+                  className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
+                >
+                  <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
+                    <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-blue-100 rounded-lg flex-shrink-0`}>
+                      <FileCheck className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-blue-600`} />
+                    </div>
+                    <div className="text-left min-w-0 flex-1">
+                      <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Inspections</div>
+                      <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
+                        {getTaskCountByCategory('inspections')} active tasks
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => onNavigate('insurance')}
+                  className={`flex items-center ${isMobile ? 'gap-2 p-3' : 'gap-3 p-4'} h-auto bg-white hover:bg-gray-50 border-gray-200 ${isMobile ? 'mobile-button' : ''}`}
+                >
+                  <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'} flex-1 min-w-0`}>
+                    <div className={`${isMobile ? 'p-1.5' : 'p-2'} bg-yellow-100 rounded-lg flex-shrink-0`}>
+                      <Shield className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-yellow-600`} />
+                    </div>
+                    <div className="text-left min-w-0 flex-1">
+                      <div className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>Insurance</div>
+                      <div className={`${isMobile ? 'text-xs' : 'text-xs'} text-gray-500 truncate`}>
+                        {getTaskCountByCategory('insurance')} active tasks
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-gray-400 flex-shrink-0`} />
+                </Button>
               </div>
             </CardContent>
           </Card>
-        )}
-      </div>
 
-      
-      {/* Summary */}
-      <Card className="bg-gray-50">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-3 gap-6 text-center">
-            <div>
-              <div className="text-2xl font-semibold text-green-600">{completedTasks}</div>
-              <div className="text-sm text-gray-600">Tasks Completed</div>
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-blue-600">{activeTasks}</div>
-              <div className="text-sm text-gray-600">Active Tasks</div>
-            </div>
-            <div>
-              <div className="text-2xl font-semibold text-gray-600">{totalTasks - completedTasks - activeTasks}</div>
-              <div className="text-sm text-gray-600">Upcoming Tasks</div>
+          {/* Quick Actions for Active Tasks */}
+          {activeTasks > 0 && (
+            <Card className="bg-white border-border">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-primary" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
+                  {activeTasksForAlert.slice(0, 4).map((task) => (
+                    <div key={task.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                      <div className="flex-1 min-w-0">
+                        <p className={`${isMobile ? 'text-sm' : ''} font-medium truncate`}>{task.title}</p>
+                        <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 truncate`}>{task.assignedTo}</p>
+                        {task.dueDate && (
+                          <p className="text-xs text-primary">Due: {formatDate(task.dueDate)}</p>
+                        )}
+                      </div>
+                      {task.linkedPage && (
+                        <Button
+                          size={isMobile ? "icon" : "sm"}
+                          onClick={() => onNavigate(task.linkedPage!)}
+                          className={`${isMobile ? 'mobile-button-sm w-9 h-9' : 'ml-2'}`}
+                          title={isMobile ? (task.actionLabel || 'Go') : undefined}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          {!isMobile && <span className="ml-2">{task.actionLabel || 'Go'}</span>}
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Filter and View Controls */}
+          <div className="space-y-3">
+            <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
+              <Button 
+                variant={filter === 'all' ? 'default' : 'outline'} 
+                size="sm"
+                onClick={() => setFilter('all')}
+                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
+              >
+                All Tasks
+              </Button>
+              <Button 
+                variant={filter === 'active' ? 'default' : 'outline'} 
+                size="sm"
+                onClick={() => setFilter('active')}
+                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
+              >
+                Active ({activeTasks})
+              </Button>
+              <Button 
+                variant={filter === 'completed' ? 'default' : 'outline'} 
+                size="sm"
+                onClick={() => setFilter('completed')}
+                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
+              >
+                Completed ({completedTasks})
+              </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* Task Display */}
+          <div className="space-y-4">
+            {viewMode === 'phases' && (
+              <Fragment>
+                {filteredPhases.length > 0 ? (
+                  filteredPhases.map((phase) => (
+                    <PhaseCard key={phase.id} phase={phase} onNavigate={onNavigate} />
+                  ))
+                ) : (
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <p className="text-gray-500">No tasks found for the selected filter.</p>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setFilter('all')} 
+                        className="mt-2"
+                      >
+                        Show All Tasks
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </Fragment>
+            )}
+
+            {viewMode === 'categories' && (
+              <Fragment>
+                {['financing', 'legal', 'inspections', 'insurance', 'general'].map(category => {
+                  const categoryTasks = taskPhases.flatMap(phase => phase.tasks).filter(task => {
+                    const matchesCategory = task.category.toLowerCase() === category;
+                    if (filter === 'all') return matchesCategory;
+                    if (filter === 'active') return matchesCategory && ['active', 'in-progress', 'overdue'].includes(task.status);
+                    if (filter === 'completed') return matchesCategory && task.status === 'completed';
+                    return matchesCategory && task.status === filter;
+                  });
+
+                  if (categoryTasks.length === 0) return null;
+
+                  return (
+                    <Card key={category} className="mb-4">
+                      <CardHeader>
+                        <CardTitle className="text-lg capitalize">{category} ({categoryTasks.length})</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {categoryTasks.map((task) => (
+                            <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </Fragment>
+            )}
+
+            {viewMode === 'list' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">All Tasks</CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Complete list of all tasks ({taskPhases.flatMap(p => p.tasks).filter(task => {
+                      if (filter === 'all') return true;
+                      if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
+                      if (filter === 'completed') return task.status === 'completed';
+                      return task.status === filter;
+                    }).length})
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {taskPhases.flatMap(phase => phase.tasks).filter(task => {
+                      if (filter === 'all') return true;
+                      if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
+                      if (filter === 'completed') return task.status === 'completed';
+                      return task.status === filter;
+                    }).map((task) => (
+                      <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Summary */}
+          <Card className="bg-gray-50">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-2xl font-semibold text-green-600">{completedTasks}</div>
+                  <div className="text-sm text-gray-600">Tasks Completed</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-semibold text-blue-600">{activeTasks}</div>
+                  <div className="text-sm text-gray-600">Active Tasks</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-semibold text-gray-600">{totalTasks - completedTasks - activeTasks}</div>
+                  <div className="text-sm text-gray-600">Upcoming Tasks</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="legal" className="space-y-6">
+          <ChecklistLegalTabs />
+        </TabsContent>
+
+        <TabsContent value="inspections" className="space-y-6">
+          <ChecklistInspectionTabs />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
