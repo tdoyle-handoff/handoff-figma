@@ -91,13 +91,14 @@ interface PropertyData {
 }
 
 interface InitialPropertySetupProps {
-  onComplete: (data: PropertyData) => void;
-  onBack?: () => void;
+  onComplete: (data: PropertyData) => void;
+  onBack?: () => void;
   isEditMode?: boolean;
   screeningData?: ScreeningData | null;
+  forceAllSections?: boolean;
 }
 
-export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, screeningData: propScreeningData }: InitialPropertySetupProps) {
+export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, screeningData: propScreeningData, forceAllSections = false }: InitialPropertySetupProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const SINGLE_PAGE = true;
   const [propertyData, setPropertyData] = useState<PropertyData>({});
@@ -146,73 +147,73 @@ export function InitialPropertySetup({ onComplete, onBack, isEditMode = false, s
   }, [propertyData, isEditMode]);
 
   // Generate steps based on screening data
-  const generateSteps = useCallback(() => {
-    const steps = [];
+  const generateSteps = useCallback(() => {
+    const steps = [] as Array<{ id: string; title: string; description: string; icon: JSX.Element; required: boolean; component: any }>;
 
     // Basic Property Information (always shown)
     steps.push({
       id: 'property-basic',
-      title: screeningData?.hasSpecificProperty ? 'Property Details' : 'Property Information',
-      description: screeningData?.hasSpecificProperty 
+      title: (screeningData?.hasSpecificProperty || forceAllSections) ? 'Property Details' : 'Property Information',
+      description: (screeningData?.hasSpecificProperty || forceAllSections)
         ? 'Tell us about your property and view comprehensive analysis' 
         : 'We\'ll help you track property information when you find one',
-      icon: <Home className="w-6 h-6" />,
-      required: screeningData?.hasSpecificProperty || screeningData?.buyingStage === 'under-contract',
+      icon: Home className="w-6 h-6" /,
+      required: (screeningData?.hasSpecificProperty || screeningData?.buyingStage === 'under-contract' || forceAllSections) ? true : false,
       component: PropertyBasicStep
     });
 
-    // Contract Details (only if under contract)
-    if (screeningData?.buyingStage === 'under-contract') {
+    // Contract Details (forced visible when forceAllSections)
+    if (screeningData?.buyingStage === 'under-contract' || forceAllSections) {
       steps.push({
         id: 'contract-details',
         title: 'Contract Information',
         description: 'Important dates and contract terms',
-        icon: <CalendarIcon className="w-6 h-6" />,
-        required: true,
+        icon: CalendarIcon className="w-6 h-6" /,
+        required: forceAllSections || true,
         component: ContractDetailsStep
       });
     }
 
-    // Financial Information (customized based on experience)
-    if (screeningData?.experienceLevel !== 'just-starting' || screeningData?.hasPreApproval) {
+    // Financial Information (forced visible when forceAllSections)
+    if (screeningData?.experienceLevel !== 'just-starting' || screeningData?.hasPreApproval || forceAllSections) {
       steps.push({
         id: 'financial-info',
         title: 'Financial Details',
-        description: screeningData?.experienceLevel === 'investor' 
+        description: (screeningData?.experienceLevel === 'investor' || forceAllSections)
           ? 'Investment numbers and financing' 
           : 'Your financing and budget information',
-        icon: <DollarSign className="w-6 h-6" />,
-        required: false,
+        icon: DollarSign className="w-6 h-6" /,
+        required: !!forceAllSections,
         component: FinancialInfoStep
       });
     }
 
-    // Team & Services (customized based on experience)
-    if (screeningData?.experienceLevel === 'first-time' || screeningData?.timeframe === 'immediate') {
+    // Team  Services (forced visible when forceAllSections)
+    if (screeningData?.experienceLevel === 'first-time' || screeningData?.timeframe === 'immediate' || forceAllSections) {
       steps.push({
         id: 'team-services',
         title: 'Your Team',
         description: 'Real estate professionals helping with your purchase',
-        icon: <User className="w-6 h-6" />,
-        required: false,
+        icon: User className="w-6 h-6" /,
+        required: !!forceAllSections,
         component: TeamServicesStep
       });
     }
 
-    // Investment Details (only for investors)
-    if (screeningData?.experienceLevel === 'investor' || screeningData?.primaryGoal === 'investment') {
+    // Investment Details (forced visible when forceAllSections)
+    if (screeningData?.experienceLevel === 'investor' || screeningData?.primaryGoal === 'investment' || forceAllSections) {
       steps.push({
         id: 'investment-details',
         title: 'Investment Analysis',
         description: 'Rental income and return calculations',
-        icon: <Briefcase className="w-6 h-6" />,
-        required: false,
+        icon: Briefcase className="w-6 h-6" /,
+        required: !!forceAllSections,
         component: InvestmentDetailsStep
       });
     }
 
     return steps;
-  }, [screeningData]);
+  }, [screeningData, forceAllSections]);
 
   const steps = generateSteps();
   const handleSubmitAll = useCallback(() => {

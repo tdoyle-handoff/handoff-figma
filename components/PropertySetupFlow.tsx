@@ -179,11 +179,12 @@ export function PropertySetupFlow({ onComplete, isEditMode = false, onExitEditMo
       )}
 
       {/* Main Content: Always use single-page setup */}
-      <InitialPropertySetup
+      InitialPropertySetup
         onComplete={handleSetupComplete}
         isEditMode={isEditMode}
         screeningData={screeningData}
-      />
+        forceAllSections={true}
+      /
     </div>
   );
 }
