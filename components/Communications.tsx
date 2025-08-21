@@ -810,13 +810,13 @@ export default function Communications() {
           <div>
             <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} flex items-center gap-2`}>
               <MessageCircle className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
-              Communications
+              Communication Suite
               {unreadCount > 0 && (
                 <Badge className={`${isMobile ? 'text-xs' : ''}`}>{unreadCount} new</Badge>
               )}
             </CardTitle>
             <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
-              All your transaction communications in one place
+              Secure chat, email, SMS, and file sharing in one place
             </p>
           </div>
           <Button
@@ -832,13 +832,21 @@ export default function Communications() {
       
       <CardContent className={`${isMobile ? 'p-4 pt-0' : 'pt-0'}`}>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full grid-cols-2 ${isMobile ? 'h-9' : ''}`}>
+          <TabsList className={`grid w-full ${isMobile ? 'grid-cols-2 h-9' : 'grid-cols-6'}`}>
             <TabsTrigger value="messages" className={`${isMobile ? 'text-sm' : ''}`}>
               Messages {unreadCount > 0 && `(${unreadCount})`}
             </TabsTrigger>
             <TabsTrigger value="contacts" className={`${isMobile ? 'text-sm' : ''}`}>
               Team
             </TabsTrigger>
+            {!isMobile && (
+              <Fragment>
+                <TabsTrigger value="inbox">Inbox</TabsTrigger>
+                <TabsTrigger value="chat">Chat</TabsTrigger>
+                <TabsTrigger value="sms">SMS</TabsTrigger>
+                <TabsTrigger value="files">Files</TabsTrigger>
+              </Fragment>
+            )}
           </TabsList>
 
           <TabsContent value="messages" className="space-y-4">
@@ -890,6 +898,57 @@ export default function Communications() {
               </div>
             </ScrollArea>
           </TabsContent>
+
+          {!isMobile && (
+            <Fragment>
+              <TabsContent value="inbox" className="space-y-4">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search inbox..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Button variant="outline">
+                    <Filter className="w-4 h-4" />
+                    <span className="ml-2">Filter</span>
+                  </Button>
+                </div>
+                <ScrollArea className="h-[500px] border rounded-lg">
+                  <div className="divide-y">
+                    {filteredMessages.map((message) => (
+                      <MessageItem
+                        key={message.id}
+                        message={message}
+                        onClick={() => handleMessageClick(message)}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="chat" className="space-y-4">
+                <div className="p-4 border rounded-lg text-sm text-muted-foreground">
+                  Real-time chat is coming soon. You’ll be able to start direct and group chats with your team.
+                </div>
+              </TabsContent>
+
+              <TabsContent value="sms" className="space-y-4">
+                <div className="p-4 border rounded-lg text-sm text-muted-foreground">
+                  SMS integration is coming soon. Send and receive text messages with important updates.
+                </div>
+              </TabsContent>
+
+              <TabsContent value="files" className="space-y-4">
+                <div className="p-4 border rounded-lg text-sm text-muted-foreground">
+                  Shared files and attachments will appear here for quick access.
+                </div>
+              </TabsContent>
+            </Fragment>
+          )}
         </Tabs>
       </CardContent>
 
