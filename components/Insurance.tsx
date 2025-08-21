@@ -350,7 +350,7 @@ export default function Insurance() {
                     {insuranceProviders.map((provider) => (
                       <Card 
                         key={provider.id} 
-                        className={`cursor-pointer transition-colors ${selectedProvider?.id === provider.id ? 'ring-2 ring-primary' : 'hover:bg-muted'}`}
+                        className={selectedProvider?.id === provider.id ? 'cursor-pointer transition-colors ring-2 ring-primary' : 'cursor-pointer transition-colors hover:bg-muted' }
                         onClick={() => setSelectedProvider(provider)}
                       >
                         <CardContent className="p-4">
