@@ -172,7 +172,7 @@ export default function PropertySummary({
   const [propertyData, setPropertyData] = useState<PropertyData>({});
   const [screeningData, setScreeningData] = useState<ScreeningData>({});
   const [isSetupComplete, setIsSetupComplete] = useState(false);
-  const [activeTab, setActiveTab] = useState("summary");
+  const [activeTab, setActiveTab] = useState("onboarding");
   const [homeSearch, setHomeSearch] = useState<HomeSearchData>({});
 
   // ATTOM API Testing States
@@ -994,18 +994,18 @@ export default function PropertySummary({
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="summary" className="flex items-center gap-2">
-                <Home className="w-4 h-4" />
-                Summary
-              </TabsTrigger>
-              <TabsTrigger
+            TabsList className="grid w-full grid-cols-4"
+              TabsTrigger
                 value="onboarding"
                 className="flex items-center gap-2"
-              >
-                <ListChecks className="w-4 h-4" />
+              e
+                ListChecks className="w-4 h-4" /
                 Onboarding
-              </TabsTrigger>
+              /TabsTrigger
+              TabsTrigger value="summary" className="flex items-center gap-2"
+                Home className="w-4 h-4" /
+                Summary
+              /TabsTrigger
               <TabsTrigger
                 value="home-search"
                 className="flex items-center gap-2"
