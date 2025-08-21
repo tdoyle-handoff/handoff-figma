@@ -154,14 +154,14 @@ export function PropertyDetails({ userProfile, setupData, onNavigate }: Property
 
   // Show property summary if setup is complete
   return (
-    cAdminShelle
-      cPropertySummary 
+    <AdminShell>
+      <PropertySummary 
         userProfile={userProfile}
         setupData={setupData}
         onNavigate={onNavigate}
         onStartOver={handleStartOver}
         onEditSetup={handleEditSetup}
-      /e
-    c/AdminShelle
+      />
+    </AdminShell>
   );
 }
