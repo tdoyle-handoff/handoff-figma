@@ -10,48 +10,45 @@
 
  :root {
   --font-size: 14px;
-  /* Light theme palette to mirror the reference dashboard */
-  --background: #F6F4F1;              /* warm light canvas */
-  --foreground: #2B2321;              /* deep cocoa text */
-  --card: #FFFFFF;                     /* clean card surfaces */
-  --card-foreground: #2B2321;
-  --popover: #FFFFFF;
-  --popover-foreground: #2B2321;
-  --primary: #4A0E0E;                  /* deep maroon (sidebar/buttons) */
-  --primary-foreground: #FFFFFF;
-  --secondary: #E6DFB3;                /* soft gold tile */
-  --secondary-foreground: #2B2321;
-  --muted: #EEE8DA;                    /* pale beige for subtle UI */
-  --muted-foreground: #6E615B;         /* muted brown text */
-  --accent: #B04A3F;                   /* muted red for accents */
-  --accent-foreground: #FFFFFF;
-  --destructive: #C24B48;              /* softer destructive */
-  --destructive-foreground: #FFFFFF;
-  --border: #E7E2DA;                   /* warm light border */
-  --input: #FFFFFF;
-  --input-background: #FFFFFF;
-  --input-foreground: #2B2321;
-  --input-border: #D8D2C7;
-  --switch-background: #E6DFB3;
+  --background: #ffffff;
+  --foreground: #3F0D12;
+  --card: #F1F0CC;
+  --card-foreground: #3F0D12;
+  --popover: #F1F0CC;
+  --popover-foreground: #3F0D12;
+  --primary: #3F0D12;
+  --primary-foreground: #ffffff;
+  --secondary: #D5BF86;
+  --secondary-foreground: #3F0D12;
+  --muted: #D5BF86;
+  --muted-foreground: #3F0D12;
+  --accent: #A71D31;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #A71D31;
+  --input: #ffffff;
+  --input-background: #ffffff;
+  --input-foreground: #3F0D12;
+  --input-border: #A71D31;
+  --switch-background: #D5BF86;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #4A0E0E;                     /* maroon focus ring */
-  /* Chart colors using maroon/gold family */
-  --chart-1: #A1843A;                  /* golden brown */
-  --chart-2: #D1C48B;                  /* light gold */
-  --chart-3: #7A2A2A;                  /* dark red */
-  --chart-4: #C9B68A;                  /* sand */
-  --chart-5: #4A0E0E;                  /* maroon */
+  --ring: #A71D31;
+  --chart-1: #034078;
+  --chart-2: #001F54;
+  --chart-3: #1282A2;
+  --chart-4: #0A1128;
+  --chart-5: #ffffff;
   --radius: 0.75rem;
-  /* Sidebar styling */
-  --sidebar: #3F0D12;                  /* deep maroon sidebar */
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #E6DFB3;          /* gold highlight */
-  --sidebar-primary-foreground: #2B2321;
-  --sidebar-accent: #5A1A1A;           /* lighter maroon hover */
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #2A0909;
-  --sidebar-ring: #E6DFB3;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #034078;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #001F54;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #034078;
   
   /* Enhanced shadow system */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -1657,7 +1654,7 @@
   }
 }
 
-/* Ensure Tailwind HSL color tokens exist for theme colors used in tailwind.config.ts */
+/* Ensure Tailwind HSL tokens reflect original theme */
 :root {
   --background: 0 0% 100%;
   --foreground: 354 66% 15%;
@@ -1678,8 +1675,5 @@
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
   --ring: 351 70% 38%;
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
-
-/* Optional: provide your dark tokens here if needed */
-/* .dark { } */
