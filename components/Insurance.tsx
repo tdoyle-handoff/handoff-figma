@@ -631,7 +631,7 @@ export default function Insurance() {
               </Card>
             ))}
           </div>
-        </TabsContent>
+        </Tabs>
 
           <Card>
             <CardHeader>
@@ -748,7 +748,7 @@ export default function Insurance() {
               </Button>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
 
           <Card>
             <CardHeader>
