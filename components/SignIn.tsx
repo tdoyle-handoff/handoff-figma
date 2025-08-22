@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Fragment } from 'react'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/useAuthFixed'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
