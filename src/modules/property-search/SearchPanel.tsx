@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Filters } from './Filters'
 import { ResultsList } from './ResultsList'
 import { ListingInformation } from './ListingInformation'
+import DreamHomeAddressCapture from '../../../components/DreamHomeAddressCapture'
 
 export function SearchPanel() {
   const [query, setQuery] = useState({ location: '', minPrice: '', maxPrice: '', beds: '', baths: '', type: '', dom: '' })
@@ -10,6 +11,9 @@ export function SearchPanel() {
 
   return (
     <div className="grid gap-4">
+      {/* Pre-onboarding address capture */}
+      <DreamHomeAddressCapture />
+
       {/* Tabs */}
       <div className="flex gap-2">
         <button
