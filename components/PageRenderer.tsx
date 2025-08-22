@@ -89,6 +89,14 @@ export function PageRenderer({
       case 'documents':
         return (
           <Suspense fallback={<LoadingSpinner />}>
+            <Documents />
+          </Suspense>
+        );
+      
+      // Temporary route to access Offer Builder until it has its own nav item
+      case 'offer-builder':
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
             <OfferBuilder />
           </Suspense>
         );

@@ -109,6 +109,12 @@ export default function DashboardLayout({
       category: 'Support'
     },
     {
+      id: 'offer-builder',
+      label: 'Offer Builder',
+      icon: FileText,
+      category: 'Support'
+    },
+    {
       id: 'resources',
       label: 'Education Hub',
       icon: BookOpen,

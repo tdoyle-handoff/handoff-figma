@@ -80,7 +80,22 @@ function monthlyPI(principal: number, rateAnnualPct: number, termYears: number) 
 // Draft persistence
 const LS_KEY = 'offer-builder-draft-v1';
 
+type Attachment = {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  // Only present for small images or small files we decide to persist
+  dataUrl?: string;
+};
+
+type DraftMeta = { id: string; name: string; savedAt: string };
+
+const LS_LIST_KEY = 'offer-builder-drafts-list-v1';
+
 type OfferDraft = {
+  id?: string;
+  name?: string;
   step: number;
   address: string;
   city: string;
@@ -118,6 +133,8 @@ type OfferDraft = {
   homeSale: boolean;
   homeSaleDays: number;
 
+  attachments?: Attachment[];
+
   savedAt?: string;
 };
 
@@ -145,6 +162,7 @@ export default function OfferBuilder() {
   const [dpMode, setDpMode] = useState<"percent" | "dollar">("percent");
   const [downPayment, setDownPayment] = useState<number>(20); // meaning depends on dpMode
   const [preApprovalAttached, setPreApprovalAttached] = useState<boolean>(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   // Offer Terms
   const [offerPrice, setOfferPrice] = useState<number>(listPrice);
@@ -217,6 +235,8 @@ export default function OfferBuilder() {
 
   // Build draft object
   const buildDraft = (): OfferDraft => ({
+    id: currentDraftId || undefined,
+    name: currentDraftName || undefined,
     step,
     address, city, stateUS, zip,
     listPrice, hoaMonthly, taxesAnnual, insuranceAnnual,
@@ -224,6 +244,7 @@ export default function OfferBuilder() {
     financingType, interestRate, termYears, dpMode, downPayment, preApprovalAttached,
     offerPrice, earnestMode, earnest, closingDate, hasEscalation, escalationCap, escalationIncrement, sellerConcessions,
     inspection, inspectionDays, appraisal, financingCont, financingDays, homeSale, homeSaleDays,
+    attachments,
     savedAt: new Date().toISOString(),
   });
 
@@ -267,7 +288,10 @@ export default function OfferBuilder() {
     if (typeof d.homeSale === 'boolean') setHomeSale(d.homeSale);
     if (typeof d.homeSaleDays === 'number') setHomeSaleDays(d.homeSaleDays);
 
+    if (d.attachments) setAttachments(d.attachments);
     if (d.savedAt) setSavedAt(d.savedAt);
+    if (d.name) setCurrentDraftName(d.name);
+    if (d.id) setCurrentDraftId(d.id);
   };
 
   // Load draft on mount
@@ -297,15 +321,77 @@ export default function OfferBuilder() {
     buyerName, buyerEmail, buyerPhone,
     financingType, interestRate, termYears, dpMode, downPayment, preApprovalAttached,
     offerPrice, earnestMode, earnest, closingDate, hasEscalation, escalationCap, escalationIncrement, sellerConcessions,
-    inspection, inspectionDays, appraisal, financingCont, financingDays, homeSale, homeSaleDays
+    inspection, inspectionDays, appraisal, financingCont, financingDays, homeSale, homeSaleDays,
+    attachments
   ]);
 
-  const handleSaveDraft = () => {
+  // Multiple drafts support
+  const [drafts, setDrafts] = useState<DraftMeta[]>([]);
+  const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
+  const [currentDraftName, setCurrentDraftName] = useState<string | null>(null);
+
+  // Load drafts list
+  useEffect(() => {
     try {
-      const draft = buildDraft();
-      localStorage.setItem(LS_KEY, JSON.stringify(draft));
-      setSavedAt(draft.savedAt!);
+      const raw = localStorage.getItem(LS_LIST_KEY);
+      if (raw) setDrafts(JSON.parse(raw));
     } catch {}
+  }, []);
+
+  const persistDraftsList = (list: DraftMeta[]) => {
+    setDrafts(list);
+    try { localStorage.setItem(LS_LIST_KEY, JSON.stringify(list)); } catch {}
+  };
+
+  const randomId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+
+  const draftKey = (id: string) => `${LS_KEY}:${id}`;
+
+  const handleSaveDraft = () => {
+    const id = currentDraftId || randomId();
+    const name = currentDraftName || `Draft ${new Date().toLocaleString()}`;
+    const draft = { ...buildDraft(), id, name };
+    try {
+      localStorage.setItem(draftKey(id), JSON.stringify(draft));
+      setSavedAt(draft.savedAt!);
+      setCurrentDraftId(id);
+      setCurrentDraftName(name);
+      // update list
+      const meta: DraftMeta = { id, name, savedAt: draft.savedAt! };
+      const others = drafts.filter(d => d.id !== id);
+      const updated = [meta, ...others].sort((a,b)=> (b.savedAt > a.savedAt ? 1 : -1));
+      persistDraftsList(updated);
+    } catch {}
+  };
+
+  const handleSaveAs = () => {
+    const name = window.prompt('Name this draft:', currentDraftName || 'My Draft');
+    if (!name) return;
+    setCurrentDraftName(name);
+    setCurrentDraftId(null);
+    setTimeout(handleSaveDraft, 0);
+  };
+
+  const handleLoadDraft = (id: string) => {
+    try {
+      const raw = localStorage.getItem(draftKey(id));
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as OfferDraft;
+      applyDraft(parsed);
+      setCurrentDraftId(parsed.id || id);
+      setCurrentDraftName(parsed.name || null);
+    } catch {}
+  };
+
+  const handleDeleteDraft = (id: string) => {
+    if (!window.confirm('Delete this draft?')) return;
+    try { localStorage.removeItem(draftKey(id)); } catch {}
+    const updated = drafts.filter(d => d.id !== id);
+    persistDraftsList(updated);
+    if (currentDraftId === id) {
+      setCurrentDraftId(null);
+      setCurrentDraftName(null);
+    }
   };
 
   const handleClearDraft = () => {
@@ -346,6 +432,31 @@ export default function OfferBuilder() {
 
   const savedText = savedAt ? `Draft saved ${new Date(savedAt).toLocaleTimeString()}` : 'Autosave enabled';
 
+  // Attachments handling
+  const SMALL_FILE_LIMIT = 500_000; // 500 KB
+  const toDataUrlIfSmall = (file: File): Promise<string | undefined> => new Promise((resolve) => {
+    if (file.size > SMALL_FILE_LIMIT) return resolve(undefined);
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || undefined));
+    reader.onerror = () => resolve(undefined);
+    reader.readAsDataURL(file);
+  });
+
+  const handleAddFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const list: Attachment[] = [];
+    for (const f of Array.from(files)) {
+      const dataUrl = await toDataUrlIfSmall(f);
+      list.push({ id: randomId(), name: f.name, size: f.size, type: f.type, dataUrl });
+    }
+    setAttachments(prev => [...prev, ...list]);
+    setPreApprovalAttached(true);
+  };
+
+  const handleRemoveAttachment = (id: string) => {
+    setAttachments(prev => prev.filter(a => a.id !== id));
+  };
+
   // Generate a printable HTML summary and invoke browser print for PDF
   const handleGeneratePdf = () => {
     const w = window.open('', '_blank');
@@ -377,9 +488,16 @@ export default function OfferBuilder() {
           <div style="font-weight:600; color:#b91c1c;">Resolve before submission</div>
           <ul>${flags.map(f => `<li>${f}</li>`).join('')}</ul>
         </div>` : '<div style="margin-top:12px; color:#6b7280;">No blocking issues detected.</div>'}
+        <h2 style="font-size:16px; margin:16px 0 6px;">Attachments</h2>
+        ${attachments.length === 0 ? '<div>None</div>' : attachments.map(a => {
+          if (a.dataUrl && a.type.startsWith('image/')) {
+            return `<div style="margin-bottom:8px;"><div style="font-size:12px;color:#6b7280;">${a.name}</div><img src="${a.dataUrl}" style="max-width:100%;height:auto;border:1px solid #e5e7eb;"/></div>`;
+          }
+          return `<div>${a.name}</div>`;
+        }).join('')}
       </div>
     `;
-    w.document.write(`<html><head><title>Offer Summary</title></head><body>${section}</body></html>`);
+    w.document.write(`<html><head><title>Offer Summary</title><style>@page{margin:12mm;} body{background:#fff;} @media print { a{color:black;text-decoration:none} }</style></head><body>${section}</body></html>`);
     w.document.close();
     setTimeout(() => { w.print(); }, 250);
   };
@@ -532,9 +650,35 @@ export default function OfferBuilder() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 md:col-span-2">
-                <Checkbox id="pre" checked={preApprovalAttached} onCheckedChange={(v)=> setPreApprovalAttached(Boolean(v))} />
-                <Label htmlFor="pre">Pre-approval / Proof of funds attached</Label>
+              <div className="md:col-span-2 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox id="pre" checked={preApprovalAttached || attachments.length>0} onCheckedChange={(v)=> setPreApprovalAttached(Boolean(v))} />
+                  <Label htmlFor="pre">Pre-approval / Proof of funds</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Input type="file" accept="application/pdf,image/*" multiple onChange={(e)=> handleAddFiles(e.target.files)} />
+                </div>
+                {attachments.length > 0 && (
+                  <div className="rounded-md border p-2">
+                    <div className="text-xs font-medium mb-1">Attachments</div>
+                    <ul className="space-y-1">
+                      {attachments.map(a => (
+                        <li key={a.id} className="flex items-center justify-between text-xs">
+                          <span className="truncate mr-2">{a.name} <span className="text-muted-foreground">({(a.size/1024).toFixed(0)} KB)</span></span>
+                          <div className="flex items-center gap-2">
+                            {a.dataUrl && a.type.startsWith('image/') && (
+                              <a href={a.dataUrl} download={a.name} className="text-primary hover:underline">view</a>
+                            )}
+                            {!a.dataUrl && (
+                              <span className="text-muted-foreground">local only</span>
+                            )}
+                            <button className="text-destructive hover:underline" onClick={()=> handleRemoveAttachment(a.id)}>remove</button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </CardContent>
             <CardFooter className="justify-between">
@@ -759,7 +903,7 @@ export default function OfferBuilder() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Shortcuts</CardTitle>
+            <CardTitle className="text-base">Shortcuts & Drafts</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <Button variant="secondary" onClick={()=>{ setOfferPrice(listPrice); }}>Set offer = list price</Button>
@@ -767,13 +911,42 @@ export default function OfferBuilder() {
             <Button variant="secondary" onClick={()=>{ setEarnestMode('percent'); setEarnest(3); }}>3% earnest</Button>
             <Separator className="my-2" />
             <div className="text-xs text-muted-foreground">Draft</div>
-            <Button variant="outline" onClick={handleSaveDraft}>Save draft now</Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={handleSaveDraft}>Save</Button>
+              <Button variant="outline" onClick={handleSaveAs}>Save As</Button>
+            </div>
+            <div className="space-y-1">
+              <div className="text-xs text-muted-foreground">My drafts</div>
+              {drafts.length === 0 ? (
+                <div className="text-xs text-muted-foreground">No drafts yet</div>
+              ) : (
+                <ul className="space-y-1 max-h-40 overflow-auto">
+                  {drafts.map(d => (
+                    <li key={d.id} className="flex items-center justify-between text-xs">
+                      <button className={`text-left truncate ${currentDraftId===d.id?'font-medium':''}`} onClick={()=> handleLoadDraft(d.id)} title={d.name}>
+                        {d.name}
+                      </button>
+                      <div className="flex gap-2">
+                        <button className="text-muted-foreground hover:underline" onClick={()=> {
+                          const n = window.prompt('Rename draft', d.name);
+                          if (!n) return;
+                          const updated = drafts.map(x => x.id===d.id? {...x, name:n }: x);
+                          persistDraftsList(updated);
+                          if (currentDraftId===d.id) setCurrentDraftName(n);
+                        }}>rename</button>
+                        <button className="text-destructive hover:underline" onClick={()=> handleDeleteDraft(d.id)}>delete</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <div className="flex gap-2">
               <Button className="flex-1" variant="outline" onClick={handleExportJSON}>Export JSON</Button>
               <Button className="flex-1" variant="outline" onClick={()=> importRef.current?.click()}>Import JSON</Button>
               <input ref={importRef} type="file" accept="application/json" className="hidden" onChange={(e)=> handleImportJSON(e.target.files?.[0] || null)} />
             </div>
-            <Button variant="destructive" onClick={handleClearDraft}>Clear saved draft</Button>
+            <Button variant="destructive" onClick={handleClearDraft}>Clear saved (autosave) draft</Button>
           </CardContent>
         </Card>
       </div>
