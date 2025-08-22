@@ -593,7 +593,7 @@ export const LawyerSearch = () => {
 
       <div className="grid gap-4">
         {filteredLawyers.map((lawyer) => (
-          <Card key={lawyer.id} className={`transition-all hover:shadow-md ${selectedLawyer === lawyer.id ? 'ring-2 ring-primary' : ''}`}>
+          <Card key={lawyer.id} className={`shadow-sm transition-all hover:shadow-md ${selectedLawyer === lawyer.id ? 'ring-2 ring-primary' : ''}`}>
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <Avatar className="h-16 w-16">
@@ -701,8 +701,8 @@ export const ContractReview = () => {
       ) : (
         <div className="space-y-4">
           {/* Contract File */}
-          <Card>
-            <CardContent className="p-4">
+          <Card className="shadow-sm">
+            <CardContent className="p-6">
               <div className="flex items-center gap-3">
                 <FileText className="w-8 h-8 text-primary" />
                 <div className="flex-1">
@@ -724,7 +724,7 @@ export const ContractReview = () => {
           </Card>
 
           {/* AI Analysis */}
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="w-5 h-5 text-primary" />
@@ -850,7 +850,7 @@ export const TitleSearch = () => {
       ) : (
         <div className="space-y-4">
           {/* Title Status Overview */}
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Title Search Results</CardTitle>
@@ -860,7 +860,7 @@ export const TitleSearch = () => {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="p-3 border rounded-lg">
                   <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-1" />
@@ -884,11 +884,11 @@ export const TitleSearch = () => {
           {/* Detailed Findings */}
           <div className="grid md:grid-cols-2 gap-4">
             {/* Easements */}
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Easements Found</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="p-6 space-y-3">
                 <div className="p-3 border rounded-lg">
                   <div className="flex items-center gap-2 mb-1">
                     <AlertTriangle className="w-4 h-4 text-orange-600" />
@@ -917,11 +917,11 @@ export const TitleSearch = () => {
             </Card>
 
             {/* Chain of Title */}
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Chain of Title</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="p-6 space-y-3">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center py-2 border-b">
                     <div>
@@ -950,14 +950,14 @@ export const TitleSearch = () => {
           </div>
 
           {/* Title Insurance */}
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Title Insurance</CardTitle>
-              <CardDescription>
+              <CardDescription
                 Protect your investment with title insurance coverage
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 border rounded-lg">
                   <h5 className="font-medium mb-2">Owner's Policy</h5>
@@ -999,7 +999,7 @@ export const SettlementReview = () => {
       </div>
 
       {/* Settlement Statement */}
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -1011,7 +1011,7 @@ export const SettlementReview = () => {
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
           <Alert>
             <Clock className="h-4 w-4" />
             <AlertDescription>
@@ -1068,7 +1068,7 @@ export const SettlementReview = () => {
       </Card>
 
       {/* Wire Instructions */}
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-primary" />
@@ -1078,7 +1078,7 @@ export const SettlementReview = () => {
             Verified wire transfer details for closing funds
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
