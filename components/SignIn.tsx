@@ -334,7 +334,12 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+              onClick={() => console.log('🖱️ Login button clicked!')}
+            >
               {isSubmitting ? 'Signing in…' : 'Login'}
             </Button>
           </form>
