@@ -11,6 +11,9 @@ import { useIsMobile } from './ui/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import ChecklistLegalTabs from './checklist/LegalTabs';
 import ChecklistInspectionTabs from './checklist/InspectionTabs';
+import ChecklistSidebar from './checklist/ChecklistSidebar';
+import ChecklistDetail from './checklist/ChecklistDetail';
+import ChecklistResources from './checklist/ChecklistResources';
 import { useTaskContext, Task, TaskPhase } from './TaskContext';
 
 // Task interfaces are now imported from TaskContext
@@ -333,7 +336,30 @@ export default function Tasks({ onNavigate }: TasksProps) {
         </TabsList>
 
         <TabsContent value="checklist" className="space-y-6">
-          {/* Task Category Navigation */}
+          {/* New three-column layout mirroring screenshot */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-3">
+              <ChecklistSidebar
+                phases={taskPhases}
+                selectedPhaseId={taskPhases.find(p => p.status === 'active')?.id}
+                onSelectPhase={() => {}}
+              />
+            </div>
+            <div className="lg:col-span-6">
+              <ChecklistDetail
+                task={taskPhases.flatMap(p => p.tasks).find(t => ['active','in-progress','overdue'].includes(t.status)) || taskPhases.flatMap(p => p.tasks)[0] || null}
+                onAction={() => {
+                  const t = taskPhases.flatMap(p => p.tasks).find(t => t.linkedPage);
+                  if (t?.linkedPage) onNavigate(t.linkedPage);
+                }}
+              />
+            </div>
+            <div className="lg:col-span-3">
+              <ChecklistResources />
+            </div>
+          </div>
+
+          {/* Task Category Navigation (hidden via flag) */}
           {SHOW_TASK_CATEGORIES && (
             <Card className="bg-white border-border">
               <CardHeader className="pb-3">
