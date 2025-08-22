@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
-import Dashboard from './Dashboard';
+import PropertySearch from '../src/pages/Dashboard';
+import AnalyticsBudget from './Dashboard';
 
 // Lazy load other components for better performance
 const Tasks = React.lazy(() => import('./Tasks'));
@@ -73,10 +74,10 @@ export function PageRenderer({
   const renderPage = () => {
     switch (currentPage) {
       case 'overview':
-        return <Dashboard setupData={setupData} />;
+        return <AnalyticsBudget setupData={setupData} />;
       
       case 'property':
-        return <Dashboard setupData={setupData} />;
+        return <PropertySearch />;
       
       case 'tasks':
         return (
@@ -206,7 +207,7 @@ export function PageRenderer({
         );
       
       default:
-        return <Dashboard setupData={setupData} />;
+        return <PropertySearch />;
     }
   };
 
