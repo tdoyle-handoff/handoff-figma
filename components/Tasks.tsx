@@ -363,7 +363,16 @@ export default function Tasks({ onNavigate }: TasksProps) {
               />
             </div>
             <div className="lg:col-span-3">
-              <ChecklistResources />
+              <ChecklistResources 
+                onNavigate={(page) => onNavigate(page)}
+                onOpenPricing={() => {
+                  try {
+                    window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer');
+                  } catch (e) {
+                    onNavigate('resources');
+                  }
+                }}
+              />
             </div>
           </div>
 

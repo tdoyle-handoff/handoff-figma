@@ -20,7 +20,7 @@ export default function ChecklistSidebar({ phases, onSelectPhase, onSelectTask, 
 
   return (
     <div className="space-y-3">
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div>

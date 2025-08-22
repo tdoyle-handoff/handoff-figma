@@ -13,7 +13,7 @@ interface DetailProps {
 export default function ChecklistDetail({ task, onAction }: DetailProps) {
   if (!task) {
     return (
-      <Card>
+      <Card className="shadow-sm">
         <CardContent className="p-6 text-center text-sm text-gray-600">
           Select a task from the left to view details
         </CardContent>
@@ -43,7 +43,7 @@ export default function ChecklistDetail({ task, onAction }: DetailProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm">Task Description</CardTitle>
         </CardHeader>

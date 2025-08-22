@@ -3,35 +3,44 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { ExternalLink, HelpCircle, FileText, DollarSign } from 'lucide-react';
 
-export default function ChecklistResources() {
+interface Props {
+  onNavigate: (page: string) => void;
+  onOpenPricing?: () => void;
+}
+
+export default function ChecklistResources({ onNavigate, onOpenPricing }: Props) {
   return (
     <div className="space-y-3">
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm">Additional Resources</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate('resources')}>
             <HelpCircle className="w-4 h-4 mr-2" />
             Frequently Asked Questions
           </Button>
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate('resources')}>
             <FileText className="w-4 h-4 mr-2" />
             Learn More About This Step
           </Button>
-          <Button variant="outline" className="w-full justify-start">
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+            onClick={() => (onOpenPricing ? onOpenPricing() : onNavigate('resources'))}
+          >
             <DollarSign className="w-4 h-4 mr-2" />
             View Pricing & Plans
           </Button>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm">Preview</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button variant="outline" className="w-full justify-start">
+          <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate('settings')}>
             <ExternalLink className="w-4 h-4 mr-2" />
             Preview Related Settings
           </Button>
