@@ -48,19 +48,24 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
             const Icon = s.icon;
             const active = tab === s.key;
             return (
-              <Button
+              <div
                 key={s.key}
-                variant={active ? 'default' : 'outline'}
-                className={`w-full justify-start h-auto py-3 ${active ? '' : 'bg-white'}`}
-                onClick={() => setTab(s.key)}
+                className={`border rounded-lg bg-white transition-colors ${active ? 'ring-2 ring-primary border-l-4 border-l-primary' : ''}`}
               >
-                <span className="flex items-center gap-3">
-                  <span className="p-2 rounded-lg bg-gray-100">
-                    <Icon className="w-4 h-4 text-gray-700" />
-                  </span>
-                  <span className="font-medium text-sm">{s.label}</span>
-                </span>
-              </Button>
+                <button
+                  onClick={() => setTab(s.key)}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                      <Icon className="w-4 h-4 text-gray-700" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium truncate text-sm">{s.label}</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
             );
           })}
         </div>
