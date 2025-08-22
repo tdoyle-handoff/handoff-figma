@@ -188,9 +188,11 @@ export default function DashboardLayout({
                 className="h-8 w-auto"
               />
             ) : (
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-lg">
-                H
-              </div>
+              <img
+                src={handoffLogo}
+                alt="Handoff"
+                className="h-8 w-8 object-contain"
+              />
             )}
             {sidebarOpen && (
               <div>
