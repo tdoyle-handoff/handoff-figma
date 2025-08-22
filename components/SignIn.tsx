@@ -50,14 +50,29 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email) return
+    console.log('🔐 Form submitted:', { email, hasPassword: !!password })
+
+    if (!email) {
+      console.log('❌ No email provided')
+      return
+    }
+
+    if (!password) {
+      console.log('❌ No password provided')
+      return
+    }
+
     try {
+      console.log('🔄 Starting authentication...')
       setIsSubmitting(true)
       await auth.handleAuthComplete({ buyerEmail: email, buyerName: email.split('@')[0], password }, false)
+      console.log('✅ Authentication successful!')
+
       if (remember) {
         try { localStorage.setItem('lastEmail', email) } catch {}
       }
     } catch (err) {
+      console.error('❌ Authentication failed:', err)
       /* handled in hook state */
     } finally {
       setIsSubmitting(false)
