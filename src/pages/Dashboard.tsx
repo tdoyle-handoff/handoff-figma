@@ -29,11 +29,6 @@ export default function Dashboard() {
       actions={<Actions />}
     >
       <div className="grid gap-4">
-        <section id="transactions" className="border rounded p-4">
-          <h2 className="font-semibold mb-2">Guided Transaction Workflow</h2>
-          <p className="text-sm text-muted-foreground">Interactive checklist with color-coded milestones.</p>
-        </section>
-
         <section id="search" className="border rounded p-4">
           <h2 className="font-semibold mb-2">Property Search & Selection</h2>
           <p className="text-sm text-muted-foreground">MLS integration, filters, save favorites, alerts.</p>
