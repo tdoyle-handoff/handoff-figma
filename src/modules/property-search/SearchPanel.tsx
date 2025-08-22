@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import { Filters } from './Filters'
-import { ResultsList } from './ResultsList'
-import { ListingInformation } from './ListingInformation'
+import { Filters, ResultsList, ListingInformation } from './components'
 
 export function SearchPanel() {
   const [query, setQuery] = useState({ location: '', minPrice: '', maxPrice: '', beds: '', baths: '', type: '', dom: '' })
