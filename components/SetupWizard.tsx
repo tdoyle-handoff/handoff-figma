@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { useIsMobile } from './ui/use-mobile';
 // import { ServerStatusBanner } from './ServerStatusBanner';
 import { authHelpers } from '../utils/supabase/client';
+import DreamHomeAddressCapture from './DreamHomeAddressCapture';
 const handoffLogo = '/handoff-logo.svg';
 
 interface SetupData {
@@ -388,6 +389,18 @@ export function SetupWizard({
       setIsSignUp(false);
     }
   }, [clearAuthError, authError]);
+
+  const handleStartOnboarding = useCallback(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      params.set('onboarding', '1');
+      const suffix = params.toString() ? `?${params.toString()}` : '';
+      window.history.replaceState(null, '', `${window.location.pathname}${suffix}`);
+      window.location.reload();
+    } catch {
+      window.location.href = `${window.location.pathname}?onboarding=1`;
+    }
+  }, []);
 
   // Handle server status changes
   const handleServerAvailable = useCallback(() => {
@@ -782,6 +795,13 @@ export function SetupWizard({
 
             {!authError && !isSignUp && serverAvailable && <ServerConnectedOptions />}
           </div>
+
+          {/* Dream Home pre-onboarding prompt */}
+          {!isSignUp && (
+            <div className="mt-10">
+              <DreamHomeAddressCapture onStartOnboarding={handleStartOnboarding} />
+            </div>
+          )}
         </div>
       </div>
     );
@@ -975,6 +995,13 @@ export function SetupWizard({
 
             {!authError && !isSignUp && serverAvailable && <ServerConnectedOptions />}
           </div>
+
+          {/* Dream Home pre-onboarding prompt */}
+          {!isSignUp && (
+            <div className="mt-10">
+              <DreamHomeAddressCapture onStartOnboarding={handleStartOnboarding} />
+            </div>
+          )}
         </div>
       </div>
     </div>

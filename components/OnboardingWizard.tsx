@@ -30,6 +30,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Badge } from './ui/badge';
 import { useIsMobile } from './ui/use-mobile';
 import { AddressAutocompleteInput } from './AddressAutocompleteInput';
+import type { AttomAddressComponents } from './AddressInputEnhanced';
 const handoffLogo = '/handoff-logo.svg';
 
 // Property types with icons
@@ -240,6 +241,23 @@ const [formData, setFormData] = useState<Partial<OnboardingData>>({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const isMobile = useIsMobile();
+
+  // Prefill from pre-onboarding address if available
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('preOnboardingAddress');
+      if (!raw) return;
+      const a = JSON.parse(raw) as AttomAddressComponents;
+      const formatted = a.formatted_address || [a.address1, a.address2].filter(Boolean).join(', ');
+      setFormData(prev => ({
+        ...prev,
+        propertyAddress: formatted,
+        propertyState: a.state || prev.propertyState || ''
+      }));
+    } catch (e) {
+      console.warn('Failed to hydrate onboarding address:', e);
+    }
+  }, []);
 
   // Ensure body has proper classes for mobile
   useEffect(() => {
