@@ -7,7 +7,8 @@ import { Scale, User, FileText, Search, CheckCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 import ChecklistResources from './ChecklistResources';
 
-export default function ChecklistLegalTabs() {
+interface Props { onNavigate?: (page: string) => void }
+export default function ChecklistLegalTabs({ onNavigate }: Props) {
   const [tab, setTab] = React.useState<'progress' | 'attorney' | 'contract' | 'title' | 'settlement'>('progress');
   const taskContext = useTaskContext();
   const legalTasks = taskContext.tasks.filter(t => ['legal','contract','offer','closing'].includes(t.category));
@@ -76,7 +77,12 @@ export default function ChecklistLegalTabs() {
 
       {/* Right Resources */}
       <div className="lg:col-span-3">
-        <ChecklistResources onNavigate={() => {}} onOpenPricing={() => {}} />
+        <ChecklistResources 
+          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
+          onOpenPricing={() => {
+            try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
+          }}
+        />
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ export default function ChecklistSidebar({ phases, onSelectPhase, onSelectTask, 
           const completed = phase.tasks.filter(t => t.status === 'completed').length;
           const isActive = selectedPhaseId ? selectedPhaseId === phase.id : phase.status === 'active';
           return (
-            <div key={phase.id} className={`border rounded-lg bg-white transition-colors ${isActive ? 'ring-2 ring-primary' : ''}`}>
+            <div key={phase.id} className={`border rounded-lg bg-white transition-colors ${isActive ? 'ring-2 ring-primary border-l-4 border-l-primary' : ''}`}>
               <button
                 onClick={() => onSelectPhase(phase.id)}
                 className={`w-full text-left p-3 hover:bg-gray-50 rounded-lg`}
@@ -78,7 +78,7 @@ export default function ChecklistSidebar({ phases, onSelectPhase, onSelectTask, 
                           ) : (
                             <Circle className="w-3.5 h-3.5 text-gray-300" />
                           )}
-                          <span className="text-xs truncate">{t.title}</span>
+                          <span className={`text-xs truncate ${isSelected ? 'font-medium text-gray-900' : ''}`}>{t.title}</span>
                         </button>
                       );
                     })}
