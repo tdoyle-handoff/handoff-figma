@@ -1,27 +1,28 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
-import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview, LawyerSearch } from '../Legal';
-import { Scale, User, FileText, Search, CheckCircle } from 'lucide-react';
-import { useTaskContext } from '../TaskContext';
 import ChecklistResources from './ChecklistResources';
+import { useTaskContext } from '../TaskContext';
+import InsuranceQuotes from '../vendor/InsuranceQuotes';
+import InsuranceProviders from '../vendor/InsuranceProviders';
+import InsuranceCalculator from '../vendor/InsuranceCalculator';
+import { Shield, DollarSign, Calculator as CalcIcon, FileText } from 'lucide-react';
 
 interface Props { onNavigate?: (page: string) => void }
-export default function ChecklistLegalTabs({ onNavigate }: Props) {
-  const [tab, setTab] = React.useState<'progress' | 'attorney' | 'contract' | 'title' | 'settlement'>('progress');
+export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
+  const [tab, setTab] = React.useState<'quotes' | 'providers' | 'calculator' | 'policies'>('quotes');
   const taskContext = useTaskContext();
-  const legalTasks = taskContext.tasks.filter(t => ['legal','contract','offer','closing'].includes(t.category));
-  const completed = legalTasks.filter(t => t.status === 'completed').length;
-  const total = legalTasks.length;
+  const insuranceTasks = taskContext.tasks.filter(t => t.category === 'insurance' || t.subcategory === 'insurance');
+  const completed = insuranceTasks.filter(t => t.status === 'completed').length;
+  const total = insuranceTasks.length;
   const progress = total > 0 ? (completed / total) * 100 : 0;
 
-  const sections: { key: typeof tab; label: string; icon: any }[] = [
-    { key: 'progress', label: 'Progress', icon: Scale },
-    { key: 'attorney', label: 'Attorney', icon: User },
-    { key: 'contract', label: 'Contract', icon: FileText },
-    { key: 'title', label: 'Title', icon: Search },
-    { key: 'settlement', label: 'Settlement', icon: CheckCircle },
-  ];
+  const sections = [
+    { key: 'quotes', label: 'Quotes', icon: DollarSign },
+    { key: 'providers', label: 'Providers', icon: Shield },
+    { key: 'calculator', label: 'Calculator', icon: CalcIcon },
+    { key: 'policies', label: 'Policies', icon: FileText },
+  ] as const;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -31,7 +32,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-sm">Legal Overall Completion</CardTitle>
+                <CardTitle className="text-sm">Insurance Overall Completion</CardTitle>
                 <p className="text-xs text-muted-foreground">{completed} / {total} Completed</p>
               </div>
               <div className="text-lg font-semibold">{Math.round(progress)}%</div>
@@ -52,7 +53,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
                 className={`border rounded-lg bg-white transition-colors ${active ? 'ring-2 ring-primary border-l-4 border-l-primary' : ''}`}
               >
                 <button
-                  onClick={() => setTab(s.key)}
+                  onClick={() => setTab(s.key as typeof tab)}
                   className="w-full text-left p-3 hover:bg-gray-50 rounded-lg"
                 >
                   <div className="flex items-center gap-2">
@@ -72,17 +73,25 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
 
       {/* Center Content */}
       <div className="lg:col-span-6 space-y-3">
-        {tab === 'progress' && <LegalProgressTracker />}
-        {tab === 'attorney' && <LawyerSearch />}
-        {tab === 'contract' && <ContractReview />}
-        {tab === 'title' && <TitleSearch />}
-        {tab === 'settlement' && <SettlementReview />}
+        {tab === 'quotes' && <InsuranceQuotes />}
+        {tab === 'providers' && <InsuranceProviders />}
+        {tab === 'calculator' && <InsuranceCalculator />}
+        {tab === 'policies' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Current Policies</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              You don't have any active policies yet. Once you select and purchase insurance, your policies will appear here.
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Right Resources */}
       <div className="lg:col-span-3">
         <ChecklistResources 
-          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
+          onNavigate={(page) => (onNavigate ? onNavigate(page) : undefined as any)}
           onOpenPricing={() => {
             try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
           }}
@@ -91,4 +100,3 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
     </div>
   );
 }
-

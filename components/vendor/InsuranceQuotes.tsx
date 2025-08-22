@@ -179,12 +179,12 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
       {/* Quotes list */}
       <div className="grid grid-cols-1 gap-4">
         {filteredQuotes.map((quote) => (
-          <Card key={quote.id} className="hover:shadow-md transition-shadow">
+          <Card key={quote.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold">{quote.providerName}</h3>
+                    <h3 className="font-semibold text-base">{quote.providerName}</h3>
                     <Badge className={getStatusColor(quote.status)}>{quote.status}</Badge>
                   </div>
                   {quote.status === 'pending' && (
@@ -269,7 +269,7 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
         ))}
 
         {filteredQuotes.length === 0 && (
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-8 text-center">
               <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-medium mb-2">No quotes yet</h3>

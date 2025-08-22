@@ -8,9 +8,9 @@ import { Calculator } from 'lucide-react';
 
 export default function InsuranceCalculator() {
   return (
-    <Card>
+<Card className="shadow-sm">
       <CardHeader>
-        <CardTitle>Insurance Calculator</CardTitle>
+<CardTitle className="text-base">Insurance Calculator</CardTitle>
         <CardDescription>
           Estimate your insurance costs based on your property details
         </CardDescription>

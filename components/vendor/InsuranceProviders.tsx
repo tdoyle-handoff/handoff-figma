@@ -272,12 +272,12 @@ export default function InsuranceProviders({ onRequestQuote }: InsuranceProvider
       {/* Provider Cards */}
       <div className="grid grid-cols-1 gap-4">
         {filteredProviders.map((provider) => (
-          <Card key={provider.id} className="hover:shadow-md transition-shadow">
+          <Card key={provider.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold">{provider.name}</h3>
+                    <h3 className="font-semibold text-base">{provider.name}</h3>
                     <Badge variant="outline">{provider.amRating} Rated</Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">

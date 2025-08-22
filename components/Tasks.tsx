@@ -10,6 +10,7 @@ import { useIsMobile } from './ui/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import ChecklistLegalTabs from './checklist/LegalTabs';
 import ChecklistInspectionTabs from './checklist/InspectionTabs';
+import ChecklistInsuranceTabs from './checklist/InsuranceTabs';
 import ChecklistSidebar from './checklist/ChecklistSidebar';
 import ChecklistDetail from './checklist/ChecklistDetail';
 import ChecklistResources from './checklist/ChecklistResources';
@@ -306,10 +307,11 @@ export default function Tasks({ onNavigate }: TasksProps) {
       </div>
 
       <Tabs defaultValue="checklist" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="checklist">Checklist</TabsTrigger>
           <TabsTrigger value="legal">Legal</TabsTrigger>
           <TabsTrigger value="inspections">Inspections</TabsTrigger>
+          <TabsTrigger value="insurance">Insurance</TabsTrigger>
         </TabsList>
 
         <TabsContent value="checklist" className="space-y-6">
@@ -507,6 +509,10 @@ export default function Tasks({ onNavigate }: TasksProps) {
 
         <TabsContent value="inspections" className="space-y-6">
           <ChecklistInspectionTabs />
+        </TabsContent>
+
+        <TabsContent value="insurance" className="space-y-6">
+          <ChecklistInsuranceTabs />
         </TabsContent>
       </Tabs>
     </div>
