@@ -22,7 +22,7 @@ import { Slider } from './ui/slider';
 import { Switch } from './ui/switch';
 import { Separator } from './ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { CalendarCheck2, DollarSign, FileBarChart2, Loader2, Percent, TrendingUp, Info } from 'lucide-react';
+import { CalendarCheck2, DollarSign, FileBarChart2, Loader2, TrendingUp, Info } from 'lucide-react';
 
 const shortCurrency = (n: number) => n.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 const pct = (n: number) => `${n.toFixed(1)}%`;
@@ -244,7 +244,11 @@ export default function Dashboard({ setupData }: DashboardProps) {
                 <div>
                   <div className="flex items-center justify-between"><Label>Down payment</Label><div className="text-sm text-muted-foreground">{shortCurrency(downPayment)}</div></div>
                   <div className="mt-2 flex items-center gap-3">
-                    <Switch checked={downModeDollar} onCheckedChange={setDownModeDollar} title="Toggle $ or %" />
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className={!downModeDollar ? 'font-medium text-foreground' : 'text-muted-foreground'}>Percent</span>
+                      <Switch checked={downModeDollar} onCheckedChange={setDownModeDollar} aria-label="Toggle between percent and dollar down payment" />
+                      <span className={downModeDollar ? 'font-medium text-foreground' : 'text-muted-foreground'}>Dollar</span>
+                    </div>
                     {!downModeDollar ? (
                       <><Input type="number" value={downPercent} onChange={(e) => setDownPercent(Number(e.target.value || 0))} className="w-24" /><Slider value={[downPercent]} onValueChange={([v]) => setDownPercent(v)} min={0} max={100} step={1} className="w-full" /></>
                     ) : (
@@ -342,10 +346,10 @@ export default function Dashboard({ setupData }: DashboardProps) {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Label>Down payment</Label>
-                        <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-                          <Percent className="h-4 w-4" title="Use %" />
-                          <Switch checked={downModeDollar} onCheckedChange={setDownModeDollar} />
-                          <DollarSign className="h-4 w-4" title="Use $" />
+                        <div className="ml-auto flex items-center gap-2 text-sm">
+                          <span className={!downModeDollar ? 'font-medium text-foreground' : 'text-muted-foreground'}>Percent</span>
+                          <Switch checked={downModeDollar} onCheckedChange={setDownModeDollar} aria-label="Toggle between percent and dollar down payment" />
+                          <span className={downModeDollar ? 'font-medium text-foreground' : 'text-muted-foreground'}>Dollar</span>
                         </div>
                       </div>
                       {!downModeDollar ? (
