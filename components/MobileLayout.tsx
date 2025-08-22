@@ -58,36 +58,33 @@ export default function MobileLayout({
 
   // Navigation without AI features
   const navigationItems: NavigationItem[] = [
-    // Core Features
-    {
-      id: 'overview',
-      label: 'Analytics & Budget',
-      icon: BarChart3,
-      description: 'Budgets, offers, and transaction analytics',
-      category: 'Core'
-    },
+    // Make Property Search primary
     {
       id: 'property',
       label: 'Property Search',
       icon: Home,
-      description: 'Search and evaluate homes',
       category: 'Core'
     },
     {
       id: 'tasks',
       label: 'Transaction Checklist',
       icon: CheckSquare,
-      description: 'State-specific interactive milestones',
       category: 'Core'
     },
 
-    
+    // Keep Analytics but not default
+    {
+      id: 'overview',
+      label: 'Analytics & Budget',
+      icon: BarChart3,
+      category: 'Core'
+    },
+
     // Transaction Details
     {
       id: 'vendor-marketplace',
       label: 'Vendor Marketplace',
       icon: Eye,
-      description: 'Browse and book providers with ratings, availability, and price',
       category: 'Transaction Details'
     },
     
@@ -96,28 +93,24 @@ export default function MobileLayout({
       id: 'communications',
       label: 'Communication Suite',
       icon: MessageSquare,
-      description: 'Secure chat and file sharing',
       category: 'Services'
     },
     {
       id: 'team',
       label: 'Team',
       icon: Users,
-      description: 'Your professionals',
       category: 'Services'
     },
     {
       id: 'documents',
       label: 'Offer & Document Hub',
       icon: FileText,
-      description: 'Smart offers, templates, e-sign',
       category: 'Services'
     },
     {
       id: 'resources',
       label: 'Education Hub',
       icon: BookOpen,
-      description: 'Stage-based guides, videos, glossary',
       category: 'Services'
     }
   ];
@@ -313,11 +306,6 @@ export default function MobileLayout({
                                         </Badge>
                                       )}
                                     </div>
-                                    {item.description && (
-                                      <p className="text-xs text-muted-foreground mt-0.5">
-                                        {item.description}
-                                      </p>
-                                    )}
                                   </div>
                                 </div>
                               </Button>

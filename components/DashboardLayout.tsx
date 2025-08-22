@@ -58,29 +58,27 @@ export default function DashboardLayout({
 
   // Navigation without AI features
   const navigationItems: NavigationItem[] = [
-    // Core Features
-    {
-      id: 'overview',
-      label: 'Analytics & Budget',
-      icon: BarChart3,
-      description: 'Budgets, offers, and transaction analytics',
-      category: 'Core'
-    },
-    
-    // Property & Transaction
+    // Prioritize Property Search as main entry
     {
       id: 'property',
       label: 'Property Search',
       icon: Home,
-      description: 'Search and evaluate homes',
       category: 'Property'
     },
     {
       id: 'tasks',
       label: 'Transaction Checklist',
       icon: CheckSquare,
-      description: 'State-specific interactive milestones',
       category: 'Property'
+    },
+
+
+    // Keep Analytics but not as the default landing page
+    {
+      id: 'overview',
+      label: 'Analytics & Budget',
+      icon: BarChart3,
+      category: 'Core'
     },
     
     // Transaction Details
@@ -88,7 +86,6 @@ export default function DashboardLayout({
       id: 'vendor-marketplace',
       label: 'Vendor Marketplace',
       icon: ShoppingCart,
-      description: 'Browse and book providers with ratings, availability, and price',
       category: 'Transaction Details'
     },
     
@@ -97,28 +94,24 @@ export default function DashboardLayout({
       id: 'communications',
       label: 'Communication Suite',
       icon: MessageSquare,
-      description: 'Secure chat and file sharing',
       category: 'Support'
     },
     {
       id: 'team',
       label: 'My Team',
       icon: Users,
-      description: 'Professional contacts and team',
       category: 'Support'
     },
     {
       id: 'documents',
       label: 'Offer & Document Hub',
       icon: FileText,
-      description: 'Smart offer builder, templates, e-sign',
       category: 'Support'
     },
     {
       id: 'resources',
       label: 'Education Hub',
       icon: BookOpen,
-      description: 'Stage-based guides, videos, glossary',
       category: 'Support'
     }
   ];
@@ -288,11 +281,6 @@ export default function DashboardLayout({
                                 </Badge>
                               )}
                             </div>
-                            {item.description && (
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {item.description}
-                              </p>
-                            )}
                           </div>
                         )}
                       </div>

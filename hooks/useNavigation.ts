@@ -93,9 +93,9 @@ const savePreviousPage = (page: PageType | null) => {
 };
 
 export function useNavigation(): NavigationState & NavigationActions {
-  // Initialize state with saved page or default to 'overview'
+  // Initialize state with saved page or default to 'property'
   const [currentPage, setCurrentPage] = useState<PageType>(() => {
-    return getSavedPage() || 'overview';
+    return getSavedPage() || 'property';
   });
   
   const [previousPage, setPreviousPage] = useState<PageType | null>(() => {
