@@ -153,17 +153,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
 
       {/* Right Resources */}
       <div className="lg:col-span-3 space-y-3">
-        <Card className="shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Explanatory Video</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="relative rounded-lg overflow-hidden border bg-muted aspect-video flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-foreground"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            </div>
-          </CardContent>
-        </Card>
-        <ChecklistResources 
+        <ChecklistResources
           onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
           onOpenPricing={() => { try { window.open('https://handoffiq.com/pricing','_blank','noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); } }}
         />

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
-import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview, LawyerSearch } from '../Legal';
-import { Scale, FileText, Search, CheckCircle, PlayCircle } from 'lucide-react';
+import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview } from '../Legal';
+import { Scale, FileText, Search, CheckCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 import ChecklistResources from './ChecklistResources';
 
@@ -70,26 +70,16 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
       </div>
 
       {/* Center Content */}
-      <div className="lg:col-span-9 space-y-3">
+      <div className="lg:col-span-6 space-y-3">
         {tab === 'progress' && <LegalProgressTracker />}
-}
+        {tab === 'contract' && <ContractReview />}
         {tab === 'title' && <TitleSearch />}
         {tab === 'settlement' && <SettlementReview />}
       </div>
 
       {/* Right Resources */}
       <div className="lg:col-span-3 space-y-3">
-        <Card className="shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Explanatory Video</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="relative rounded-lg overflow-hidden border bg-muted aspect-video flex items-center justify-center">
-              <PlayCircle className="w-12 h-12 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        <ChecklistResources 
+        <ChecklistResources
           onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
           onOpenPricing={() => {
             try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
