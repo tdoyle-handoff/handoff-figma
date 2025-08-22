@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react';
-import { PropertyDetails } from './PropertyDetails';
 import Dashboard from './Dashboard';
 
 // Lazy load other components for better performance
@@ -77,7 +76,7 @@ export function PageRenderer({
         return <Dashboard setupData={setupData} />;
       
       case 'property':
-        return <PropertyDetails />;
+        return <Dashboard setupData={setupData} />;
       
       case 'tasks':
         return (
