@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview, LawyerSearch } from '../Legal';
 import { Scale, User, FileText, Search, CheckCircle } from 'lucide-react';
@@ -31,7 +31,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm">Legal Overall Completion</CardTitle>
-                <p className="text-xs text-muted-foreground">{completed} / {total} Completed</p>
+                <CardDescription>{completed} / {total} Completed</CardDescription>
               </div>
               <div className="text-lg font-semibold">{Math.round(progress)}%</div>
             </div>

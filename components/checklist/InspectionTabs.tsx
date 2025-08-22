@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
 import { InspectionsProgressTracker } from '../Inspections';
@@ -33,7 +33,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm">Inspections Overall Completion</CardTitle>
-                <p className="text-xs text-muted-foreground">{completed} / {total} Completed</p>
+                <CardDescription>{completed} / {total} Completed</CardDescription>
               </div>
               <div className="text-lg font-semibold">{Math.round(progress)}%</div>
             </div>
