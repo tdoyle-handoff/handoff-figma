@@ -800,15 +800,15 @@ export const ContractReview = () => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>Inspection Contingency</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">Active</Badge>
+                          <Badge variant="softSuccess">Active</Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>Financing Contingency</span>
-                          <Badge variant="secondary" className="bg-orange-100 text-orange-800">10 days left</Badge>
+                          <Badge variant="softWarning">10 days left</Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>Appraisal Contingency</span>
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">15 days left</Badge>
+                          <Badge variant="softInfo">15 days left</Badge>
                         </div>
                       </div>
                     </div>
@@ -854,7 +854,7 @@ export const TitleSearch = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Title Search Results</CardTitle>
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                <Badge variant="softSuccess">
                   <CheckCircle className="w-3 h-3 mr-1" />
                   Complete
                 </Badge>

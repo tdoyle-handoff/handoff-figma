@@ -278,7 +278,7 @@ export default function InsuranceProviders({ onRequestQuote }: InsuranceProvider
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-semibold text-base">{provider.name}</h3>
-                    <Badge variant="outline" className="border-blue-200 text-blue-800">{provider.amRating} Rated</Badge>
+                    <Badge variant="outlineInfo">{provider.amRating} Rated</Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">

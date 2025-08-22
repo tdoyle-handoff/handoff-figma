@@ -459,7 +459,7 @@ const FinancingProgressTracker = () => {
                 <div className="font-medium">Document Review</div>
                 <div className="text-sm text-muted-foreground">Lender reviewing submitted documents</div>
               </div>
-              <Badge className="bg-yellow-100 text-yellow-800">In Progress</Badge>
+              <Badge variant="softWarning">In Progress</Badge>
             </div>
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div>
@@ -624,12 +624,12 @@ export default function Financing() {
     }
   };
 
-  const getDocumentStatusColor = (status: string) => {
+  const getDocumentStatusVariant = (status: string) => {
     switch (status) {
-      case 'submitted': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'needed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'submitted': return 'softSuccess';
+      case 'pending': return 'softWarning';
+      case 'needed': return 'destructive';
+      default: return 'outline';
     }
   };
 
@@ -880,7 +880,7 @@ export default function Financing() {
                         )}
                       </div>
                     </div>
-                    <Badge className={getDocumentStatusColor(doc.status)}>
+                    <Badge variant={getDocumentStatusVariant(doc.status) as any}>
                       {doc.status}
                     </Badge>
                   </div>
@@ -984,7 +984,7 @@ export default function Financing() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold">{currentLender.name}</h3>
-                    <Badge className={getLenderTypeColor(currentLender.lenderType)}>
+                    <Badge variant={currentLender.lenderType === 'bank' ? 'outlineInfo' : currentLender.lenderType === 'credit-union' ? 'outlineSuccess' : currentLender.lenderType === 'online' ? 'outlineWarning' : 'outline'}>
                       {currentLender.lenderType.replace('-', ' ')}
                     </Badge>
                   </div>
@@ -1056,7 +1056,7 @@ export default function Financing() {
                         <h4 className="font-semibold">{lender.name}</h4>
                         <p className="text-sm text-muted-foreground">{lender.company}</p>
                       </div>
-                      <Badge className={getLenderTypeColor(lender.lenderType)}>
+                      <Badge variant={lender.lenderType === 'bank' ? 'outlineInfo' : lender.lenderType === 'credit-union' ? 'outlineSuccess' : lender.lenderType === 'online' ? 'outlineWarning' : 'outline'}>
                         {lender.lenderType.replace('-', ' ')}
                       </Badge>
                     </div>

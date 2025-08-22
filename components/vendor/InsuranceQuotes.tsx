@@ -185,7 +185,7 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-semibold text-base">{quote.providerName}</h3>
-                    <Badge className={getStatusColor(quote.status)}>{quote.status}</Badge>
+                    <Badge variant={quote.status === 'pending' ? 'softWarning' : quote.status === 'received' ? 'softSuccess' : 'softInfo'}>{quote.status}</Badge>
                   </div>
                   {quote.status === 'pending' && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -236,7 +236,7 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
                       <h4 className="font-medium text-sm mb-2">Applied Discounts:</h4>
                       <div className="flex flex-wrap gap-2">
                         {quote.discounts.map((discount, index) => (
-                          <Badge key={index} variant="outline" className="border-green-200 text-green-800">
+                          <Badge key={index} variant="outlineSuccess">
                             {discount.name} (-${discount.amount})
                           </Badge>
                         ))}
