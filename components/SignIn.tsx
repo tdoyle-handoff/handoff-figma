@@ -179,12 +179,6 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
     <div className={cn('min-h-screen w-full grid lg:grid-cols-2 bg-background', className)}>
       {/* Left: hero */}
       <div className="relative hidden lg:block">
-        <img
-          src="/brand/ef184a0b-1beb-46ef-8edb-99ceb3a022a7.png"
-          alt="HandOff brand pattern"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full w-full p-8 flex flex-col">
           <div className="flex items-center gap-3 text-white">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary-foreground">
