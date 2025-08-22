@@ -2,12 +2,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview, LawyerSearch } from '../Legal';
-import { Scale, User, FileText, Search, CheckCircle } from 'lucide-react';
+import { Scale, FileText, Search, CheckCircle, PlayCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
+import ChecklistResources from './ChecklistResources';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistLegalTabs({ onNavigate }: Props) {
-  const [tab, setTab] = React.useState<'progress' | 'attorney' | 'contract' | 'title' | 'settlement'>('progress');
+  const [tab, setTab] = React.useState<'progress' | 'contract' | 'title' | 'settlement'>('progress');
   const taskContext = useTaskContext();
   const legalTasks = taskContext.tasks.filter(t => ['legal','contract','offer','closing'].includes(t.category));
   const completed = legalTasks.filter(t => t.status === 'completed').length;
@@ -16,7 +17,6 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
 
   const sections: { key: typeof tab; label: string; icon: any }[] = [
     { key: 'progress', label: 'Progress', icon: Scale },
-    { key: 'attorney', label: 'Attorney', icon: User },
     { key: 'contract', label: 'Contract', icon: FileText },
     { key: 'title', label: 'Title', icon: Search },
     { key: 'settlement', label: 'Settlement', icon: CheckCircle },
@@ -41,7 +41,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
           </CardContent>
         </Card>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {sections.map((s) => {
             const Icon = s.icon;
             const active = tab === s.key;
@@ -52,14 +52,14 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
               >
                 <button
                   onClick={() => setTab(s.key)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg"
+                  className="w-full text-left p-3.5 hover:bg-gray-50 rounded-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100">
                       <Icon className="w-4 h-4 text-gray-700" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-sm">{s.label}</div>
+                      <div className="font-medium truncate text-sm leading-5">{s.label}</div>
                     </div>
                   </div>
                 </button>
@@ -72,10 +72,29 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
       {/* Center Content */}
       <div className="lg:col-span-9 space-y-3">
         {tab === 'progress' && <LegalProgressTracker />}
-        {tab === 'attorney' && <LawyerSearch />}
-        {tab === 'contract' && <ContractReview />}
+}
         {tab === 'title' && <TitleSearch />}
         {tab === 'settlement' && <SettlementReview />}
+      </div>
+
+      {/* Right Resources */}
+      <div className="lg:col-span-3 space-y-3">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Explanatory Video</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="relative rounded-lg overflow-hidden border bg-muted aspect-video flex items-center justify-center">
+              <PlayCircle className="w-12 h-12 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+        <ChecklistResources 
+          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
+          onOpenPricing={() => {
+            try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
+          }}
+        />
       </div>
 
     </div>

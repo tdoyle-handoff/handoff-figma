@@ -6,6 +6,7 @@ import { InspectionsProgressTracker } from '../Inspections';
 import { Search, ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 import { useInspectionStore } from '../InspectionContext';
+import ChecklistResources from './ChecklistResources';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistInspectionTabs({ onNavigate }: Props) {
@@ -43,7 +44,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
           </CardContent>
         </Card>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {sections.map((s) => {
             const Icon = s.icon;
             const active = tab === s.key;
@@ -54,14 +55,14 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
               >
                 <button
                   onClick={() => setTab(s.key)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg"
+                  className="w-full text-left p-3.5 hover:bg-gray-50 rounded-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100">
                       <Icon className="w-4 h-4 text-gray-700" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-sm">{s.label}</div>
+                      <div className="font-medium truncate text-sm leading-5">{s.label}</div>
                     </div>
                   </div>
                 </button>
@@ -71,7 +72,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
         </div>
       </div>
 
-      <div className="lg:col-span-9 space-y-3">
+      <div className="lg:col-span-6 space-y-3">
         {tab === 'progress' && <InspectionsProgressTracker />}
         {tab === 'scheduled' && (
           <Card className="shadow-sm">
@@ -148,6 +149,24 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
             </CardContent>
           </Card>
         )}
+      </div>
+
+      {/* Right Resources */}
+      <div className="lg:col-span-3 space-y-3">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Explanatory Video</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="relative rounded-lg overflow-hidden border bg-muted aspect-video flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-foreground"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </div>
+          </CardContent>
+        </Card>
+        <ChecklistResources 
+          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
+          onOpenPricing={() => { try { window.open('https://handoffiq.com/pricing','_blank','noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); } }}
+        />
       </div>
 
     </div>

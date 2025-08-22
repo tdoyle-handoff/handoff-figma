@@ -42,7 +42,7 @@ export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
           </CardContent>
         </Card>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {sections.map((s) => {
             const Icon = s.icon;
             const active = tab === s.key;
@@ -53,14 +53,14 @@ export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
               >
                 <button
                   onClick={() => setTab(s.key as typeof tab)}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-lg"
+                  className="w-full text-left p-3.5 hover:bg-gray-50 rounded-lg"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100">
                       <Icon className="w-4 h-4 text-gray-700" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-sm">{s.label}</div>
+                      <div className="font-medium truncate text-sm leading-5">{s.label}</div>
                     </div>
                   </div>
                 </button>
