@@ -367,7 +367,7 @@ export const InspectionsProgressTracker = () => {
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-          <p className="text-sm text-muted-foreground mt-1">Browse and book providers with ratings, availability, and price</p>
+                <p className="text-sm text-muted-foreground">Pending</p>
                 <p className="text-xl font-semibold">1</p>
               </div>
             </div>
@@ -467,8 +467,6 @@ export const InspectionsProgressTracker = () => {
 
       {/* Issue Resolution Status */}
       <Card className="shadow-sm">
-        <CardHeader>
-
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-purple-600" />
