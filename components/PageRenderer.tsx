@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import PropertySearch from '../src/pages/Dashboard';
+import { PropertyDetails } from './PropertyDetails';
 import AnalyticsBudget from './Dashboard';
 
 // Lazy load other components for better performance
@@ -77,7 +77,9 @@ export function PageRenderer({
         return <AnalyticsBudget setupData={setupData} />;
       
       case 'property':
-        return <PropertySearch />;
+        return (
+          <PropertyDetails userProfile={userProfile} setupData={setupData} onNavigate={navigateString} />
+        );
       
       case 'tasks':
         return (
@@ -207,7 +209,9 @@ export function PageRenderer({
         );
       
       default:
-        return <PropertySearch />;
+        return (
+          <PropertyDetails userProfile={userProfile} setupData={setupData} onNavigate={navigateString} />
+        );
     }
   };
 
