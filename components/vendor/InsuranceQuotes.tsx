@@ -142,13 +142,13 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'received':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 border-green-200';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'selected':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 border-blue-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -236,7 +236,7 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
                       <h4 className="font-medium text-sm mb-2">Applied Discounts:</h4>
                       <div className="flex flex-wrap gap-2">
                         {quote.discounts.map((discount, index) => (
-                          <Badge key={index} variant="outline" className="text-green-600">
+                          <Badge key={index} variant="outline" className="border-green-200 text-green-800">
                             {discount.name} (-${discount.amount})
                           </Badge>
                         ))}
@@ -270,7 +270,7 @@ export default function InsuranceQuotes({ quotes: quotesProp, defaultType = 'hom
 
         {filteredQuotes.length === 0 && (
           <Card className="shadow-sm">
-            <CardContent className="p-8 text-center">
+            <CardContent className="p-6 text-center">
               <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-medium mb-2">No quotes yet</h3>
               <p className="text-muted-foreground mb-4">
