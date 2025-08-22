@@ -23,7 +23,7 @@ const DashboardLayout = React.lazy(() => import('./components/DashboardLayout').
 const MobileLayout = React.lazy(() => import('./components/MobileLayout').then(m => ({ default: m.default })));
 
 // Hooks
-import { useAuth } from './hooks/useAuth';
+import { useAuth } from './hooks/useAuthFixed';
 import { useNavigation } from './hooks/useNavigation';
 import { usePasswordReset } from './hooks/usePasswordReset';
 import { useAppEffects } from './hooks/useAppEffects';
