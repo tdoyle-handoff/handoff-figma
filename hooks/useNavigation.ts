@@ -103,9 +103,9 @@ export function useNavigation(): NavigationState & NavigationActions {
     return getSavedPreviousPage();
   });
   const pageTitles = useMemo(() => ({
-'overview': 'Analytics & Budget - Handoff',
+    'overview': 'Dashboard - Handoff',
     'tasks': 'Tasks - Handoff',
-    'property': 'Property Search & Selection - Handoff',
+    'property': 'Property Search - Handoff',
     'legal': 'Legal - Handoff',
     'financing': 'Financing - Handoff',
     'inspections': 'Inspections - Handoff',
