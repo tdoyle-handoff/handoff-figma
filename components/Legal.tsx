@@ -953,7 +953,7 @@ export const TitleSearch = () => {
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Title Insurance</CardTitle>
-              <CardDescription
+              <CardDescription>
                 Protect your investment with title insurance coverage
               </CardDescription>
             </CardHeader>
