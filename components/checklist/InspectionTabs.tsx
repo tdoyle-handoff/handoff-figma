@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
-import { ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
+import { Search, ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 import { useInspectionStore } from '../InspectionContext';
 
@@ -10,6 +10,7 @@ interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistInspectionTabs({ onNavigate }: Props) {
   const [tab, setTab] = React.useState<'scheduled' | 'results' | 'negotiations' | 'reports'>('scheduled');
   const taskContext = useTaskContext();
+  const inspTasks = taskContext.getActiveTasksByCategory('inspections');
   const total = taskContext.tasks.filter(t => t.category === 'inspections').length;
   const completed = taskContext.tasks.filter(t => t.category === 'inspections' && t.status === 'completed').length;
   const progress = total > 0 ? (completed / total) * 100 : 0;
@@ -23,37 +24,52 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
   ] as const;
 
   return (
-    <div className="space-y-4">
-      {/* Progress */}
-      <Card className="shadow-soft">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-sm">Inspections Overall Completion</CardTitle>
-              <CardDescription>{completed} / {total} Completed</CardDescription>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-3 space-y-3">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-sm">Inspections Overall Completion</CardTitle>
+                <CardDescription>{completed} / {total} Completed</CardDescription>
+              </div>
+              <div className="text-lg font-semibold">{Math.round(progress)}%</div>
             </div>
-            <div className="text-lg font-semibold">{Math.round(progress)}%</div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Progress value={progress} />
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <Progress value={progress} />
+          </CardContent>
+        </Card>
 
-      {/* Horizontal Section Nav */}
-      <div className="flex items-center gap-2">
-        {sections.map((s) => {
-          const Icon = s.icon;
-          const active = tab === s.key;
-          return (
-            <Button key={s.key} variant={active ? 'default' : 'outline'} onClick={()=>setTab(s.key as any)} className="h-9">
-              <Icon className="w-4 h-4 mr-2" />{s.label}
-            </Button>
-          );
-        })}
+        <div className="space-y-3">
+          {sections.map((s) => {
+            const Icon = s.icon;
+            const active = tab === s.key;
+            return (
+              <div
+                key={s.key}
+                className={`border rounded-lg bg-white transition-colors ${active ? 'ring-2 ring-primary border-l-4 border-l-primary' : ''}`}
+              >
+                <button
+                  onClick={() => setTab(s.key)}
+                  className="w-full text-left p-3.5 hover:bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100">
+                      <Icon className="w-4 h-4 text-gray-700" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium truncate text-sm leading-5">{s.label}</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'scheduled' && (
           <Card className="shadow-sm">
             <CardContent className="p-6 space-y-4">
