@@ -303,22 +303,6 @@ export default function Tasks({ onNavigate }: TasksProps) {
             Color-coded milestones, interactive checklist, and deadline tracker
           </p>
         </div>
-        <div className="text-right">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-sm text-gray-600">Overall Progress</span>
-            <div className="flex items-center gap-2">
-              <Progress value={overallProgress} className="w-32 h-2" />
-              <span className="text-sm font-medium">{Math.round(overallProgress)}%</span>
-            </div>
-          </div>
-          {SHOW_PROGRESS_COUNTS && (
-            <div className="flex gap-4 text-sm text-gray-600">
-              <span>{completedTasks} completed</span>
-              <span>{activeTasks} active</span>
-              <span>{totalTasks - completedTasks - activeTasks} upcoming</span>
-            </div>
-          )}
-        </div>
       </div>
 
       <Tabs defaultValue="checklist" className="w-full">
