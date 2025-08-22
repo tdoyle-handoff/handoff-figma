@@ -10,6 +10,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Alert, AlertDescription } from './ui/alert';
 import { useTaskContext } from './TaskContext';
+import { statusToBadgeVariant, lenderTypeToOutlineVariant } from './lib/badgeVariants';
 
 interface LoanProcessor {
   id: string;
@@ -624,14 +625,6 @@ export default function Financing() {
     }
   };
 
-  const getDocumentStatusVariant = (status: string) => {
-    switch (status) {
-      case 'submitted': return 'softSuccess';
-      case 'pending': return 'softWarning';
-      case 'needed': return 'destructive';
-      default: return 'outline';
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -880,7 +873,7 @@ export default function Financing() {
                         )}
                       </div>
                     </div>
-                    <Badge variant={getDocumentStatusVariant(doc.status) as any}>
+                    <Badge variant={statusToBadgeVariant(doc.status) as any}>
                       {doc.status}
                     </Badge>
                   </div>
@@ -984,7 +977,7 @@ export default function Financing() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold">{currentLender.name}</h3>
-                    <Badge variant={currentLender.lenderType === 'bank' ? 'outlineInfo' : currentLender.lenderType === 'credit-union' ? 'outlineSuccess' : currentLender.lenderType === 'online' ? 'outlineWarning' : 'outline'}>
+                    <Badge variant={lenderTypeToOutlineVariant(currentLender.lenderType) as any}>
                       {currentLender.lenderType.replace('-', ' ')}
                     </Badge>
                   </div>
@@ -1056,7 +1049,7 @@ export default function Financing() {
                         <h4 className="font-semibold">{lender.name}</h4>
                         <p className="text-sm text-muted-foreground">{lender.company}</p>
                       </div>
-                      <Badge variant={lender.lenderType === 'bank' ? 'outlineInfo' : lender.lenderType === 'credit-union' ? 'outlineSuccess' : lender.lenderType === 'online' ? 'outlineWarning' : 'outline'}>
+                      <Badge variant={lenderTypeToOutlineVariant(lender.lenderType) as any}>
                         {lender.lenderType.replace('-', ' ')}
                       </Badge>
                     </div>

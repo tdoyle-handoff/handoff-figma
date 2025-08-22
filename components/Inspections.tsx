@@ -13,6 +13,7 @@ import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { useTaskContext } from './TaskContext';
 import { useInspectionStore } from './InspectionContext';
+import { statusToBadgeVariant, severityToBadgeVariant, issueStatusToBadgeVariant, priorityToOutlineVariant } from './lib/badgeVariants';
 
 interface Inspector {
   id: string;
@@ -407,10 +408,7 @@ export const InspectionsProgressTracker = () => {
                     <div className="font-medium">{task.title}</div>
                     <div className="text-sm text-muted-foreground">{task.description}</div>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={
-                        task.priority === 'high' ? 'outlineWarning' :
-                        task.priority === 'medium' ? 'outlineInfo' : 'outlineSuccess'
-                      }>
+                      <Badge variant={priorityToOutlineVariant(task.priority) as any}>
                         {task.priority} priority
                       </Badge>
                       {task.dueDate && (
@@ -614,34 +612,8 @@ export default function Inspections() {
     )
   );
 
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'completed': return 'softSuccess';
-      case 'scheduled': return 'softInfo';
-      case 'pending': return 'softWarning';
-      case 'cancelled': return 'destructive';
-      default: return 'outline';
-    }
-  };
 
-  const getSeverityVariant = (severity: string) => {
-    switch (severity) {
-      case 'high': return 'destructive';
-      case 'medium': return 'softWarning';
-      case 'low': return 'softSuccess';
-      default: return 'outline';
-    }
-  };
 
-  const getIssueStatusVariant = (status: string) => {
-    switch (status) {
-      case 'identified': return 'destructive';
-      case 'negotiating': return 'softWarning';
-      case 'resolved': return 'softSuccess';
-      case 'accepted': return 'softInfo';
-      default: return 'outline';
-    }
-  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -889,7 +861,7 @@ export default function Inspections() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-semibold">{inspection.title}</h3>
-                          <Badge variant={getStatusVariant(inspection.status) as any}>
+                          <Badge variant={statusToBadgeVariant(inspection.status) as any}>
                             {inspection.status}
                           </Badge>
                         </div>
@@ -999,10 +971,10 @@ export default function Inspections() {
                           {issue.category === 'HVAC' && <Shield className="w-4 h-4 text-green-600" />}
                           <span className="font-medium">{issue.category}</span>
                         </div>
-                        <Badge variant={getSeverityVariant(issue.severity) as any}>
+                        <Badge variant={severityToBadgeVariant(issue.severity) as any}>
                           {issue.severity}
                         </Badge>
-                        <Badge variant={getIssueStatusVariant(issue.status) as any}>
+                        <Badge variant={issueStatusToBadgeVariant(issue.status) as any}>
                           {issue.status}
                         </Badge>
                       </div>
@@ -1049,7 +1021,7 @@ export default function Inspections() {
                         </h4>
                         <p className="text-sm text-muted-foreground mt-1">{issue.description}</p>
                       </div>
-                      <Badge variant={getIssueStatusVariant(issue.status) as any}>
+                      <Badge variant={issueStatusToBadgeVariant(issue.status) as any}>
                         {issue.status}
                       </Badge>
                     </div>
@@ -1057,7 +1029,7 @@ export default function Inspections() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-sm font-medium">Severity</p>
-                        <Badge variant={getSeverityVariant(issue.severity) as any}>
+                        <Badge variant={severityToBadgeVariant(issue.severity) as any}>
                           {issue.severity}
                         </Badge>
                       </div>
