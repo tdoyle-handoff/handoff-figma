@@ -9,10 +9,22 @@ export function SearchPanel() {
   const [selectedProperty, setSelectedProperty] = useState<any>(null)
   const [activeTab, setActiveTab] = useState<'attom' | 'mls'>('attom')
 
+  const handleStartOnboarding = () => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      params.set('onboarding', '1')
+      const suffix = params.toString() ? `?${params.toString()}` : ''
+      window.history.replaceState(null, '', `${window.location.pathname}${suffix}`)
+      window.location.reload()
+    } catch {
+      window.location.href = `${window.location.pathname}?onboarding=1`
+    }
+  }
+
   return (
     <div className="grid gap-4">
       {/* Pre-onboarding address capture */}
-      <DreamHomeAddressCapture />
+      <DreamHomeAddressCapture onStartOnboarding={handleStartOnboarding} />
 
       {/* Tabs */}
       <div className="flex gap-2">
