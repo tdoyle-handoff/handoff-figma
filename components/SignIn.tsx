@@ -6,7 +6,6 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Checkbox } from './ui/checkbox'
 import { cn } from './ui/utils'
-import DreamHomeAddressCapture from './DreamHomeAddressCapture'
 
 // Simple placeholder brand icon
 function BrandMark(props: React.SVGProps<SVGSVGElement>) {
@@ -176,22 +175,17 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
     auth.continueAsGuest({ buyerName: 'Guest User', buyerEmail: email || 'guest@handoff.demo' })
   }
 
-  const handleStartOnboarding = () => {
-    try {
-      const params = new URLSearchParams(window.location.search)
-      params.set('onboarding', '1')
-      const suffix = params.toString() ? `?${params.toString()}` : ''
-      window.history.replaceState(null, '', `${window.location.pathname}${suffix}`)
-      window.location.reload()
-    } catch {
-      window.location.href = `${window.location.pathname}?onboarding=1`
-    }
-  }
 
   return (
     <div className={cn('min-h-screen w-full grid lg:grid-cols-2 bg-background', className)}>
       {/* Left: hero */}
       <div className="relative hidden lg:block">
+        <img
+          src="/brand/ef184a0b-1beb-46ef-8edb-99ceb3a022a7.png"
+          alt="HandOff brand pattern"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full w-full p-8 flex flex-col">
           <div className="flex items-center gap-3 text-white">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary-foreground">
@@ -353,12 +347,6 @@ export function SignIn({ className, forceRegisterMode }: { className?: string; f
           </div>
           )}
 
-          {/* Dream Home pre-onboarding prompt */}
-          {!isRegisterMode && (
-            <div className="mt-10">
-              <DreamHomeAddressCapture onStartOnboarding={handleStartOnboarding} />
-            </div>
-          )}
 
         {isRegisterMode ? null : (
           <p className="mt-8 text-xs text-muted-foreground text-center">
