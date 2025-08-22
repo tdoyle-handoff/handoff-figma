@@ -279,6 +279,12 @@ export default function Tasks({ onNavigate }: TasksProps) {
   const completedTasks = taskContext.getCompletedTasksCount();
   const activeTasks = taskContext.getActiveTasksCount();
   const overallProgress = taskContext.getOverallProgress();
+
+  // selection state for sidebar -> detail
+  const [selectedPhaseId, setSelectedPhaseId] = useState<string | undefined>(taskPhases.find(p => p.status === 'active')?.id);
+  const flatTasks = taskPhases.flatMap(p => p.tasks);
+  const firstActiveTask = flatTasks.find(t => ['active','in-progress','overdue'].includes(t.status)) || flatTasks[0] || null;
+  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(firstActiveTask?.id);
   
   const filteredPhases = taskPhases.map(phase => ({
     ...phase,
@@ -341,15 +347,17 @@ export default function Tasks({ onNavigate }: TasksProps) {
             <div className="lg:col-span-3">
               <ChecklistSidebar
                 phases={taskPhases}
-                selectedPhaseId={taskPhases.find(p => p.status === 'active')?.id}
-                onSelectPhase={() => {}}
+                selectedPhaseId={selectedPhaseId}
+                selectedTaskId={selectedTaskId}
+                onSelectPhase={(id) => setSelectedPhaseId(id)}
+                onSelectTask={(taskId) => setSelectedTaskId(taskId)}
               />
             </div>
             <div className="lg:col-span-6">
               <ChecklistDetail
-                task={taskPhases.flatMap(p => p.tasks).find(t => ['active','in-progress','overdue'].includes(t.status)) || taskPhases.flatMap(p => p.tasks)[0] || null}
+                task={flatTasks.find(t => t.id === selectedTaskId) || firstActiveTask}
                 onAction={() => {
-                  const t = taskPhases.flatMap(p => p.tasks).find(t => t.linkedPage);
+                  const t = flatTasks.find(t => t.id === selectedTaskId) || firstActiveTask;
                   if (t?.linkedPage) onNavigate(t.linkedPage);
                 }}
               />

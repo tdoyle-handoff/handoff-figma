@@ -8,10 +8,12 @@ import type { TaskPhase } from '../TaskContext';
 interface SidebarProps {
   phases: TaskPhase[];
   onSelectPhase: (phaseId: string) => void;
+  onSelectTask: (taskId: string) => void;
   selectedPhaseId?: string;
+  selectedTaskId?: string;
 }
 
-export default function ChecklistSidebar({ phases, onSelectPhase, selectedPhaseId }: SidebarProps) {
+export default function ChecklistSidebar({ phases, onSelectPhase, onSelectTask, selectedPhaseId, selectedTaskId }: SidebarProps) {
   const totalTasks = phases.reduce((sum, p) => sum + p.tasks.length, 0);
   const completedTasks = phases.reduce((sum, p) => sum + p.tasks.filter(t => t.status === 'completed').length, 0);
   const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
@@ -38,26 +40,52 @@ export default function ChecklistSidebar({ phases, onSelectPhase, selectedPhaseI
           const completed = phase.tasks.filter(t => t.status === 'completed').length;
           const isActive = selectedPhaseId ? selectedPhaseId === phase.id : phase.status === 'active';
           return (
-            <button
-              key={phase.id}
-              onClick={() => onSelectPhase(phase.id)}
-              className={`w-full text-left p-3 border rounded-lg bg-white hover:bg-gray-50 transition-colors ${isActive ? 'ring-2 ring-primary' : ''}`}
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
-                  {completed === phase.tasks.length && phase.tasks.length > 0 ? (
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <Circle className="w-4 h-4 text-gray-400" />
-                  )}
+            <div key={phase.id} className={`border rounded-lg bg-white transition-colors ${isActive ? 'ring-2 ring-primary' : ''}`}>
+              <button
+                onClick={() => onSelectPhase(phase.id)}
+                className={`w-full text-left p-3 hover:bg-gray-50 rounded-lg`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                    {completed === phase.tasks.length && phase.tasks.length > 0 ? (
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <Circle className="w-4 h-4 text-gray-400" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium truncate">{phase.title}</div>
+                    <div className="text-xs text-gray-500">{completed} / {phase.tasks.length} Completed</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium truncate">{phase.title}</div>
-                  <div className="text-xs text-gray-500">{completed} / {phase.tasks.length} Completed</div>
+              </button>
+
+              {isActive && phase.tasks.length > 0 && (
+                <div className="px-2 pb-2">
+                  <div className="space-y-1">
+                    {phase.tasks.map((t) => {
+                      const done = t.status === 'completed';
+                      const isSelected = selectedTaskId === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          onClick={() => onSelectTask(t.id)}
+                          className={`w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 ${isSelected ? 'bg-gray-50 ring-1 ring-primary/40' : ''}`}
+                        >
+                          {done ? (
+                            <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                          ) : (
+                            <Circle className="w-3.5 h-3.5 text-gray-300" />
+                          )}
+                          <span className="text-xs truncate">{t.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
-              </div>
-            </button>
+              )}
+            </div>
           );
         })}
       </div>
