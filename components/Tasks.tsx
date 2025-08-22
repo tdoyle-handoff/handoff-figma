@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import React, { useState } from 'react';
 import { CheckCircle, Circle, Clock, AlertTriangle, Calendar, User, ArrowRight, Filter, ChevronDown, ChevronRight, ExternalLink, Scale, Calculator, FileCheck, Shield, CheckSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -264,8 +263,6 @@ interface TasksProps {
 }
 
 export default function Tasks({ onNavigate }: TasksProps) {
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
-  const [viewMode, setViewMode] = useState<'phases' | 'categories' | 'list'>('phases');
   const isMobile = useIsMobile();
   const taskContext = useTaskContext();
   
@@ -285,16 +282,6 @@ export default function Tasks({ onNavigate }: TasksProps) {
   const flatTasks = taskPhases.flatMap(p => p.tasks);
   const firstActiveTask = flatTasks.find(t => ['active','in-progress','overdue'].includes(t.status)) || flatTasks[0] || null;
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(firstActiveTask?.id);
-  
-  const filteredPhases = taskPhases.map(phase => ({
-    ...phase,
-    tasks: phase.tasks.filter(task => {
-      if (filter === 'all') return true;
-      if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
-      if (filter === 'completed') return task.status === 'completed';
-      return task.status === filter;
-    })
-  })).filter(phase => phase.tasks.length > 0);
   
   // Get active tasks for quick actions
   const activeTasksForAlert = taskPhases.flatMap(phase => phase.tasks).filter(task => 
@@ -508,120 +495,6 @@ export default function Tasks({ onNavigate }: TasksProps) {
             </Card>
           )}
 
-          {/* Filter and View Controls */}
-          <div className="space-y-3">
-            <div className={`flex gap-2 ${isMobile ? 'w-full' : ''}`}>
-              <Button 
-                variant={filter === 'all' ? 'default' : 'outline'} 
-                size="sm"
-                onClick={() => setFilter('all')}
-                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-              >
-                All Tasks
-              </Button>
-              <Button 
-                variant={filter === 'active' ? 'default' : 'outline'} 
-                size="sm"
-                onClick={() => setFilter('active')}
-                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-              >
-                Active ({activeTasks})
-              </Button>
-              <Button 
-                variant={filter === 'completed' ? 'default' : 'outline'} 
-                size="sm"
-                onClick={() => setFilter('completed')}
-                className={`${isMobile ? 'mobile-button-sm flex-1' : ''}`}
-              >
-                Completed ({completedTasks})
-              </Button>
-            </div>
-          </div>
-
-          {/* Task Display */}
-          <div className="space-y-4">
-            {viewMode === 'phases' && (
-              <Fragment>
-                {filteredPhases.length > 0 ? (
-                  filteredPhases.map((phase) => (
-                    <PhaseCard key={phase.id} phase={phase} onNavigate={onNavigate} />
-                  ))
-                ) : (
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <p className="text-gray-500">No tasks found for the selected filter.</p>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setFilter('all')} 
-                        className="mt-2"
-                      >
-                        Show All Tasks
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )}
-              </Fragment>
-            )}
-
-            {viewMode === 'categories' && (
-              <Fragment>
-                {['financing', 'legal', 'inspections', 'insurance', 'general'].map(category => {
-                  const categoryTasks = taskPhases.flatMap(phase => phase.tasks).filter(task => {
-                    const matchesCategory = task.category.toLowerCase() === category;
-                    if (filter === 'all') return matchesCategory;
-                    if (filter === 'active') return matchesCategory && ['active', 'in-progress', 'overdue'].includes(task.status);
-                    if (filter === 'completed') return matchesCategory && task.status === 'completed';
-                    return matchesCategory && task.status === filter;
-                  });
-
-                  if (categoryTasks.length === 0) return null;
-
-                  return (
-                    <Card key={category} className="mb-4">
-                      <CardHeader>
-                        <CardTitle className="text-lg capitalize">{category} ({categoryTasks.length})</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {categoryTasks.map((task) => (
-                            <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </Fragment>
-            )}
-
-            {viewMode === 'list' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">All Tasks</CardTitle>
-                  <p className="text-sm text-gray-600">
-                    Complete list of all tasks ({taskPhases.flatMap(p => p.tasks).filter(task => {
-                      if (filter === 'all') return true;
-                      if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
-                      if (filter === 'completed') return task.status === 'completed';
-                      return task.status === filter;
-                    }).length})
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {taskPhases.flatMap(phase => phase.tasks).filter(task => {
-                      if (filter === 'all') return true;
-                      if (filter === 'active') return ['active', 'in-progress', 'overdue'].includes(task.status);
-                      if (filter === 'completed') return task.status === 'completed';
-                      return task.status === filter;
-                    }).map((task) => (
-                      <ExpandableTaskCard key={task.id} task={task} onNavigate={onNavigate} />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
 
           {/* Summary */}
           <Card className="bg-gray-50">
