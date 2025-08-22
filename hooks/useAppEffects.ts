@@ -167,13 +167,10 @@ export function useAppEffects({
         return;
       }
       
-      if (setupComplete && !getSavedPageFromStorage()) {
-        console.log('No saved page found after login; defaulting to property');
-        navigation.navigateTo('property');
-        return;
-      }
-      
-      console.log('Navigation: User staying on current page:', navigation.currentPage);
+      // Always land on the Property page after successful auth
+      console.log('Forcing landing page to property after login');
+      navigation.navigateTo('property');
+      return;
     }
   }, [auth.isAuthenticated, auth.isLoading, auth.isGuestMode, navigation.currentPage, navigation.navigateTo]);
 
