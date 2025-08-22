@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PropertySetupFlow } from './PropertySetupFlow';
 import PropertySummary from './PropertySummary';
-import { PropertyCompletionNotice } from './PropertyCompletionNotice';
 import { useIsMobile } from './ui/use-mobile';
 import AdminShell from './layout/AdminShell';
 
@@ -132,13 +131,7 @@ export function PropertyDetails({ userProfile, setupData, onNavigate }: Property
 
   // Show completion notice overlay (only if not in edit mode)
   if (showCompletionNotice && !isEditMode) {
-    return (
-      <PropertyCompletionNotice
-        onDismiss={() => setShowCompletionNotice(false)}
-        onNavigateToDashboard={() => onNavigate?.('overview')}
-        onNavigateToTasks={() => onNavigate?.('tasks')}
-      />
-    );
+    return null;
   }
 
   // Show setup flow if not complete or in edit mode
