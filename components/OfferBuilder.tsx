@@ -60,6 +60,7 @@ import { Slider } from "./ui/slider";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { AlertCircle, ArrowLeft, ArrowRight, DollarSign, FileText, Mail, Percent } from "lucide-react";
+import { supabase } from "../utils/supabase/client";
 
 // Utility helpers
 function formatMoney(n: number | string) {
@@ -442,14 +443,52 @@ export default function OfferBuilder() {
     reader.readAsDataURL(file);
   });
 
+  const ensureBucket = async () => {
+    try {
+      // Attempt to list to confirm access; if fails, inform user to create bucket via dashboard
+      const { data, error } = await supabase.storage.listBuckets();
+      if (error) throw error;
+      const exists = (data || []).some(b => b.name === 'offers');
+      if (!exists) {
+        // Create private bucket
+        await supabase.storage.createBucket('offers', { public: false });
+      }
+    } catch (e) {
+      console.warn('Could not verify/create bucket:', e);
+    }
+  };
+
+  const uploadToStorage = async (file: File, idHint: string) => {
+    try {
+      await ensureBucket();
+      const user = (await supabase.auth.getUser()).data.user;
+      const uid = user?.id || 'anonymous';
+      const draftId = currentDraftId || idHint || randomId();
+      const path = `${uid}/${draftId}/${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage.from('offers').upload(path, file, { upsert: false });
+      if (error) throw error;
+      // Private bucket: create a signed URL valid for 7 days
+      const { data: signed, error: signErr } = await supabase.storage.from('offers').createSignedUrl(path, 60 * 60 * 24 * 7);
+      if (signErr) throw signErr;
+      return { path, url: signed.signedUrl } as const;
+    } catch (e) {
+      console.error('Upload failed:', e);
+      return null;
+    }
+  };
+
   const handleAddFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    const list: Attachment[] = [];
+    const newAttachments: Attachment[] = [];
     for (const f of Array.from(files)) {
       const dataUrl = await toDataUrlIfSmall(f);
-      list.push({ id: randomId(), name: f.name, size: f.size, type: f.type, dataUrl });
+      let uploadedUrl: string | undefined;
+      let storedType = f.type;
+      const res = await uploadToStorage(f, currentDraftId || 'draft');
+      if (res) uploadedUrl = res.url;
+      newAttachments.push({ id: randomId(), name: f.name, size: f.size, type: storedType, dataUrl: dataUrl || uploadedUrl });
     }
-    setAttachments(prev => [...prev, ...list]);
+    setAttachments(prev => [...prev, ...newAttachments]);
     setPreApprovalAttached(true);
   };
 
@@ -670,7 +709,10 @@ export default function OfferBuilder() {
                               <a href={a.dataUrl} download={a.name} className="text-primary hover:underline">view</a>
                             )}
                             {!a.dataUrl && (
-                              <span className="text-muted-foreground">local only</span>
+                              <span className="text-muted-foreground">upload failed</span>
+                            )}
+                            {a.dataUrl && !a.dataUrl.startsWith('data:') && (
+                              <a href={a.dataUrl} target="_blank" rel="noreferrer" className="text-primary hover:underline">view</a>
                             )}
                             <button className="text-destructive hover:underline" onClick={()=> handleRemoveAttachment(a.id)}>remove</button>
                           </div>
