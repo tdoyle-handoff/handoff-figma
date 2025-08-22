@@ -1,13 +1,13 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
-import { ContractReview, TitleSearch, SettlementReview } from '../Legal';
+import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview } from '../Legal';
 import { Scale, FileText, Search, CheckCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistLegalTabs({ onNavigate }: Props) {
-  const [tab, setTab] = React.useState<'contract' | 'title' | 'settlement'>('contract');
+  const [tab, setTab] = React.useState<'progress' | 'contract' | 'title' | 'settlement'>('progress');
   const taskContext = useTaskContext();
   const legalTasks = taskContext.tasks.filter(t => ['legal','contract','offer','closing'].includes(t.category));
   const completed = legalTasks.filter(t => t.status === 'completed').length;
@@ -15,6 +15,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
   const progress = total > 0 ? (completed / total) * 100 : 0;
 
   const sections: { key: typeof tab; label: string; icon: any }[] = [
+    { key: 'progress', label: 'Progress', icon: Scale },
     { key: 'contract', label: 'Contract', icon: FileText },
     { key: 'title', label: 'Title', icon: Search },
     { key: 'settlement', label: 'Settlement', icon: CheckCircle },
@@ -69,6 +70,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
 
       {/* Center Content */}
       <div className="lg:col-span-9 space-y-3">
+        {tab === 'progress' && <LegalProgressTracker />}
         {tab === 'contract' && <ContractReview />}
         {tab === 'title' && <TitleSearch />}
         {tab === 'settlement' && <SettlementReview />}

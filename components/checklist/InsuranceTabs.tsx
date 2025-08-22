@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { useTaskContext } from '../TaskContext';
 import InsuranceQuotes from '../vendor/InsuranceQuotes';
@@ -32,7 +32,7 @@ export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm">Insurance Overall Completion</CardTitle>
-                <CardDescription>{completed} / {total} Completed</CardDescription>
+                <p className="text-xs text-muted-foreground">{completed} / {total} Completed</p>
               </div>
               <div className="text-lg font-semibold">{Math.round(progress)}%</div>
             </div>
