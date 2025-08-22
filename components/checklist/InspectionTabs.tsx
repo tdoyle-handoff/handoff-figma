@@ -70,7 +70,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
       <div className="lg:col-span-6 space-y-3">
         {tab === 'progress' && <InspectionsProgressTracker />}
         {tab === 'scheduled' && (
-          <Card>
+          <Card className="shadow-sm">
             <CardContent className="p-6 space-y-4">
               {inspections.map((inspection) => (
                 <div key={inspection.id} className="flex items-start justify-between">
@@ -91,7 +91,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
           </Card>
         )}
         {tab === 'results' && (
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">Inspection Results Summary</CardTitle>
             </CardHeader>
@@ -109,7 +109,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
           </Card>
         )}
         {tab === 'negotiations' && (
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">Issue Negotiations</CardTitle>
             </CardHeader>
@@ -127,7 +127,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
           </Card>
         )}
         {tab === 'reports' && (
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">Inspection Reports</CardTitle>
             </CardHeader>

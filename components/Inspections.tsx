@@ -217,7 +217,7 @@ export const InspectionsProgressTracker = () => {
   return (
     <div className="space-y-6">
       {/* Enhanced Progress Tracker */}
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Search className="w-5 h-5" />
@@ -391,7 +391,7 @@ export const InspectionsProgressTracker = () => {
 
       {/* Next Actions */}
       {nextInspectionActions.length > 0 && (
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-orange-600" />
@@ -407,10 +407,9 @@ export const InspectionsProgressTracker = () => {
                     <div className="font-medium">{task.title}</div>
                     <div className="text-sm text-muted-foreground">{task.description}</div>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className={
-                        task.priority === 'high' ? 'border-red-200 text-red-800' :
-                        task.priority === 'medium' ? 'border-yellow-200 text-yellow-800' :
-                        'border-green-200 text-green-800'
+                      <Badge variant={
+                        task.priority === 'high' ? 'outlineWarning' :
+                        task.priority === 'medium' ? 'outlineInfo' : 'outlineSuccess'
                       }>
                         {task.priority} priority
                       </Badge>
@@ -467,7 +466,9 @@ export const InspectionsProgressTracker = () => {
       </Card>
 
       {/* Issue Resolution Status */}
-      <Card>
+      <Card className="shadow-sm">
+        <CardHeader>
+
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-purple-600" />
@@ -485,7 +486,7 @@ export const InspectionsProgressTracker = () => {
                   <div className="text-sm text-muted-foreground">Electrical safety concern</div>
                 </div>
               </div>
-              <Badge className="bg-yellow-100 text-yellow-800">Negotiating</Badge>
+              <Badge variant="softWarning">Negotiating</Badge>
             </div>
             
             <div className="flex items-center justify-between p-3 border rounded-lg">
@@ -496,7 +497,7 @@ export const InspectionsProgressTracker = () => {
                   <div className="text-sm text-muted-foreground">Minor plumbing issue</div>
                 </div>
               </div>
-              <Badge className="bg-green-100 text-green-800">Resolved</Badge>
+              <Badge variant="softSuccess">Resolved</Badge>
             </div>
             
             <div className="flex items-center justify-between p-3 border rounded-lg">
@@ -507,7 +508,7 @@ export const InspectionsProgressTracker = () => {
                   <div className="text-sm text-muted-foreground">HVAC maintenance item</div>
                 </div>
               </div>
-              <Badge className="bg-blue-100 text-blue-800">Accepted</Badge>
+              <Badge variant="softInfo">Accepted</Badge>
             </div>
           </div>
         </CardContent>
@@ -615,32 +616,32 @@ export default function Inspections() {
     )
   );
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'softSuccess';
+      case 'scheduled': return 'softInfo';
+      case 'pending': return 'softWarning';
+      case 'cancelled': return 'destructive';
+      default: return 'outline';
     }
   };
 
-  const getSeverityColor = (severity: string) => {
+  const getSeverityVariant = (severity: string) => {
     switch (severity) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'destructive';
+      case 'medium': return 'softWarning';
+      case 'low': return 'softSuccess';
+      default: return 'outline';
     }
   };
 
-  const getIssueStatusColor = (status: string) => {
+  const getIssueStatusVariant = (status: string) => {
     switch (status) {
-      case 'identified': return 'bg-red-100 text-red-800';
-      case 'negotiating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'accepted': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'identified': return 'destructive';
+      case 'negotiating': return 'softWarning';
+      case 'resolved': return 'softSuccess';
+      case 'accepted': return 'softInfo';
+      default: return 'outline';
     }
   };
 
@@ -880,7 +881,7 @@ export default function Inspections() {
         <TabsContent value="scheduled" className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
             {inspections.map((inspection) => (
-              <Card key={inspection.id}>
+              <Card key={inspection.id} className="shadow-sm">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
@@ -890,7 +891,7 @@ export default function Inspections() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-semibold">{inspection.title}</h3>
-                          <Badge className={getStatusColor(inspection.status)}>
+                          <Badge variant={getStatusVariant(inspection.status) as any}>
                             {inspection.status}
                           </Badge>
                         </div>
@@ -941,7 +942,7 @@ export default function Inspections() {
         </TabsContent>
 
         <TabsContent value="results" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Inspection Results Summary</CardTitle>
               <CardDescription>
@@ -1000,10 +1001,10 @@ export default function Inspections() {
                           {issue.category === 'HVAC' && <Shield className="w-4 h-4 text-green-600" />}
                           <span className="font-medium">{issue.category}</span>
                         </div>
-                        <Badge className={getSeverityColor(issue.severity)}>
+                        <Badge variant={getSeverityVariant(issue.severity) as any}>
                           {issue.severity}
                         </Badge>
-                        <Badge className={getIssueStatusColor(issue.status)}>
+                        <Badge variant={getIssueStatusVariant(issue.status) as any}>
                           {issue.status}
                         </Badge>
                       </div>
@@ -1029,7 +1030,7 @@ export default function Inspections() {
         </TabsContent>
 
         <TabsContent value="negotiations" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Issue Negotiations &amp; Remedies</CardTitle>
               <CardDescription>
@@ -1050,7 +1051,7 @@ export default function Inspections() {
                         </h4>
                         <p className="text-sm text-muted-foreground mt-1">{issue.description}</p>
                       </div>
-                      <Badge className={getIssueStatusColor(issue.status)}>
+                      <Badge variant={getIssueStatusVariant(issue.status) as any}>
                         {issue.status}
                       </Badge>
                     </div>
@@ -1058,7 +1059,7 @@ export default function Inspections() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-sm font-medium">Severity</p>
-                        <Badge className={getSeverityColor(issue.severity)} variant="outline">
+                        <Badge variant={getSeverityVariant(issue.severity) as any}>
                           {issue.severity}
                         </Badge>
                       </div>
@@ -1102,7 +1103,7 @@ export default function Inspections() {
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Inspection Reports</CardTitle>
               <CardDescription>
