@@ -6,6 +6,7 @@ import { InspectionsProgressTracker } from '../Inspections';
 import { Search, ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
 import ChecklistResources from './ChecklistResources';
 import { useTaskContext } from '../TaskContext';
+import { useInspectionStore } from '../InspectionContext';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistInspectionTabs({ onNavigate }: Props) {
@@ -15,6 +16,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
   const total = taskContext.tasks.filter(t => t.category === 'inspections').length;
   const completed = taskContext.tasks.filter(t => t.category === 'inspections' && t.status === 'completed').length;
   const progress = total > 0 ? (completed / total) * 100 : 0;
+  const { inspections } = useInspectionStore();
 
   const sections = [
     { key: 'progress', label: 'Progress', icon: Search },
@@ -23,17 +25,6 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
     { key: 'negotiations', label: 'Negotiations', icon: Home },
     { key: 'reports', label: 'Reports', icon: FileText },
   ] as const;
-
-  // Sample data for sections (in a real app, use shared context/state)
-  const inspections = React.useMemo(() => ([
-    { id: 'general', title: 'General Home Inspection', type: 'general', status: 'completed', date: '2025-07-15', time: '10:00 AM', inspector: 'John Smith', company: 'Elite Home Inspections', phone: '(555) 123-4567', cost: '$450', duration: '2-3 hours', description: 'Comprehensive inspection of all major systems and structures',
-      issues: [
-        { id: '1', category: 'Electrical', severity: 'high', issue: 'GFCI outlets missing in bathroom', description: 'Bathroom outlets should have GFCI protection for safety', recommendation: 'Install GFCI outlets in all bathroom locations', cost: '$150-300', status: 'negotiating' },
-        { id: '2', category: 'Plumbing', severity: 'medium', issue: 'Minor leak under kitchen sink', description: 'Small water stain observed under kitchen sink', recommendation: 'Have plumber inspect and repair leak', cost: '$100-200', status: 'resolved' },
-      ]
-    },
-    { id: 'radon', title: 'Radon Testing', type: 'radon', status: 'scheduled', date: '2025-07-18', time: '9:00 AM', inspector: 'Mike Davis', company: 'Air Quality Testing', phone: '(555) 456-7890', cost: '$200', duration: '48 hours', description: 'Test for radon gas levels in the basement and living areas' }
-  ]), []);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">

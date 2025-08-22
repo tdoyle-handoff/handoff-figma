@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { useIsMobile } from './components/ui/use-mobile';
 import { TaskProvider } from './components/TaskContext';
 import { PropertyProvider } from './components/PropertyContext';
+import { InspectionProvider } from './components/InspectionContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthLoader } from './components/LoadingComponents';
 import { PageRenderer } from './components/PageRenderer';
@@ -373,6 +374,7 @@ function AppCore() {
     <ErrorBoundary fallback={AppErrorFallback}>
       <PropertyProvider>
         <TaskProvider userProfile={auth.userProfile}>
+          <InspectionProvider>
           <Suspense fallback={null}>
             <AppNotifications
               modes={modes}
@@ -443,6 +445,7 @@ function AppCore() {
               </ErrorBoundary>
             </div>
           )}
+          </InspectionProvider>
         </TaskProvider>
       </PropertyProvider>
     </ErrorBoundary>
