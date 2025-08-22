@@ -5,6 +5,7 @@ import Dashboard from './Dashboard';
 // Lazy load other components for better performance
 const Tasks = React.lazy(() => import('./Tasks'));
 const Documents = React.lazy(() => import('./Documents'));
+const OfferBuilder = React.lazy(() => import('./OfferBuilder'));
 const Resources = React.lazy(() => import('./Resources'));
 const MyTeam = React.lazy(() => import('./MyTeam'));
 
@@ -88,7 +89,7 @@ export function PageRenderer({
       case 'documents':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <Documents />
+            <OfferBuilder />
           </Suspense>
         );
       
