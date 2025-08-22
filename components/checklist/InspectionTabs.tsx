@@ -33,7 +33,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-sm">Inspections Overall</CardTitle>
+                <CardTitle className="text-sm">Inspections Overall Completion</CardTitle>
                 <p className="text-xs text-muted-foreground">{completed} / {total} Completed</p>
               </div>
               <div className="text-lg font-semibold">{Math.round(progress)}%</div>
