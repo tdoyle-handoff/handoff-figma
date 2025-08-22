@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { ExternalLink, HelpCircle, FileText, DollarSign } from 'lucide-react';
+import { HelpCircle, FileText, DollarSign } from 'lucide-react';
 
 interface Props {
   onNavigate: (page: string) => void;
@@ -35,17 +35,6 @@ export default function ChecklistResources({ onNavigate, onOpenPricing }: Props)
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-sm">Preview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate('settings')}>
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Preview Related Settings
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 }

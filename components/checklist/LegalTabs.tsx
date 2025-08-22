@@ -4,7 +4,6 @@ import { Progress } from '../ui/progress';
 import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview, LawyerSearch } from '../Legal';
 import { Scale, User, FileText, Search, CheckCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
-import ChecklistResources from './ChecklistResources';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistLegalTabs({ onNavigate }: Props) {
@@ -71,7 +70,7 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
       </div>
 
       {/* Center Content */}
-      <div className="lg:col-span-6 space-y-3">
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'progress' && <LegalProgressTracker />}
         {tab === 'attorney' && <LawyerSearch />}
         {tab === 'contract' && <ContractReview />}
@@ -79,15 +78,6 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
         {tab === 'settlement' && <SettlementReview />}
       </div>
 
-      {/* Right Resources */}
-      <div className="lg:col-span-3">
-        <ChecklistResources 
-          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
-          onOpenPricing={() => {
-            try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
-          }}
-        />
-      </div>
     </div>
   );
 }

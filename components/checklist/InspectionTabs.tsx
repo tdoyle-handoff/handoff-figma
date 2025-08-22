@@ -4,7 +4,6 @@ import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
 import { InspectionsProgressTracker } from '../Inspections';
 import { Search, ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
-import ChecklistResources from './ChecklistResources';
 import { useTaskContext } from '../TaskContext';
 import { useInspectionStore } from '../InspectionContext';
 
@@ -67,7 +66,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
         </div>
       </div>
 
-      <div className="lg:col-span-6 space-y-3">
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'progress' && <InspectionsProgressTracker />}
         {tab === 'scheduled' && (
           <Card className="shadow-sm">
@@ -146,12 +145,6 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
         )}
       </div>
 
-      <div className="lg:col-span-3">
-        <ChecklistResources 
-          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
-          onOpenPricing={() => { try { window.open('https://handoffiq.com/pricing','_blank','noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); } }}
-        />
-      </div>
     </div>
   );
 }

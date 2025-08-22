@@ -13,7 +13,6 @@ import ChecklistInspectionTabs from './checklist/InspectionTabs';
 import ChecklistInsuranceTabs from './checklist/InsuranceTabs';
 import ChecklistSidebar from './checklist/ChecklistSidebar';
 import ChecklistDetail from './checklist/ChecklistDetail';
-import ChecklistResources from './checklist/ChecklistResources';
 import { useTaskContext, Task, TaskPhase } from './TaskContext';
 
 // Task interfaces are now imported from TaskContext
@@ -326,24 +325,12 @@ export default function Tasks({ onNavigate }: TasksProps) {
                 onSelectTask={(taskId) => setSelectedTaskId(taskId)}
               />
             </div>
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-9">
               <ChecklistDetail
                 task={flatTasks.find(t => t.id === selectedTaskId) || firstActiveTask}
                 onAction={() => {
                   const t = flatTasks.find(t => t.id === selectedTaskId) || firstActiveTask;
                   if (t?.linkedPage) onNavigate(t.linkedPage);
-                }}
-              />
-            </div>
-            <div className="lg:col-span-3">
-              <ChecklistResources 
-                onNavigate={(page) => onNavigate(page)}
-                onOpenPricing={() => {
-                  try {
-                    window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer');
-                  } catch (e) {
-                    onNavigate('resources');
-                  }
                 }}
               />
             </div>

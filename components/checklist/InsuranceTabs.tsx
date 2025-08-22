@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Progress } from '../ui/progress';
-import ChecklistResources from './ChecklistResources';
 import { useTaskContext } from '../TaskContext';
 import InsuranceQuotes from '../vendor/InsuranceQuotes';
 import InsuranceProviders from '../vendor/InsuranceProviders';
@@ -72,7 +71,7 @@ export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
       </div>
 
       {/* Center Content */}
-      <div className="lg:col-span-6 space-y-3">
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'quotes' && <InsuranceQuotes />}
         {tab === 'providers' && <InsuranceProviders />}
         {tab === 'calculator' && <InsuranceCalculator />}
@@ -88,15 +87,6 @@ export default function ChecklistInsuranceTabs({ onNavigate }: Props) {
         )}
       </div>
 
-      {/* Right Resources */}
-      <div className="lg:col-span-3">
-        <ChecklistResources 
-          onNavigate={(page) => (onNavigate ? onNavigate(page) : undefined as any)}
-          onOpenPricing={() => {
-            try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
-          }}
-        />
-      </div>
     </div>
   );
 }
