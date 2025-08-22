@@ -455,7 +455,7 @@ export function useAuth() {
     isGuestMode: authState.isGuestMode,
     isQuestionnaireComplete: authState.isQuestionnaireComplete,
     showQuestionnairePrompt: authState.showQuestionnairePrompt,
-    
+
     // Methods
     handleAuthComplete,
     handleGoogleSignIn,
@@ -464,5 +464,14 @@ export function useAuth() {
     clearAuthError,
     updateUserProfile,
     getAuthStatusMessage,
+
+    // Auth helpers for compatibility
+    authHelpers: {
+      getCurrentSession: authHelpers.getCurrentSession,
+      getCurrentUser: authHelpers.getCurrentUser,
+      getUserProfile: authHelpers.getUserProfile,
+      resetPassword: authHelpers.resetPassword,
+      updatePassword: authHelpers.updatePassword,
+    },
   };
 }
