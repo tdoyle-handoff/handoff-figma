@@ -1,14 +1,13 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
-import { LegalProgressTracker, ContractReview, TitleSearch, SettlementReview } from '../Legal';
+import { ContractReview, TitleSearch, SettlementReview } from '../Legal';
 import { Scale, FileText, Search, CheckCircle } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
-import ChecklistResources from './ChecklistResources';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistLegalTabs({ onNavigate }: Props) {
-  const [tab, setTab] = React.useState<'progress' | 'contract' | 'title' | 'settlement'>('progress');
+  const [tab, setTab] = React.useState<'contract' | 'title' | 'settlement'>('contract');
   const taskContext = useTaskContext();
   const legalTasks = taskContext.tasks.filter(t => ['legal','contract','offer','closing'].includes(t.category));
   const completed = legalTasks.filter(t => t.status === 'completed').length;
@@ -16,7 +15,6 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
   const progress = total > 0 ? (completed / total) * 100 : 0;
 
   const sections: { key: typeof tab; label: string; icon: any }[] = [
-    { key: 'progress', label: 'Progress', icon: Scale },
     { key: 'contract', label: 'Contract', icon: FileText },
     { key: 'title', label: 'Title', icon: Search },
     { key: 'settlement', label: 'Settlement', icon: CheckCircle },
@@ -70,21 +68,10 @@ export default function ChecklistLegalTabs({ onNavigate }: Props) {
       </div>
 
       {/* Center Content */}
-      <div className="lg:col-span-6 space-y-3">
-        {tab === 'progress' && <LegalProgressTracker />}
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'contract' && <ContractReview />}
         {tab === 'title' && <TitleSearch />}
         {tab === 'settlement' && <SettlementReview />}
-      </div>
-
-      {/* Right Resources */}
-      <div className="lg:col-span-3 space-y-3">
-        <ChecklistResources
-          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
-          onOpenPricing={() => {
-            try { window.open('https://handoffiq.com/pricing', '_blank', 'noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); }
-          }}
-        />
       </div>
 
     </div>

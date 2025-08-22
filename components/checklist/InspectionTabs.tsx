@@ -2,15 +2,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
-import { InspectionsProgressTracker } from '../Inspections';
 import { Search, ClipboardCheck, AlertTriangle, FileText, Home } from 'lucide-react';
 import { useTaskContext } from '../TaskContext';
 import { useInspectionStore } from '../InspectionContext';
-import ChecklistResources from './ChecklistResources';
 
 interface Props { onNavigate?: (page: string) => void }
 export default function ChecklistInspectionTabs({ onNavigate }: Props) {
-  const [tab, setTab] = React.useState<'progress' | 'scheduled' | 'results' | 'negotiations' | 'reports'>('progress');
+  const [tab, setTab] = React.useState<'scheduled' | 'results' | 'negotiations' | 'reports'>('scheduled');
   const taskContext = useTaskContext();
   const inspTasks = taskContext.getActiveTasksByCategory('inspections');
   const total = taskContext.tasks.filter(t => t.category === 'inspections').length;
@@ -19,7 +17,6 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
   const { inspections } = useInspectionStore();
 
   const sections = [
-    { key: 'progress', label: 'Progress', icon: Search },
     { key: 'scheduled', label: 'Scheduled', icon: ClipboardCheck },
     { key: 'results', label: 'Results', icon: AlertTriangle },
     { key: 'negotiations', label: 'Negotiations', icon: Home },
@@ -72,8 +69,7 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
         </div>
       </div>
 
-      <div className="lg:col-span-6 space-y-3">
-        {tab === 'progress' && <InspectionsProgressTracker />}
+      <div className="lg:col-span-9 space-y-3">
         {tab === 'scheduled' && (
           <Card className="shadow-sm">
             <CardContent className="p-6 space-y-4">
@@ -151,13 +147,6 @@ export default function ChecklistInspectionTabs({ onNavigate }: Props) {
         )}
       </div>
 
-      {/* Right Resources */}
-      <div className="lg:col-span-3 space-y-3">
-        <ChecklistResources
-          onNavigate={(page) => onNavigate ? onNavigate(page) : undefined as any}
-          onOpenPricing={() => { try { window.open('https://handoffiq.com/pricing','_blank','noopener,noreferrer'); } catch (e) { onNavigate && onNavigate('resources'); } }}
-        />
-      </div>
 
     </div>
   );
