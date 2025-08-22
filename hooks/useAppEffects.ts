@@ -167,9 +167,9 @@ export function useAppEffects({
         return;
       }
       
-      if (setupComplete && navigation.currentPage === 'property' && !getSavedPageFromStorage()) {
-        console.log('Setup complete but on property page with no saved state, redirecting to overview');
-        navigation.navigateTo('overview');
+      if (setupComplete && !getSavedPageFromStorage()) {
+        console.log('No saved page found after login; defaulting to property');
+        navigation.navigateTo('property');
         return;
       }
       
